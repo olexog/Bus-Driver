@@ -1,0 +1,3 @@
+syntax: glob
+Source\BusDriver\BusDriver\x64
+Source\BusDriver\GraphicsLibrary\x64
