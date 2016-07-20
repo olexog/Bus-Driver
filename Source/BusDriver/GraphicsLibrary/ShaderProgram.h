@@ -22,7 +22,7 @@ namespace GraphicsLibrary
 
 		void Use();
 	private:
-		int id;
+		GLuint id;
 	};
 }
 

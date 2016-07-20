@@ -16,14 +16,19 @@ namespace GraphicsLibrary
 	{
 	public:
 		///<summary>Initializes a new Buffer Object of two-dimensional vectors and attaches it to the bound Vertex Array Object.</summary>
-		Buffer(vector<PxVec2> elements);
-
-		///<summary>Initializes a new Buffer Object of three-dimensional vectors and attaches it to the bound Vertex Array Object.</summary>
-		Buffer(vector<PxVec3> elements);
+		Buffer();
 
 		///<summary>Destroys the Buffer Object.</summary>
 		~Buffer();
+
+		void LoadData(vector<PxVec2> elements);
+
+		void LoadData(vector<PxVec3> elements);
+
+		void Bind();
+
+		static void Unbind();
 	private:
-		unsigned int id;
+		GLuint id;
 	};
 }

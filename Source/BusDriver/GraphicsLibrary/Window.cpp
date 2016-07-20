@@ -49,12 +49,12 @@ namespace GraphicsLibrary
 		delete this->shaderProgram;
 	}
 
-	void Window::Draw(Model* model)
+	void Window::Draw(VertexArray* vertexArray)
 	{
 		glClearColor(0, 0, 0.7f, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		model->Draw();
+		vertexArray->Draw(this->shaderProgram);
 	}
 
 	bool Window::ShouldClose()
@@ -83,11 +83,6 @@ namespace GraphicsLibrary
 	{
 		// swap the screen buffers
 		glfwSwapBuffers(this->glfwWindow);
-	}
-
-	ShaderProgram* Window::GetShaderProgram()
-	{
-		return this->shaderProgram;
 	}
 
 	PxMat44 Window::CreatePerspective(float fovy, float aspect, float zNear, float zFar)

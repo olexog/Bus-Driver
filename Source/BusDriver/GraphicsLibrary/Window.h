@@ -8,7 +8,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Model.h"
+#include "VertexArray.h"
 #include "ShaderProgram.h"
 
 using namespace std;
@@ -23,7 +23,7 @@ namespace GraphicsLibrary
 		~Window();
 
 		///<summary>Draws to the context.</summary>
-		void Draw(Model* model);
+		void Draw(VertexArray* vertexArray);
 
 		///<summary>Determines whether the window received closing events.</summary>
 		bool ShouldClose();
@@ -31,8 +31,6 @@ namespace GraphicsLibrary
 		void PollEvents();
 
 		void SwapBuffers();
-
-		ShaderProgram* GetShaderProgram();
 	private:
 		GLFWwindow* glfwWindow;
 

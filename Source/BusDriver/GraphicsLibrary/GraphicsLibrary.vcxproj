@@ -146,19 +146,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h" />
-    <ClInclude Include="Collection.h" />
-    <ClInclude Include="Model.h" />
     <ClInclude Include="ModelReader.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="VertexArray.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="Collection.cpp" />
-    <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelReader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="VertexArray.cpp" />
     <ClCompile Include="Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GraphicsLibrary.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
