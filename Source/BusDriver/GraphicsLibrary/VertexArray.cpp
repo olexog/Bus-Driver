@@ -6,8 +6,6 @@ namespace GraphicsLibrary
 	{
 		glGenVertexArrays(1, &this->id);
 
-		// egyeztesd már össze ezeke
-
 		glBindVertexArray(this->id);
 		this->vertices = new Buffer();
 		this->vertices->Bind();

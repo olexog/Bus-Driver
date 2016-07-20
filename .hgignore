@@ -1,3 +1,6 @@
 syntax: glob
 Source\BusDriver\BusDriver\x64
 Source\BusDriver\GraphicsLibrary\x64
+*.orig
+*.suo
+*.opendb
