@@ -31,11 +31,17 @@ namespace GraphicsLibrary
 		void PollEvents();
 
 		void SwapBuffers();
+
+		ShaderProgram* GetShaderProgram();
 	private:
 		GLFWwindow* glfwWindow;
 
 		ShaderProgram* shaderProgram;
 
 		void SetViewport();
+
+		PxMat44 CreatePerspective(float fovy, float aspect, float zNear, float zFar);
+
+		PxMat44 projectionMatrix;
 	};
 }

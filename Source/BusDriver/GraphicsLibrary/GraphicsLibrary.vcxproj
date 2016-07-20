@@ -145,6 +145,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Buffer.h" />
     <ClInclude Include="Collection.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelReader.h" />
@@ -152,6 +153,7 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Collection.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelReader.cpp" />

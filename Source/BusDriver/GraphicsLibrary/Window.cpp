@@ -37,6 +37,8 @@ namespace GraphicsLibrary
 		this->SetViewport();
 
 		this->shaderProgram = new ShaderProgram("Shaders\\VertexShader.glsl", "Shaders\\FragmentShader.glsl");
+
+		this->projectionMatrix = this->CreatePerspective(PxHalfPi, static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
 	}
 
 	Window::~Window()
@@ -52,7 +54,7 @@ namespace GraphicsLibrary
 		glClearColor(0, 0, 0.7f, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		model->Draw(this->shaderProgram);
+		model->Draw();
 	}
 
 	bool Window::ShouldClose()
@@ -81,5 +83,25 @@ namespace GraphicsLibrary
 	{
 		// swap the screen buffers
 		glfwSwapBuffers(this->glfwWindow);
+	}
+
+	ShaderProgram* Window::GetShaderProgram()
+	{
+		return this->shaderProgram;
+	}
+
+	PxMat44 Window::CreatePerspective(float fovy, float aspect, float zNear, float zFar)
+	{
+		PxMat44 result;
+
+		float tanHalfFovy = tan(fovy / 2);
+
+		result[0][0] = 1 / (aspect * tanHalfFovy);
+		result[1][1] = 1 / (tanHalfFovy);
+		result[2][2] = -(zFar + zNear) / (zFar - zNear);
+		result[2][3] = -1;
+		result[3][2] = -(2 * zFar * zNear) / (zFar - zNear);
+
+		return result;
 	}
 }

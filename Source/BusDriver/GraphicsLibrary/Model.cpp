@@ -15,11 +15,11 @@ namespace GraphicsLibrary
 		}
 	}
 
-	void Model::Draw(ShaderProgram* shaderProgram)
+	void Model::Draw()
 	{
 		for (Collection* collection : this->collections)
 		{
-			collection->Draw(shaderProgram);
+			collection->Draw();
 		}
 	}
 }

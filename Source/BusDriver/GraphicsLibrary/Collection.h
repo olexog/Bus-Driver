@@ -7,6 +7,7 @@
 #include <PxPhysicsApi.h>
 
 #include "ShaderProgram.h"
+#include "Buffer.h"
 
 using namespace std;
 using namespace physx;
@@ -16,12 +17,13 @@ namespace GraphicsLibrary
 	class Collection
 	{
 	public:
-		Collection(vector<PxVec3> vertices);
+		Collection(ShaderProgram* shaderProgram, vector<PxVec3> vertices);
 		~Collection();
 
-		void Draw(ShaderProgram* shaderProgram);
+		void Draw();
 	private:
-		unsigned int vertexBufferId;
+		Buffer* vertexBuffer;
+		ShaderProgram* shaderProgram;
 		unsigned int vertexArrayId;
 	};
 }

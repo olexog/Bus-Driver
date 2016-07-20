@@ -22,7 +22,7 @@ int main()
 	ModelReader reader = ModelReader();
 	reader.Read("Models\\station_01.obj", loadedModel);
 
-	Collection* collection = new Collection({ PxVec3(-0.5f, -0.5f, 0.0f), PxVec3(0.5f, -0.5f, 0.0f), PxVec3(0.0f,  0.5f, 0.0f) });
+	Collection* collection = new Collection(window.GetShaderProgram(), { PxVec3(-0.5f, -0.5f, 0.0f), PxVec3(0.5f, -0.5f, 0.0f), PxVec3(0.0f,  0.5f, 0.0f) });
 
 	Model* model = new Model({ collection });
 

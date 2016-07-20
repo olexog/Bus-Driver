@@ -12,7 +12,7 @@ namespace GraphicsLibrary
 
 	void ModelReader::Read(string fileName, Model* &model)
 	{
-		ifstream file = ifstream(fileName);
+		/*ifstream file = ifstream(fileName);
 
 		string line;
 
@@ -59,6 +59,6 @@ namespace GraphicsLibrary
 			{
 
 			}
-		}
+		}*/
 	}
 }

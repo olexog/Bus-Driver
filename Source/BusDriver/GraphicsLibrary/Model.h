@@ -15,7 +15,7 @@ namespace GraphicsLibrary
 		Model(vector<Collection*> collections);
 		~Model();
 
-		void Draw(ShaderProgram* shaderProgram);
+		void Draw();
 	private:
 		vector<Collection*> collections;
 	};

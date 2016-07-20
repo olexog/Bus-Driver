@@ -6,7 +6,10 @@
 
 #include <GL\glew.h>
 
+#include <PxPhysicsAPI.h>
+
 using namespace std;
+using namespace physx;
 
 namespace GraphicsLibrary
 {
