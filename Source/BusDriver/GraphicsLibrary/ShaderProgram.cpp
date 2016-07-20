@@ -59,4 +59,10 @@ namespace GraphicsLibrary
 	{
 		glUseProgram(this->id);
 	}
+
+	void ShaderProgram::SetUniform(string name, glm::mat4 matrix)
+	{
+		GLuint transformLocation = glGetUniformLocation(this->id, name.c_str());
+		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+	}
 }
