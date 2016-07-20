@@ -8,10 +8,15 @@
 
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "VertexArray.h"
 #include "ShaderProgram.h"
 
 using namespace std;
+using namespace glm;
 
 namespace GraphicsLibrary
 {
@@ -38,8 +43,7 @@ namespace GraphicsLibrary
 
 		void SetViewport();
 
-		PxMat44 CreatePerspective(float fovy, float aspect, float zNear, float zFar);
-
-		PxMat44 projectionMatrix;
+		mat4 projection;
+		mat4 view;
 	};
 }

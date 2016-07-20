@@ -6,6 +6,10 @@
 
 #include <GL\glew.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <PxPhysicsAPI.h>
 
 using namespace std;
@@ -21,8 +25,9 @@ namespace GraphicsLibrary
 		~ShaderProgram();
 
 		void Use();
+
+		void SetUniform(string name, glm::mat4 matrix);
 	private:
 		GLuint id;
 	};
 }
-
