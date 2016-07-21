@@ -37,6 +37,7 @@ namespace GraphicsLibrary
 		this->SetViewport();
 
 		this->shaderProgram = new ShaderProgram("Shaders\\VertexShader.glsl", "Shaders\\FragmentShader.glsl");
+		this->colouredShaderProgram = new ShaderProgram("Shaders\\ColouredVertexShader.glsl", "Shaders\\ColouredFragmentShader.glsl");
 
 		this->projection = perspective(45.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
 
@@ -51,7 +52,7 @@ namespace GraphicsLibrary
 		delete this->shaderProgram;
 	}
 
-	void Window::Draw(VertexArray* vertexArray)
+	void Window::Draw(vector<VertexArray*> vertexArrays)
 	{
 		glClearColor(0, 0, 0.7f, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -59,7 +60,20 @@ namespace GraphicsLibrary
 		this->shaderProgram->SetUniform("projection", this->projection);
 		this->shaderProgram->SetUniform("view", this->view);
 
-		vertexArray->Draw(this->shaderProgram);
+		this->colouredShaderProgram->SetUniform("projection", this->projection);
+		this->colouredShaderProgram->SetUniform("view", this->view);
+
+		for (VertexArray* vertexArray : vertexArrays)
+		{
+			if (dynamic_cast<ColouredVertexArray*>(vertexArray) != 0)
+			{
+				vertexArray->Draw(this->colouredShaderProgram);
+			}
+			else
+			{
+				vertexArray->Draw(this->shaderProgram);
+			}
+		}
 	}
 
 	bool Window::ShouldClose()

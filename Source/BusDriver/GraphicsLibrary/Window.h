@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -13,9 +14,11 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "VertexArray.h"
+#include "ColouredVertexArray.h"
 #include "ShaderProgram.h"
 
 using namespace std;
+
 using namespace glm;
 
 namespace GraphicsLibrary
@@ -28,7 +31,7 @@ namespace GraphicsLibrary
 		~Window();
 
 		///<summary>Draws to the context.</summary>
-		void Draw(VertexArray* vertexArray);
+		void Draw(vector<VertexArray*> vertexArrays);
 
 		///<summary>Determines whether the window received closing events.</summary>
 		bool ShouldClose();
@@ -40,10 +43,11 @@ namespace GraphicsLibrary
 		GLFWwindow* glfwWindow;
 
 		ShaderProgram* shaderProgram;
-
-		void SetViewport();
+		ShaderProgram* colouredShaderProgram;
 
 		mat4 projection;
 		mat4 view;
+
+		void SetViewport();
 	};
 }

@@ -28,5 +28,7 @@ namespace GraphicsLibrary
 		glBindVertexArray(this->id);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
+
+		ShaderProgram::Disable();
 	}
 }

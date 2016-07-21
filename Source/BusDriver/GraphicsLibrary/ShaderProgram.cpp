@@ -18,7 +18,7 @@ namespace GraphicsLibrary
 		if (!success)
 		{
 			glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-			std::cerr << "Shader vertex creation has failed. Info log:" << infoLog << std::endl;
+			std::cerr << "Vertex shader creation has failed in file " << vertexShaderFileName << ". Info log:" << infoLog << std::endl;
 		}
 
 		ifstream fragmentShaderFile = ifstream(fragmentShaderFileName);
@@ -33,7 +33,7 @@ namespace GraphicsLibrary
 		if (!success)
 		{
 			glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-			std::cerr << "Fragment shader creation has failed. Info log:" << infoLog << std::endl;
+			std::cerr << "Fragment shader creation has failed in file " << fragmentShaderFileName << ". Info log:" << infoLog << std::endl;
 		}
 
 		this->id = glCreateProgram();
@@ -60,9 +60,16 @@ namespace GraphicsLibrary
 		glUseProgram(this->id);
 	}
 
+	void ShaderProgram::Disable()
+	{
+		glUseProgram(0);
+	}
+
 	void ShaderProgram::SetUniform(string name, glm::mat4 matrix)
 	{
+		this->Use();
 		GLuint transformLocation = glGetUniformLocation(this->id, name.c_str());
 		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+		ShaderProgram::Disable();
 	}
 }

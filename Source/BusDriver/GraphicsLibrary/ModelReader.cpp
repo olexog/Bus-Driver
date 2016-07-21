@@ -2,14 +2,6 @@
 //
 //namespace GraphicsLibrary
 //{
-//	ModelReader::ModelReader()
-//	{
-//	}
-//
-//	ModelReader::~ModelReader()
-//	{
-//	}
-//
 //	void ModelReader::Read(string fileName, Model* &model)
 //	{
 //		/*ifstream file = ifstream(fileName);

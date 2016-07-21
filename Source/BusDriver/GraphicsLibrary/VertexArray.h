@@ -20,9 +20,10 @@ namespace GraphicsLibrary
 	public:
 		VertexArray(vector<PxVec3> vertices);
 		~VertexArray();
-		void Draw(ShaderProgram* shaderProgram);
-	private:
+		virtual void Draw(ShaderProgram* shaderProgram);
+	protected:
 		GLuint id;
+	private:
 		Buffer* vertices;
 	};
 }

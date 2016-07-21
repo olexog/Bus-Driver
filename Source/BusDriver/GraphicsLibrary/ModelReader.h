@@ -15,11 +15,6 @@
 //{
 //	class ModelReader
 //	{
-//	public:
-//		ModelReader();
-//		~ModelReader();
-//
-//		void Read(string fileName, Model* &model);
+//		static void Read(string fileName, Model* &model);
 //	};
 //}
-//

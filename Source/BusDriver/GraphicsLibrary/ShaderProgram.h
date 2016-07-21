@@ -26,6 +26,8 @@ namespace GraphicsLibrary
 
 		void Use();
 
+		static void Disable();
+
 		void SetUniform(string name, glm::mat4 matrix);
 	private:
 		GLuint id;
