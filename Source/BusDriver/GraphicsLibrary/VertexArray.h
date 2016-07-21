@@ -17,12 +17,13 @@ namespace GraphicsLibrary
 	class VertexArray
 	{
 	public:
-		VertexArray(vector<vec3> vertices);
+		VertexArray(vector<vec3> vertices, vector<vec3> normals);
 		~VertexArray();
 		virtual void Draw(ShaderProgram* shaderProgram);
 	protected:
 		GLuint id;
 	private:
 		Buffer* vertices;
+		Buffer* normals;
 	};
 }

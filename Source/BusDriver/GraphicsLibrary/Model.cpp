@@ -13,7 +13,7 @@ namespace GraphicsLibrary
 		delete this->colouredVertexArray;
 	}
 
-	void Model::Draw(ShaderProgram * shaderProgram, ShaderProgram* colouredShaderProgram)
+	void Model::Draw(ShaderProgram* shaderProgram, ShaderProgram* colouredShaderProgram)
 	{
 		this->colouredVertexArray->Draw(colouredShaderProgram);
 	}

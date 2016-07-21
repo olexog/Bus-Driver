@@ -21,14 +21,14 @@ int main()
 
 	Model* model = ModelReader::Read("Models\\station_01.obj");
 
-	VertexArray* vertexArray = new VertexArray({ vec3(-1.5f, -0.5f, 0.0f), vec3(-0.5f, -0.5f, 0.0f), vec3(-1.0f,  0.5f, 0.0f) });
+	/*VertexArray* vertexArray = new VertexArray({ vec3(-1.5f, -0.5f, 0.0f), vec3(-0.5f, -0.5f, 0.0f), vec3(-1.0f,  0.5f, 0.0f) });
 
 	ColouredVertexArray* colouredVertexArray = new ColouredVertexArray({ vec3(0.5f, -0.5f, 0.0f), vec3(1.5f, -0.5f, 0.0f), vec3(1.0f,  0.5f, 0.0f) },
 		{ vec3(1.0f, 1.0f, 0.0f), vec3(0.0f, 1.0f, 1.0f), vec3(1.0f, 0.0f, 1.0f) });
 
 	vector<VertexArray*> vertexArrays = vector<VertexArray*>();
 	vertexArrays.push_back(vertexArray);
-	vertexArrays.push_back(colouredVertexArray);
+	vertexArrays.push_back(colouredVertexArray);*/
 
 	// the main loop that iterates throughout the game
 	while (!window.ShouldClose())
@@ -40,6 +40,6 @@ int main()
 		window.SwapBuffers();
 	}
 
-	delete vertexArray;
+	/*delete vertexArray;*/
 	delete model;
 }

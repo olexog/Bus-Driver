@@ -2,16 +2,23 @@
 
 namespace GraphicsLibrary
 {
-	VertexArray::VertexArray(vector<vec3> vertices)
+	VertexArray::VertexArray(vector<vec3> vertices, vector<vec3> normals)
 	{
 		glGenVertexArrays(1, &this->id);
-
 		glBindVertexArray(this->id);
+
 		this->vertices = new Buffer();
 		this->vertices->Bind();
 		this->vertices->LoadData(vertices);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), static_cast<GLvoid*>(0));
 		glEnableVertexAttribArray(0);
+
+		this->normals = new Buffer();
+		this->normals->Bind();
+		this->normals->LoadData(normals);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), static_cast<GLvoid*>(0));
+		glEnableVertexAttribArray(1);
+
 		Buffer::Unbind();
 		glBindVertexArray(0);
 	}

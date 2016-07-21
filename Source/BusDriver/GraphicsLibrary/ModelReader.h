@@ -19,7 +19,5 @@ namespace GraphicsLibrary
 	{
 	public:
 		static Model* Read(string fileName);
-	private:
-		static map<string, Material> ReadMaterialLibrary(string fileName);
 	};
 }

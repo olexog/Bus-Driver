@@ -16,11 +16,13 @@ namespace GraphicsLibrary
 		public VertexArray
 	{
 	public:
-		ColouredVertexArray(vector<vec3> vertices, vector<vec3> colors);
+		ColouredVertexArray(vector<vec3> vertices, vector<vec3> normals, vector<vec3> ambientColours, vector<vec3> diffuseColours, vector<vec3> specularColours);
 		~ColouredVertexArray();
 		void Draw(ShaderProgram* shaderProgram);
 	private:
-		Buffer* colors;
+		Buffer* ambientColours;
+		Buffer* diffuseColours;
+		Buffer* specularColours;
 		int vertexCount;
 	};
 }

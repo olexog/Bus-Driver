@@ -2,19 +2,33 @@
 
 namespace GraphicsLibrary
 {
-	ColouredVertexArray::ColouredVertexArray(vector<vec3> vertices, vector<vec3> colors)
-		: VertexArray(vertices)
+	ColouredVertexArray::ColouredVertexArray(vector<vec3> vertices, vector<vec3> normals, vector<vec3> ambientColours, vector<vec3> diffuseColours, vector<vec3> specularColours)
+		: VertexArray(vertices, normals)
 	{
 		glBindVertexArray(this->id);
-		this->colors = new Buffer();
-		this->colors->Bind();
-		this->colors->LoadData(colors);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), static_cast<GLvoid*>(0));
-		glEnableVertexAttribArray(1);
+
+		this->ambientColours = new Buffer();
+		this->ambientColours->Bind();
+		this->ambientColours->LoadData(ambientColours);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), static_cast<GLvoid*>(0));
+		glEnableVertexAttribArray(2);
+
+		this->diffuseColours = new Buffer();
+		this->diffuseColours->Bind();
+		this->diffuseColours->LoadData(diffuseColours);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), static_cast<GLvoid*>(0));
+		glEnableVertexAttribArray(3);
+
+		this->specularColours = new Buffer();
+		this->specularColours->Bind();
+		this->specularColours->LoadData(specularColours);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), static_cast<GLvoid*>(0));
+		glEnableVertexAttribArray(4);
+
 		Buffer::Unbind();
 		glBindVertexArray(0);
 
-		this->vertexCount = vertices.size();
+		this->vertexCount = static_cast<int>(vertices.size());
 	}
 
 	ColouredVertexArray::~ColouredVertexArray()
