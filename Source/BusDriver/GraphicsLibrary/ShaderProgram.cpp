@@ -65,6 +65,14 @@ namespace GraphicsLibrary
 		glUseProgram(0);
 	}
 
+	void ShaderProgram::SetUniform(string name, glm::vec3 vector)
+	{
+		this->Use();
+		GLuint transformLocation = glGetUniformLocation(this->id, name.c_str());
+		glUniform3f(transformLocation, vector.x, vector.y, vector.z);
+		ShaderProgram::Disable();
+	}
+
 	void ShaderProgram::SetUniform(string name, glm::mat4 matrix)
 	{
 		this->Use();

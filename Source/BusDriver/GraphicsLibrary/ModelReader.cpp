@@ -89,6 +89,7 @@ namespace GraphicsLibrary
 		vector<vec2> texCoords = vector<vec2>();
 
 		vector<vec3> colouredVertices = vector<vec3>();
+		vector<vec3> colouredNormals = vector<vec3>();
 		vector<vec3> ambientColours = vector<vec3>();
 		vector<vec3> diffuseColours = vector<vec3>();
 		vector<vec3> specularColours = vector<vec3>();
@@ -138,11 +139,19 @@ namespace GraphicsLibrary
 				int* vertex2 = new int();
 				int* vertex3 = new int();
 
-				sscanf_s(line.c_str(), "%*255s %d%*s %d%*s %d%*s", vertex1, vertex2, vertex3);
+				int* normal1 = new int();
+				int* normal2 = new int();
+				int* normal3 = new int();
+
+				sscanf_s(line.c_str(), "%*255s %d/%*s/%d %d/%*s/%d %d/%*s/%d", vertex1, normal1, vertex2, normal2, vertex3, normal3);
 
 				colouredVertices.push_back(vertices[*vertex1 - 1]);
 				colouredVertices.push_back(vertices[*vertex2 - 1]);
 				colouredVertices.push_back(vertices[*vertex3 - 1]);
+
+				colouredNormals.push_back(normals[*normal1 - 1]);
+				colouredNormals.push_back(normals[*normal2 - 1]);
+				colouredNormals.push_back(normals[*normal3 - 1]);
 
 				ambientColours.push_back(actualMaterial.ambientColour);
 				ambientColours.push_back(actualMaterial.ambientColour);
@@ -176,6 +185,6 @@ namespace GraphicsLibrary
 			}
 		}
 
-		return new Model(new ColouredVertexArray(colouredVertices, normals, ambientColours, diffuseColours, specularColours));
+		return new Model(new ColouredVertexArray(colouredVertices, colouredNormals, ambientColours, diffuseColours, specularColours));
 	}
 }

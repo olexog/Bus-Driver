@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/vec3.hpp>
 
 using namespace std;
 using namespace glm;
@@ -26,6 +27,7 @@ namespace GraphicsLibrary
 
 		static void Disable();
 
+		void SetUniform(string name, vec3 matrix);
 		void SetUniform(string name, mat4 matrix);
 	private:
 		GLuint id;

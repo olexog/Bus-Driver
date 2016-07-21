@@ -41,7 +41,7 @@ namespace GraphicsLibrary
 
 		this->projection = perspective(45.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
 
-		this->view = translate(view, vec3(0.0f, 0.0f, -6.0f));
+		this->view = lookAt(vec3(-10.0f, 5.0f, -5.0f), vec3(0, 0, 0), vec3(0, 1, 0));
 
 		glEnable(GL_DEPTH_TEST);
 	}
@@ -62,8 +62,11 @@ namespace GraphicsLibrary
 		this->shaderProgram->SetUniform("projection", this->projection);
 		this->shaderProgram->SetUniform("view", this->view);
 
+		vec3 lightPosition = vec3(-1.0f, 1.0f, 0.0f);
+
 		this->colouredShaderProgram->SetUniform("projection", this->projection);
 		this->colouredShaderProgram->SetUniform("view", this->view);
+		this->colouredShaderProgram->SetUniform("lightPosition", lightPosition);
 
 		model->Draw(this->shaderProgram, this->colouredShaderProgram);
 	}
