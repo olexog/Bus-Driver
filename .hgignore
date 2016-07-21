@@ -4,3 +4,5 @@ Source\BusDriver\GraphicsLibrary\x64
 *.orig
 *.suo
 *.opendb
+*.db
+*.filters
