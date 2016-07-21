@@ -13,8 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "VertexArray.h"
-#include "ColouredVertexArray.h"
+#include "Model.h"
 #include "ShaderProgram.h"
 
 using namespace std;
@@ -31,7 +30,7 @@ namespace GraphicsLibrary
 		~Window();
 
 		///<summary>Draws to the context.</summary>
-		void Draw(vector<VertexArray*> vertexArrays);
+		void Draw(Model* model);
 
 		///<summary>Determines whether the window received closing events.</summary>
 		bool ShouldClose();

@@ -13,6 +13,8 @@ namespace GraphicsLibrary
 		glEnableVertexAttribArray(1);
 		Buffer::Unbind();
 		glBindVertexArray(0);
+
+		this->vertexCount = vertices.size();
 	}
 
 	ColouredVertexArray::~ColouredVertexArray()
@@ -25,7 +27,7 @@ namespace GraphicsLibrary
 		shaderProgram->Use();
 
 		glBindVertexArray(this->id);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, this->vertexCount);
 		glBindVertexArray(0);
 
 		ShaderProgram::Disable();

@@ -21,5 +21,6 @@ namespace GraphicsLibrary
 		void Draw(ShaderProgram* shaderProgram);
 	private:
 		Buffer* colors;
+		int vertexCount;
 	};
 }

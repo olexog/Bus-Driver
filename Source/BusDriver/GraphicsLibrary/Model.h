@@ -12,7 +12,7 @@ namespace GraphicsLibrary
 		Model(ColouredVertexArray* colouredVertexArray);
 		~Model();
 
-		void Draw(ShaderProgram* shaderProgram);
+		void Draw(ShaderProgram* shaderProgram, ShaderProgram* colouredShaderProgram);
 	private:
 		ColouredVertexArray* colouredVertexArray;
 	};

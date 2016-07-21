@@ -37,10 +37,11 @@ int main()
 	{
 		window.PollEvents();
 
-		window.Draw(vertexArrays);
+		window.Draw(model);
 
 		window.SwapBuffers();
 	}
 
 	delete vertexArray;
+	delete model;
 }

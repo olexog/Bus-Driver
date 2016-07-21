@@ -41,7 +41,9 @@ namespace GraphicsLibrary
 
 		this->projection = perspective(45.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
 
-		this->view = translate(view, vec3(0.0f, 0.0f, -3.0f));
+		this->view = translate(view, vec3(0.0f, 0.0f, -6.0f));
+
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	Window::~Window()
@@ -52,10 +54,10 @@ namespace GraphicsLibrary
 		delete this->shaderProgram;
 	}
 
-	void Window::Draw(vector<VertexArray*> vertexArrays)
+	void Window::Draw(Model* model)
 	{
 		glClearColor(0, 0, 0.7f, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		this->shaderProgram->SetUniform("projection", this->projection);
 		this->shaderProgram->SetUniform("view", this->view);
@@ -63,17 +65,7 @@ namespace GraphicsLibrary
 		this->colouredShaderProgram->SetUniform("projection", this->projection);
 		this->colouredShaderProgram->SetUniform("view", this->view);
 
-		for (VertexArray* vertexArray : vertexArrays)
-		{
-			if (dynamic_cast<ColouredVertexArray*>(vertexArray) != 0)
-			{
-				vertexArray->Draw(this->colouredShaderProgram);
-			}
-			else
-			{
-				vertexArray->Draw(this->shaderProgram);
-			}
-		}
+		model->Draw(this->shaderProgram, this->colouredShaderProgram);
 	}
 
 	bool Window::ShouldClose()
