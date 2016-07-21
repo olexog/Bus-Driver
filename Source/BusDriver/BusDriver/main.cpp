@@ -19,9 +19,7 @@ int main()
 	// creates the window
 	Window window = Window(640, 480, "Bus Driver");
 
-	Model* model;
-
-	ModelReader::Read("Models\\station_01.obj", model);
+	Model* model = ModelReader::Read("Models\\station_01.obj");
 
 	VertexArray* vertexArray = new VertexArray({ vec3(-1.5f, -0.5f, 0.0f), vec3(-0.5f, -0.5f, 0.0f), vec3(-1.0f,  0.5f, 0.0f) });
 

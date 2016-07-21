@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <map>
 
 #include <glm\vec2.hpp>
 #include <glm\vec3.hpp>
@@ -17,6 +18,8 @@ namespace GraphicsLibrary
 	class ModelReader
 	{
 	public:
-		static void Read(string fileName, Model* &model);
+		static Model* Read(string fileName);
+	private:
+		static map<string, Material> ReadMaterialLibrary(string fileName);
 	};
 }
