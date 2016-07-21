@@ -2,13 +2,13 @@
 
 #include <vector>
 
-#include <PxPhysics.h>
+#include <glm\vec3.hpp>
 
 #include "VertexArray.h"
 
 using namespace std;
 
-using namespace physx;
+using namespace glm;
 
 namespace GraphicsLibrary
 {
@@ -16,7 +16,7 @@ namespace GraphicsLibrary
 		public VertexArray
 	{
 	public:
-		ColouredVertexArray(vector<PxVec3> vertices, vector<PxVec3> colors);
+		ColouredVertexArray(vector<vec3> vertices, vector<vec3> colors);
 		~ColouredVertexArray();
 		void Draw(ShaderProgram* shaderProgram);
 	private:

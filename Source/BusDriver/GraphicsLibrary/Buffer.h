@@ -4,10 +4,11 @@
 
 #include <GL\glew.h>
 
-#include <PxPhysicsAPI.h>
+#include <glm\vec2.hpp>
+#include <glm\vec3.hpp>
 
 using namespace std;
-using namespace physx;
+using namespace glm;
 
 namespace GraphicsLibrary
 {
@@ -21,9 +22,9 @@ namespace GraphicsLibrary
 		///<summary>Destroys the Buffer Object.</summary>
 		~Buffer();
 
-		void LoadData(vector<PxVec2> elements);
+		void LoadData(vector<vec2> elements);
 
-		void LoadData(vector<PxVec3> elements);
+		void LoadData(vector<vec3> elements);
 
 		void Bind();
 

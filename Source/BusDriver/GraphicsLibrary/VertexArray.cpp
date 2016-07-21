@@ -2,7 +2,7 @@
 
 namespace GraphicsLibrary
 {
-	VertexArray::VertexArray(vector<PxVec3> vertices)
+	VertexArray::VertexArray(vector<vec3> vertices)
 	{
 		glGenVertexArrays(1, &this->id);
 
@@ -10,7 +10,7 @@ namespace GraphicsLibrary
 		this->vertices = new Buffer();
 		this->vertices->Bind();
 		this->vertices->LoadData(vertices);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(PxVec3), static_cast<GLvoid*>(0));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), static_cast<GLvoid*>(0));
 		glEnableVertexAttribArray(0);
 		Buffer::Unbind();
 		glBindVertexArray(0);

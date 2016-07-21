@@ -71,8 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)Libraries\include\;$(SolutionDir)Libraries\include\PhysX\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\lib\;$(SolutionDir)Libraries\lib\PhysX\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Libraries\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)Libraries\include\PhysX\;$(IncludePath)</IncludePath>
@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="ColouredVertexArray.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="ModelReader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="VertexArray.h" />
@@ -155,13 +156,13 @@
   <ItemGroup>
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="ColouredVertexArray.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelReader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="VertexArray.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GraphicsLibrary.cd" />
     <None Include="Shaders\ColouredFragmentShader.glsl" />
     <None Include="Shaders\ColouredVertexShader.glsl" />
     <None Include="Shaders\FragmentShader.glsl" />

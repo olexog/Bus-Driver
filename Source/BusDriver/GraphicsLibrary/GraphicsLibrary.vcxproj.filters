@@ -36,6 +36,9 @@
     <ClInclude Include="ColouredVertexArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -56,9 +59,11 @@
     <ClCompile Include="ColouredVertexArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="GraphicsLibrary.cd" />
     <None Include="Shaders\VertexShader.glsl">
       <Filter>Shaders</Filter>
     </None>

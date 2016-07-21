@@ -5,3 +5,4 @@ Source\BusDriver\GraphicsLibrary\x64
 *.suo
 *.opendb
 *.db
+*.sdf

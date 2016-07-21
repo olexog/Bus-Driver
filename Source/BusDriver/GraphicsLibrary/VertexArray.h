@@ -4,21 +4,20 @@
 
 #include <GL/glew.h>
 
-#include <PxPhysicsAPI.h>
+#include <glm\vec3.hpp>
 
 #include "Buffer.h"
 #include "ShaderProgram.h"
 
 using namespace std;
-
-using namespace physx;
+using namespace glm;
 
 namespace GraphicsLibrary
 {
 	class VertexArray
 	{
 	public:
-		VertexArray(vector<PxVec3> vertices);
+		VertexArray(vector<vec3> vertices);
 		~VertexArray();
 		virtual void Draw(ShaderProgram* shaderProgram);
 	protected:

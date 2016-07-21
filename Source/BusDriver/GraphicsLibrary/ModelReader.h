@@ -1,20 +1,22 @@
-//#pragma once
-//
-//#include <string>
-//#include <vector>
-//#include <fstream>
-//
-//#include <PxPhysicsAPI.h>
-//
-//#include "Model.h"
-//
-//using namespace std;
-//using namespace physx;
-//
-//namespace GraphicsLibrary
-//{
-//	class ModelReader
-//	{
-//		static void Read(string fileName, Model* &model);
-//	};
-//}
+#pragma once
+
+#include <string>
+#include <vector>
+#include <fstream>
+
+#include <glm\vec2.hpp>
+#include <glm\vec3.hpp>
+
+#include "Model.h"
+
+using namespace std;
+using namespace glm;
+
+namespace GraphicsLibrary
+{
+	class ModelReader
+	{
+	public:
+		static void Read(string fileName, Model* &model);
+	};
+}

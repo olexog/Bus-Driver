@@ -10,10 +10,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <PxPhysicsAPI.h>
-
 using namespace std;
-using namespace physx;
+using namespace glm;
 
 namespace GraphicsLibrary
 {
@@ -28,7 +26,7 @@ namespace GraphicsLibrary
 
 		static void Disable();
 
-		void SetUniform(string name, glm::mat4 matrix);
+		void SetUniform(string name, mat4 matrix);
 	private:
 		GLuint id;
 	};

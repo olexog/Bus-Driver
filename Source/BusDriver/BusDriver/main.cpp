@@ -2,7 +2,7 @@
 #include <vector>
 #include <fstream>
 
-#include <PxPhysicsAPI.h>
+#include <glm\vec3.hpp>
 
 #include "Window.h"
 #include "ShaderProgram.h"
@@ -12,27 +12,25 @@
 
 using namespace GraphicsLibrary;
 using namespace std;
+using namespace glm;
 
 int main()
 {
 	// creates the window
 	Window window = Window(640, 480, "Bus Driver");
 
-	//Model* loadedModel;
+	Model* model;
 
-	//ModelReader reader = ModelReader();
-	//reader.Read("Models\\station_01.obj", loadedModel);
+	ModelReader::Read("Models\\station_01.obj", model);
 
-	VertexArray* vertexArray = new VertexArray({ PxVec3(-1.5f, -0.5f, 0.0f), PxVec3(-0.5f, -0.5f, 0.0f), PxVec3(-1.0f,  0.5f, 0.0f) });
+	VertexArray* vertexArray = new VertexArray({ vec3(-1.5f, -0.5f, 0.0f), vec3(-0.5f, -0.5f, 0.0f), vec3(-1.0f,  0.5f, 0.0f) });
 
-	ColouredVertexArray* colouredVertexArray = new ColouredVertexArray({ PxVec3(0.5f, -0.5f, 0.0f), PxVec3(1.5f, -0.5f, 0.0f), PxVec3(1.0f,  0.5f, 0.0f) },
-		{ PxVec3(1.0f, 1.0f, 0.0f), PxVec3(0.0f, 1.0f, 1.0f), PxVec3(1.0f, 0.0f, 1.0f) });
+	ColouredVertexArray* colouredVertexArray = new ColouredVertexArray({ vec3(0.5f, -0.5f, 0.0f), vec3(1.5f, -0.5f, 0.0f), vec3(1.0f,  0.5f, 0.0f) },
+		{ vec3(1.0f, 1.0f, 0.0f), vec3(0.0f, 1.0f, 1.0f), vec3(1.0f, 0.0f, 1.0f) });
 
 	vector<VertexArray*> vertexArrays = vector<VertexArray*>();
 	vertexArrays.push_back(vertexArray);
 	vertexArrays.push_back(colouredVertexArray);
-
-	//Model* model = new Model({ collection });
 
 	// the main loop that iterates throughout the game
 	while (!window.ShouldClose())
