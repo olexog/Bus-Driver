@@ -143,7 +143,7 @@ namespace GraphicsLibrary
 				int* normal2 = new int();
 				int* normal3 = new int();
 
-				sscanf_s(line.c_str(), "%*255s %d/%*s/%d %d/%*s/%d %d/%*s/%d", vertex1, normal1, vertex2, normal2, vertex3, normal3);
+				sscanf_s(line.c_str(), "%*255s %d/%*d/%d %d/%*d/%d %d/%*d/%d", vertex1, normal1, vertex2, normal2, vertex3, normal3);
 
 				colouredVertices.push_back(vertices[*vertex1 - 1]);
 				colouredVertices.push_back(vertices[*vertex2 - 1]);

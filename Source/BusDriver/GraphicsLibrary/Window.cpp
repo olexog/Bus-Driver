@@ -62,7 +62,7 @@ namespace GraphicsLibrary
 		this->shaderProgram->SetUniform("projection", this->projection);
 		this->shaderProgram->SetUniform("view", this->view);
 
-		vec3 lightPosition = vec3(-1.0f, 1.0f, 0.0f);
+		vec3 lightPosition = vec3(0.0f, 1.0f, -3.0f);
 
 		this->colouredShaderProgram->SetUniform("projection", this->projection);
 		this->colouredShaderProgram->SetUniform("view", this->view);

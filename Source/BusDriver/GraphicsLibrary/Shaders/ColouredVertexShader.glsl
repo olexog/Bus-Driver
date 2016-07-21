@@ -5,6 +5,7 @@ layout (location = 2) in vec3 ambientColour;
 layout (location = 3) in vec3 diffuseColour;
 layout (location = 4) in vec3 specularColour;
 
+out vec3 position;
 out vec3 normal;
 out vec3 ambient;
 out vec3 diffuse;
@@ -17,7 +18,8 @@ void main()
 {
 	gl_Position = projection * view * vec4(vertexPosition, 1.0);
 	
-	normal = vertexNormal;
+	position = vertexPosition;
+	normal = normalize(vertexNormal);
 	ambient = ambientColour;
 	diffuse = diffuseColour;
 	specular = specularColour;
