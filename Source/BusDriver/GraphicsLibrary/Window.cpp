@@ -41,7 +41,7 @@ namespace GraphicsLibrary
 
 		this->projection = perspective(45.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
 
-		this->view = lookAt(vec3(-10.0f, 5.0f, -5.0f), vec3(0, 0, 0), vec3(0, 1, 0));
+		this->view = lookAt(vec3(0.0f, 20.0f, 400.0f), vec3(15.0f, 0.0f, 450.0f), vec3(0, 1, 0));
 
 		glEnable(GL_DEPTH_TEST);
 	}
@@ -54,7 +54,7 @@ namespace GraphicsLibrary
 		delete this->shaderProgram;
 	}
 
-	void Window::Draw(Model* model)
+	void Window::Draw(Scene* scene)
 	{
 		glClearColor(0, 0, 0.7f, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -62,13 +62,18 @@ namespace GraphicsLibrary
 		this->shaderProgram->SetUniform("projection", this->projection);
 		this->shaderProgram->SetUniform("view", this->view);
 
-		vec3 lightPosition = vec3(0.0f, 1.0f, -3.0f);
+		vec3 lightPosition = vec3(0.0f, 5.0f, 450.0f);
 
 		this->colouredShaderProgram->SetUniform("projection", this->projection);
 		this->colouredShaderProgram->SetUniform("view", this->view);
 		this->colouredShaderProgram->SetUniform("lightPosition", lightPosition);
 
-		model->Draw(this->shaderProgram, this->colouredShaderProgram);
+		for (PositionedModel* positionedModel : scene->models)
+		{
+			mat4 modelMatrix = translate(mat4(), positionedModel->position);
+			this->colouredShaderProgram->SetUniform("model", modelMatrix);
+			positionedModel->model->Draw(this->shaderProgram, this->colouredShaderProgram);
+		}
 	}
 
 	bool Window::ShouldClose()

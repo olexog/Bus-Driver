@@ -13,7 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Model.h"
+#include "Scene.h"
 #include "ShaderProgram.h"
 
 using namespace std;
@@ -30,7 +30,7 @@ namespace GraphicsLibrary
 		~Window();
 
 		///<summary>Draws to the context.</summary>
-		void Draw(Model* model);
+		void Draw(Scene* scene);
 
 		///<summary>Determines whether the window received closing events.</summary>
 		bool ShouldClose();

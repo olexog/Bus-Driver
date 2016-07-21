@@ -149,6 +149,9 @@
     <ClInclude Include="ColouredVertexArray.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelReader.h" />
+    <ClInclude Include="PositionedModel.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneReader.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="VertexArray.h" />
     <ClInclude Include="Window.h" />
@@ -158,6 +161,9 @@
     <ClCompile Include="ColouredVertexArray.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelReader.cpp" />
+    <ClCompile Include="PositionedModel.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneReader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="VertexArray.cpp" />
     <ClCompile Include="Window.cpp" />

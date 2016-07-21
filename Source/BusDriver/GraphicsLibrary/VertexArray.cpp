@@ -25,7 +25,8 @@ namespace GraphicsLibrary
 	
 	VertexArray::~VertexArray()
 	{
-
+		delete this->vertices;
+		delete this->normals;
 	}
 
 	void VertexArray::Draw(ShaderProgram* shaderProgram)

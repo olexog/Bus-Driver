@@ -4,6 +4,11 @@
 #include <vector>
 #include <fstream>
 #include <map>
+#include <algorithm>
+#include <functional> 
+#include <cctype>
+#include <locale>
+#include <iostream>
 
 #include <glm\vec2.hpp>
 #include <glm\vec3.hpp>

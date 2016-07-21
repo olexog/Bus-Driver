@@ -1,0 +1,773 @@
+[MeshBuilder]
+Vertex 5.269, -0.017, -4.3294, 0, -1, 0
+Vertex 5.269, -0.017, -5.1213, 0, -1, 0
+Vertex 7.4107, -0.017, -5.1213, 0, -1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 0
+Coordinates 1, 1, 1
+Coordinates 2, 0, 1
+[MeshBuilder]
+Vertex 7.4107, -0.017, -5.1213, 0, -1, 0
+Vertex 7.4107, -0.017, -4.3294, 0, -1, 0
+Vertex 5.269, -0.017, -4.3294, 0, -1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 1
+Coordinates 1, 0, 0
+Coordinates 2, 1, 0
+[MeshBuilder]
+Vertex 5.269, 0.1878, -4.3294, 0, 1, 0
+Vertex 7.4107, 0.1878, -4.3294, 0, 1, 0
+Vertex 7.4107, 0.1878, -5.1213, 0, 1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 7.4107, 0.1878, -5.1213, 0, 1, 0
+Vertex 5.269, 0.1878, -5.1213, 0, 1, 0
+Vertex 5.269, 0.1878, -4.3294, 0, 1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 5.269, -0.017, -4.3294, 0, 0, 1
+Vertex 7.4107, -0.017, -4.3294, 0, 0, 1
+Vertex 7.4107, 0.1878, -4.3294, 0, 0, 1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 7.4107, 0.1878, -4.3294, 0, 0, 1
+Vertex 5.269, 0.1878, -4.3294, 0, 0, 1
+Vertex 5.269, -0.017, -4.3294, 0, 0, 1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 7.4107, -0.017, -4.3294, 1, 0, 0
+Vertex 7.4107, -0.017, -5.1213, 1, 0, 0
+Vertex 7.4107, 0.1878, -5.1213, 1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 7.4107, 0.1878, -5.1213, 1, 0, 0
+Vertex 7.4107, 0.1878, -4.3294, 1, 0, 0
+Vertex 7.4107, -0.017, -4.3294, 1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 7.4107, -0.017, -5.1213, 0, 0, -1
+Vertex 5.269, -0.017, -5.1213, 0, 0, -1
+Vertex 5.269, 0.1878, -5.1213, 0, 0, -1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 5.269, 0.1878, -5.1213, 0, 0, -1
+Vertex 7.4107, 0.1878, -5.1213, 0, 0, -1
+Vertex 7.4107, -0.017, -5.1213, 0, 0, -1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 5.269, -0.017, -5.1213, -1, 0, 0
+Vertex 5.269, -0.017, -4.3294, -1, 0, 0
+Vertex 5.269, 0.1878, -4.3294, -1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 5.269, 0.1878, -4.3294, -1, 0, 0
+Vertex 5.269, 0.1878, -5.1213, -1, 0, 0
+Vertex 5.269, -0.017, -5.1213, -1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 5.6265, 0.2892, -4.8434, 0, 0, -1
+Vertex 5.6265, 1.0632, -4.8434, 0, 0, -1
+Vertex 5.8297, 1.0632, -4.8434, 0, 0, -1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 0
+Coordinates 1, 1, 1
+Coordinates 2, 0, 1
+[MeshBuilder]
+Vertex 5.8297, 1.0632, -4.8434, 0, 0, -1
+Vertex 5.8297, 0.2892, -4.8434, 0, 0, -1
+Vertex 5.6265, 0.2892, -4.8434, 0, 0, -1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 1
+Coordinates 1, 0, 0
+Coordinates 2, 1, 0
+[MeshBuilder]
+Vertex 5.6265, 0.2892, -4.6628, 0, 0, 1
+Vertex 5.8297, 0.2892, -4.6628, 0, 0, 1
+Vertex 5.8297, 1.0632, -4.6628, 0, 0, 1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 5.8297, 1.0632, -4.6628, 0, 0, 1
+Vertex 5.6265, 1.0632, -4.6628, 0, 0, 1
+Vertex 5.6265, 0.2892, -4.6628, 0, 0, 1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 5.6265, 0.2892, -4.8434, 0, -1, 0
+Vertex 5.8297, 0.2892, -4.8434, 0, -1, 0
+Vertex 5.8297, 0.2892, -4.6628, 0, -1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 5.8297, 0.2892, -4.6628, 0, -1, 0
+Vertex 5.6265, 0.2892, -4.6628, 0, -1, 0
+Vertex 5.6265, 0.2892, -4.8434, 0, -1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 5.8297, 0.2892, -4.8434, 1, 0, 0
+Vertex 5.8297, 1.0632, -4.8434, 1, 0, 0
+Vertex 5.8297, 1.0632, -4.6628, 1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 5.8297, 1.0632, -4.6628, 1, 0, 0
+Vertex 5.8297, 0.2892, -4.6628, 1, 0, 0
+Vertex 5.8297, 0.2892, -4.8434, 1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 5.8297, 1.0632, -4.8434, 0, 1, 0
+Vertex 5.6265, 1.0632, -4.8434, 0, 1, 0
+Vertex 5.6265, 1.0632, -4.6628, 0, 1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 5.6265, 1.0632, -4.6628, 0, 1, 0
+Vertex 5.8297, 1.0632, -4.6628, 0, 1, 0
+Vertex 5.8297, 1.0632, -4.8434, 0, 1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 5.6265, 1.0632, -4.8434, -1, 0, 0
+Vertex 5.6265, 0.2892, -4.8434, -1, 0, 0
+Vertex 5.6265, 0.2892, -4.6628, -1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 5.6265, 0.2892, -4.6628, -1, 0, 0
+Vertex 5.6265, 1.0632, -4.6628, -1, 0, 0
+Vertex 5.6265, 1.0632, -4.8434, -1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 5.2914, 1.2428, -4.9819, 0, 0, -1
+Vertex 5.2914, 5.5867, -4.9819, 0, 0, -1
+Vertex 7.3992, 5.5867, -4.9819, 0, 0, -1
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 1, 0
+Coordinates 1, 1, 1
+Coordinates 2, 0, 1
+[MeshBuilder]
+Vertex 7.3992, 5.5867, -4.9819, 0, 0, -1
+Vertex 7.3992, 1.2428, -4.9819, 0, 0, -1
+Vertex 5.2914, 1.2428, -4.9819, 0, 0, -1
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 0, 1
+Coordinates 1, 0, 0
+Coordinates 2, 1, 0
+[MeshBuilder]
+Vertex 5.2914, 1.2428, -4.4922, 0, 0, 1
+Vertex 7.3992, 1.2428, -4.4922, 0, 0, 1
+Vertex 7.3992, 5.5867, -4.4922, 0, 0, 1
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 7.3992, 5.5867, -4.4922, 0, 0, 1
+Vertex 5.2914, 5.5867, -4.4922, 0, 0, 1
+Vertex 5.2914, 1.2428, -4.4922, 0, 0, 1
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 5.2914, 1.2428, -4.9819, 0, -1, 0
+Vertex 7.3992, 1.2428, -4.9819, 0, -1, 0
+Vertex 7.3992, 1.2428, -4.4922, 0, -1, 0
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 7.3992, 1.2428, -4.4922, 0, -1, 0
+Vertex 5.2914, 1.2428, -4.4922, 0, -1, 0
+Vertex 5.2914, 1.2428, -4.9819, 0, -1, 0
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 7.3992, 1.2428, -4.9819, 1, 0, 0
+Vertex 7.3992, 5.5867, -4.9819, 1, 0, 0
+Vertex 7.3992, 5.5867, -4.4922, 1, 0, 0
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 7.3992, 5.5867, -4.4922, 1, 0, 0
+Vertex 7.3992, 1.2428, -4.4922, 1, 0, 0
+Vertex 7.3992, 1.2428, -4.9819, 1, 0, 0
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 7.3992, 5.5867, -4.9819, 0, 1, 0
+Vertex 5.2914, 5.5867, -4.9819, 0, 1, 0
+Vertex 5.2914, 5.5867, -4.4922, 0, 1, 0
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 5.2914, 5.5867, -4.4922, 0, 1, 0
+Vertex 7.3992, 5.5867, -4.4922, 0, 1, 0
+Vertex 7.3992, 5.5867, -4.9819, 0, 1, 0
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 5.2914, 5.5867, -4.9819, -1, 0, 0
+Vertex 5.2914, 1.2428, -4.9819, -1, 0, 0
+Vertex 5.2914, 1.2428, -4.4922, -1, 0, 0
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 5.2914, 1.2428, -4.4922, -1, 0, 0
+Vertex 5.2914, 5.5867, -4.4922, -1, 0, 0
+Vertex 5.2914, 5.5867, -4.9819, -1, 0, 0
+Face 0, 1, 2
+Color 92, 154, 73
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 6.9286, 0.2892, -4.8434, 0, 0, -1
+Vertex 6.9286, 1.0632, -4.8434, 0, 0, -1
+Vertex 7.1318, 1.0632, -4.8434, 0, 0, -1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 0
+Coordinates 1, 1, 1
+Coordinates 2, 0, 1
+[MeshBuilder]
+Vertex 7.1318, 1.0632, -4.8434, 0, 0, -1
+Vertex 7.1318, 0.2892, -4.8434, 0, 0, -1
+Vertex 6.9286, 0.2892, -4.8434, 0, 0, -1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 1
+Coordinates 1, 0, 0
+Coordinates 2, 1, 0
+[MeshBuilder]
+Vertex 6.9286, 0.2892, -4.6628, 0, 0, 1
+Vertex 7.1318, 0.2892, -4.6628, 0, 0, 1
+Vertex 7.1318, 1.0632, -4.6628, 0, 0, 1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 7.1318, 1.0632, -4.6628, 0, 0, 1
+Vertex 6.9286, 1.0632, -4.6628, 0, 0, 1
+Vertex 6.9286, 0.2892, -4.6628, 0, 0, 1
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 6.9286, 0.2892, -4.8434, 0, -1, 0
+Vertex 7.1318, 0.2892, -4.8434, 0, -1, 0
+Vertex 7.1318, 0.2892, -4.6628, 0, -1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 7.1318, 0.2892, -4.6628, 0, -1, 0
+Vertex 6.9286, 0.2892, -4.6628, 0, -1, 0
+Vertex 6.9286, 0.2892, -4.8434, 0, -1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 7.1318, 0.2892, -4.8434, 1, 0, 0
+Vertex 7.1318, 1.0632, -4.8434, 1, 0, 0
+Vertex 7.1318, 1.0632, -4.6628, 1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 7.1318, 1.0632, -4.6628, 1, 0, 0
+Vertex 7.1318, 0.2892, -4.6628, 1, 0, 0
+Vertex 7.1318, 0.2892, -4.8434, 1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 7.1318, 1.0632, -4.8434, 0, 1, 0
+Vertex 6.9286, 1.0632, -4.8434, 0, 1, 0
+Vertex 6.9286, 1.0632, -4.6628, 0, 1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 6.9286, 1.0632, -4.6628, 0, 1, 0
+Vertex 7.1318, 1.0632, -4.6628, 0, 1, 0
+Vertex 7.1318, 1.0632, -4.8434, 0, 1, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 6.9286, 1.0632, -4.8434, -1, 0, 0
+Vertex 6.9286, 0.2892, -4.8434, -1, 0, 0
+Vertex 6.9286, 0.2892, -4.6628, -1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 0, 0
+Coordinates 1, 1, 0
+Coordinates 2, 1, 1
+[MeshBuilder]
+Vertex 6.9286, 0.2892, -4.6628, -1, 0, 0
+Vertex 6.9286, 1.0632, -4.6628, -1, 0, 0
+Vertex 6.9286, 1.0632, -4.8434, -1, 0, 0
+Face 0, 1, 2
+Color 138, 138, 138
+[Texture]
+Load 
+Coordinates 0, 1, 1
+Coordinates 1, 0, 1
+Coordinates 2, 0, 0
+[MeshBuilder]
+Vertex 6.3384, 4.5705, -4.6272, 0, 0, -1
+Vertex 6.3391, 3.6097, -4.6272, 0, 0, -1
+Vertex 5.506, 5.0503, -4.6272, 0, 0, -1
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, 0.5, 0
+Coordinates 1, 0.0833, 0
+Coordinates 2, -0.25, 0
+[MeshBuilder]
+Vertex 6.3384, 4.5705, -4.6272, 0, 0, -1
+Vertex 7.1701, 5.0515, -4.6272, 0, 0, -1
+Vertex 6.3391, 3.6097, -4.6272, 0, 0, -1
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, 0.5, 0
+Coordinates 1, 0.4167, 0
+Coordinates 2, 0.0833, 0
+[MeshBuilder]
+Vertex 6.3384, 4.5705, -4.6272, 0, 0, -1
+Vertex 5.506, 5.0503, -4.6272, 0, 0, -1
+Vertex 7.1701, 5.0515, -4.6272, 0, 0, -1
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, 0.5, 0
+Coordinates 1, 0.75, 0
+Coordinates 2, 0.4167, 0
+[MeshBuilder]
+Vertex 5.506, 5.0503, -4.6272, -0.8664, 0.4994, 0
+Vertex 6.3391, 3.6097, -4.4488, 0.0007, -1, 0
+Vertex 5.506, 5.0503, -4.4488, -0.8664, 0.4994, 0
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, -0.25, 0
+Coordinates 1, 0.0833, 1
+Coordinates 2, -0.25, 1
+[MeshBuilder]
+Vertex 5.506, 5.0503, -4.6272, -0.8664, 0.4994, 0
+Vertex 6.3391, 3.6097, -4.6272, 0.0007, -1, 0
+Vertex 6.3391, 3.6097, -4.4488, 0.0007, -1, 0
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, -0.25, 0
+Coordinates 1, 0.0833, 0
+Coordinates 2, 0.0833, 1
+[MeshBuilder]
+Vertex 6.3391, 3.6097, -4.6272, 0.0007, -1, 0
+Vertex 7.1701, 5.0515, -4.4488, 0.8657, 0.5006, 0
+Vertex 6.3391, 3.6097, -4.4488, 0.0007, -1, 0
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, 0.0833, 0
+Coordinates 1, 0.4167, 1
+Coordinates 2, 0.0833, 1
+[MeshBuilder]
+Vertex 6.3391, 3.6097, -4.6272, 0.0007, -1, 0
+Vertex 7.1701, 5.0515, -4.6272, 0.8657, 0.5006, 0
+Vertex 7.1701, 5.0515, -4.4488, 0.8657, 0.5006, 0
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, 0.0833, 0
+Coordinates 1, 0.4167, 0
+Coordinates 2, 0.4167, 1
+[MeshBuilder]
+Vertex 7.1701, 5.0515, -4.6272, 0.8657, 0.5006, 0
+Vertex 5.506, 5.0503, -4.4488, -0.8664, 0.4994, 0
+Vertex 7.1701, 5.0515, -4.4488, 0.8657, 0.5006, 0
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, 0.4167, 0
+Coordinates 1, 0.75, 1
+Coordinates 2, 0.4167, 1
+[MeshBuilder]
+Vertex 7.1701, 5.0515, -4.6272, 0.8657, 0.5006, 0
+Vertex 5.506, 5.0503, -4.6272, -0.8664, 0.4994, 0
+Vertex 5.506, 5.0503, -4.4488, -0.8664, 0.4994, 0
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, 0.4167, 0
+Coordinates 1, 0.75, 0
+Coordinates 2, 0.75, 1
+[MeshBuilder]
+Vertex 6.3384, 4.5705, -4.4488, 0, 0, 1
+Vertex 5.506, 5.0503, -4.4488, 0, 0, 1
+Vertex 6.3391, 3.6097, -4.4488, 0, 0, 1
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, 0.5, 1
+Coordinates 1, -0.25, 1
+Coordinates 2, 0.0833, 1
+[MeshBuilder]
+Vertex 6.3384, 4.5705, -4.4488, 0, 0, 1
+Vertex 6.3391, 3.6097, -4.4488, 0, 0, 1
+Vertex 7.1701, 5.0515, -4.4488, 0, 0, 1
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, 0.5, 1
+Coordinates 1, 0.0833, 1
+Coordinates 2, 0.4167, 1
+[MeshBuilder]
+Vertex 6.3384, 4.5705, -4.4488, 0, 0, 1
+Vertex 7.1701, 5.0515, -4.4488, 0, 0, 1
+Vertex 5.506, 5.0503, -4.4488, 0, 0, 1
+Face 0, 1, 2
+Color 255, 255, 255
+[Texture]
+Load 
+Coordinates 0, 0.5, 1
+Coordinates 1, 0.4167, 1
+Coordinates 2, 0.75, 1
+[MeshBuilder]
+Vertex 6.3384, 4.5705, -4.5502, 0, 0, -1
+Vertex 6.339, 3.7783, -4.5502, 0, 0, -1
+Vertex 5.6521, 4.9661, -4.5502, 0, 0, -1
+Face 0, 1, 2
+Color 255, 0, 0
+[Texture]
+Load 
+Coordinates 0, 0.5, 0
+Coordinates 1, 0.0833, 0
+Coordinates 2, -0.25, 0
+[MeshBuilder]
+Vertex 6.3384, 4.5705, -4.5502, 0, 0, -1
+Vertex 7.0242, 4.9671, -4.5502, 0, 0, -1
+Vertex 6.339, 3.7783, -4.5502, 0, 0, -1
+Face 0, 1, 2
+Color 255, 0, 0
+[Texture]
+Load 
+Coordinates 0, 0.5, 0
+Coordinates 1, 0.4167, 0
+Coordinates 2, 0.0833, 0
+[MeshBuilder]
+Vertex 6.3384, 4.5705, -4.5502, 0, 0, -1
+Vertex 5.6521, 4.9661, -4.5502, 0, 0, -1
+Vertex 7.0242, 4.9671, -4.5502, 0, 0, -1
+Face 0, 1, 2
+Color 255, 0, 0
+[Texture]
+Load 
+Coordinates 0, 0.5, 0
+Coordinates 1, 0.75, 0
+Coordinates 2, 0.4167, 0
+[MeshBuilder]
+Vertex 5.6521, 4.9661, -4.5502, -0.8664, 0.4994, 0
+Vertex 6.339, 3.7783, -4.4031, 0.0007, -1, 0
+Vertex 5.6521, 4.9661, -4.4031, -0.8664, 0.4994, 0
+Face 0, 1, 2
+Color 255, 0, 0
+[Texture]
+Load 
+Coordinates 0, -0.25, 0
+Coordinates 1, 0.0833, 1
+Coordinates 2, -0.25, 1
+[MeshBuilder]
+Vertex 5.6521, 4.9661, -4.5502, -0.8664, 0.4994, 0
+Vertex 6.339, 3.7783, -4.5502, 0.0007, -1, 0
+Vertex 6.339, 3.7783, -4.4031, 0.0007, -1, 0
+Face 0, 1, 2
+Color 255, 0, 0
+[Texture]
+Load 
+Coordinates 0, -0.25, 0
+Coordinates 1, 0.0833, 0
+Coordinates 2, 0.0833, 1
+[MeshBuilder]
+Vertex 6.339, 3.7783, -4.5502, 0.0007, -1, 0
+Vertex 7.0242, 4.9671, -4.4031, 0.8657, 0.5006, 0
+Vertex 6.339, 3.7783, -4.4031, 0.0007, -1, 0
+Face 0, 1, 2
+Color 255, 0, 0
+[Texture]
+Load 
+Coordinates 0, 0.0833, 0
+Coordinates 1, 0.4167, 1
+Coordinates 2, 0.0833, 1
+[MeshBuilder]
+Vertex 6.339, 3.7783, -4.5502, 0.0007, -1, 0
+Vertex 7.0242, 4.9671, -4.5502, 0.8657, 0.5006, 0
+Vertex 7.0242, 4.9671, -4.4031, 0.8657, 0.5006, 0
+Face 0, 1, 2
+Color 255, 0, 0
+[Texture]
+Load 
+Coordinates 0, 0.0833, 0
+Coordinates 1, 0.4167, 0
+Coordinates 2, 0.4167, 1
+[MeshBuilder]
+Vertex 7.0242, 4.9671, -4.5502, 0.8657, 0.5006, 0
+Vertex 5.6521, 4.9661, -4.4031, -0.8664, 0.4994, 0
+Vertex 7.0242, 4.9671, -4.4031, 0.8657, 0.5006, 0
+Face 0, 1, 2
+Color 255, 0, 0
+[Texture]
+Load 
+Coordinates 0, 0.4167, 0
+Coordinates 1, 0.75, 1
+Coordinates 2, 0.4167, 1
+[MeshBuilder]
+Vertex 7.0242, 4.9671, -4.5502, 0.8657, 0.5006, 0
+Vertex 5.6521, 4.9661, -4.5502, -0.8664, 0.4994, 0
+Vertex 5.6521, 4.9661, -4.4031, -0.8664, 0.4994, 0
+Face 0, 1, 2
+Color 255, 0, 0
+[Texture]
+Load 
+Coordinates 0, 0.4167, 0
+Coordinates 1, 0.75, 0
+Coordinates 2, 0.75, 1
+[MeshBuilder]
+Vertex 6.3384, 4.5705, -4.4031, 0, 0, 1
+Vertex 5.6521, 4.9661, -4.4031, 0, 0, 1
+Vertex 6.339, 3.7783, -4.4031, 0, 0, 1
+Face 0, 1, 2
+Color 255, 0, 0
+[Texture]
+Load 
+Coordinates 0, 0.5, 1
+Coordinates 1, -0.25, 1
+Coordinates 2, 0.0833, 1
+[MeshBuilder]
+Vertex 6.3384, 4.5705, -4.4031, 0, 0, 1
+Vertex 6.33

@@ -13,13 +13,14 @@ out vec3 specular;
 
 uniform mat4 projection;
 uniform mat4 view;
+uniform mat4 model;
 
 void main()
 {
-	gl_Position = projection * view * vec4(vertexPosition, 1.0);
+	gl_Position = projection * view * model * vec4(vertexPosition, 1.0);
 	
-	position = vertexPosition;
-	normal = normalize(vertexNormal);
+	position = (model * vec4(vertexPosition, 1.0)).xyz;
+	normal = normalize((model * vec4(vertexNormal, 1.0)).xyz);
 	ambient = ambientColour;
 	diffuse = diffuseColour;
 	specular = specularColour;

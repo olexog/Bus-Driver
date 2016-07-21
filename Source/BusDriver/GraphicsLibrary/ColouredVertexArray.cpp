@@ -33,7 +33,9 @@ namespace GraphicsLibrary
 
 	ColouredVertexArray::~ColouredVertexArray()
 	{
-
+		delete this->ambientColours;
+		delete this->diffuseColours;
+		delete this->specularColours;
 	}
 
 	void ColouredVertexArray::Draw(ShaderProgram* shaderProgram)

@@ -1,0 +1,187 @@
+First Line
+addmodel city_tree_01.obj
+addmodel road_2x1_straight.obj
+addmodel ground_1000x1000.obj
+addmodel panel_01.obj
+addmodel road_2x1_cross_01.obj
+addmodel traffic_light_01.obj
+addmodel road_2x1_curve_90.obj
+addmodel road_2x1_zebra_crossing.obj
+addmodel mc_donalds_01.obj
+addmodel nemzeti_dohanybolt.obj
+addmodel mol_01.obj
+addmodel stop_sign_01.obj
+addmodel fountain.obj
+addmodel grass_50x50.obj
+addmodel bench_01.obj
+addmodel street_light.obj
+addmodel bus_terminal_01.obj
+addmodel ikarus_260.obj
+addmodel ikarus_415.obj
+addmodel road_2x1_roundabout_1111.obj
+defineobject 0, 13, 0, 20
+defineobject 0, 13, 0, 40
+defineobject 0, 13, 0, 60
+defineobject 0, 13, 0, 80
+defineobject 0, 13, 0, 100
+defineobject 0, 13, 0, 120
+defineobject 0, 13, 0, 140
+defineobject 0, 13, 0, 160
+defineobject 0, 13, 0, 180
+defineobject 0, 13, 0, 200
+defineobject 0, 13, 0, 220
+defineobject 0, 13, 0, 240
+defineobject 0, 13, 0, 260
+defineobject 0, 13, 0, 280
+defineobject 0, 13, 0, 300
+defineobject 0, 13, 0, 320
+defineobject 0, 13, 0, 340
+defineobject 0, 13, 0, 360
+defineobject 2, 0, -0.1, 250
+defineobject 2, 0, -0.1, 1250
+defineobject 1, 0, 0, 0, 0, 90
+defineobject 1, 0, 0, 25, 0, 90
+defineobject 1, 0, 0, 50, 0, 90
+defineobject 1, 0, 0, 75, 0, 90
+defineobject 1, 0, 0, 100, 0, 90
+defineobject 1, 0, 0, 125, 0, 90
+defineobject 1, 0, 0, 150, 0, 90
+defineobject 1, 0, 0, 175, 0, 90
+defineobject 1, 0, 0, 200, 0, 90
+defineobject 1, 0, 0, 225, 0, 90
+defineobject 1, 0, 0, 250, 0, 90
+defineobject 1, 0, 0, 275, 0, 90
+defineobject 1, 0, 0, 300, 0, 90
+defineobject 1, 0, 0, 325, 0, 90
+defineobject 1, 0, 0, 350, 0, 90
+defineobject 1, 0, 0, 375, 0, 90
+defineobject 1, 0, 0, 400, 0, 90
+defineobject 1, 0, 0, 425, 0, 90
+defineobject 1, 0, 0, 450, 0, 90
+defineobject 1, 0, 0, 475, 0, 90
+defineobject 4, 0, 0, 500, 0, 270
+defineobject 5, 7, 0, 495, 0, 0
+defineobject 1, 50, 0, 525
+defineobject 1, 75, 0, 525
+defineobject 1, 100, 0, 525
+defineobject 1, 125, 0, 525
+defineobject 1, 150, 0, 525
+defineobject 6, 175, 0, 525, 0, 180
+defineobject 1, 175, 0, 550, 0, 90
+defineobject 7, 175, 0, 575, 0, 90
+defineobject 1, 175, 0, 600, 0, 90
+defineobject 1, 175, 0, 625, 0, 90
+defineobject 1, 175, 0, 650, 0, 90
+defineobject 1, 175, 0, 675, 0, 90
+defineobject 3, 30, 0, 50
+defineobject 3, 35, 0, 100
+defineobject 3, 30, 0, 150
+defineobject 3, 35, 0, 200
+defineobject 3, 30, 0, 250
+defineobject 3, 35, 0, 300
+defineobject 8, 15, 0, 450, 0, 270
+defineobject 9, 100, 0, 550, 0, 90
+defineobject 10, -20, 0, 450
+defineobject 11, 7, 0, 10
+defineobject 11, 7, 0, 420
+defineobject 12, -30, 0, 50
+defineobject 12, -30, 0, 150
+defineobject 13, -35, 0, 0
+defineobject 13, -35, 0, 50
+defineobject 13, -35, 0, 100
+defineobject 13, -35, 0, 150
+defineobject 13, -35, 0, 200
+defineobject 13, -35, 0, 250
+defineobject 13, -35, 0, 300
+defineobject 13, -85, 0, 0
+defineobject 13, -85, 0, 50
+defineobject 13, -85, 0, 100
+defineobject 13, -85, 0, 150
+defineobject 13, -85, 0, 200
+defineobject 13, -85, 0, 250
+defineobject 13, -85, 0, 300
+defineobject 14, -15, 0, 100, 0, 180
+defineobject 14, -15, 0, 75, 0, 180
+defineobject 14, -15, 0, 50, 0, 180
+defineobject 14, -15, 0, 25, 0, 180
+defineobject 14, -15, 0, 0, 0, 180
+defineobject 15, 8, 0, 0
+defineobject 15, 8, 0, 30
+defineobject 15, 8, 0, 60
+defineobject 15, 8, 0, 90
+defineobject 15, 8, 0, 120
+defineobject 15, 8, 0, 150
+defineobject 15, 8, 0, 180
+defineobject 15, 8, 0, 210
+defineobject 15, 8, 0, 240
+defineobject 15, 8, 0, 270
+defineobject 15, 8, 0, 300
+defineobject 15, 8, 0, 330
+defineobject 15, 8, 0, 360
+defineobject 15, 8, 0, 390
+defineobject 15, 8, 0, 420
+defineobject 15, -8, 0, 0, 0, 180
+defineobject 15, -8, 0, 30, 0, 180
+defineobject 15, -8, 0, 60, 0, 180
+defineobject 15, -8, 0, 90, 0, 180
+defineobject 15, -8, 0, 120, 0, 180
+defineobject 15, -8, 0, 150, 0, 180
+defineobject 15, -8, 0, 180, 0, 180
+defineobject 15, -8, 0, 210, 0, 180
+defineobject 15, -8, 0, 240, 0, 180
+defineobject 15, -8, 0, 270, 0, 180
+defineobject 15, -8, 0, 300, 0, 180
+defineobject 15, -8, 0, 330, 0, 180
+defineobject 15, -8, 0, 360, 0, 180
+defineobject 15, -8, 0, 390, 0, 180
+defineobject 15, -8, 0, 420, 0, 180
+defineobject 16, 0, 0, -25, 0, 270
+defineobject 17, 2, 0, -75, 0, 205
+defineobject 18, -15, 0, -75, 0, 25
+defineobject 18, 20, 0, -50, 0, 90
+defineobject 1, -50, 0, 525
+defineobject 1, -75, 0, 525
+defineobject 1, -100, 0, 525
+defineobject 11, -50, 0, 517, 0, 270
+defineobject 11, 10, 0, 533, 0, 90
+defineobject 18, 16, 0, 527, 0, 90
+defineobject 11, 182, 0, 610
+defineobject 11, 168, 0, 550, 0, 180
+defineobject 19, 175, 0, 750
+defineobject 3, -70, 0, 555, 0, 90
+defineobject 3, -35, 0, 555, 0, 90
+defineobject 3, 0, 0, 555, 0, 90
+defineobject 3, 35, 0, 555, 0, 90
+defineobject 3, 70, 0, 555, 0, 90
+defineobject 3, 130, 0, 555, 0, 90
+defineobject 15, 0, 0, 532, 0, 90
+defineobject 15, 30, 0, 532, 0, 90
+defineobject 15, 60, 0, 532, 0, 90
+defineobject 15, 90, 0, 532, 0, 90
+defineobject 15, 120, 0, 532, 0, 90
+defineobject 15, 150, 0, 532, 0, 90
+defineobject 15, -30, 0, 532, 0, 90
+defineobject 15, -60, 0, 532, 0, 90
+defineobject 15, -90, 0, 532, 0, 90
+defineobject 15, 30, 0, 518, 0, 270
+defineobject 15, 60, 0, 518, 0, 270
+defineobject 15, 90, 0, 518, 0, 270
+defineobject 15, 120, 0, 518, 0, 270
+defineobject 15, 150, 0, 518, 0, 270
+defineobject 15, -30, 0, 518, 0, 270
+defineobject 15, -60, 0, 518, 0, 270
+defineobject 15, -90, 0, 518, 0, 270
+defineobject 15, 168, 0, 518, 0, 270
+defineobject 15, 182, 0, 518, 0, 270
+defineobject 15, 168, 0, 540, 0, 180
+defineobject 15, 168, 0, 570, 0, 180
+defineobject 15, 168, 0, 600, 0, 180
+defineobject 15, 168, 0, 630, 0, 180
+defineobject 15, 168, 0, 660, 0, 180
+defineobject 15, 168, 0, 690, 0, 180
+defineobject 15, 182, 0, 540
+defineobject 15, 182, 0, 570
+defineobject 15, 182, 0, 600
+defineobject 15, 182, 0, 630
+defineobject 15, 182, 0, 660
+defineobject 15, 182, 0, 690

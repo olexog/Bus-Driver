@@ -6,7 +6,8 @@
 
 #include "Window.h"
 #include "ShaderProgram.h"
-#include "ModelReader.h"
+//#include "ModelReader.h"
+#include "SceneReader.h"
 #include "VertexArray.h"
 #include "ColouredVertexArray.h"
 
@@ -19,27 +20,19 @@ int main()
 	// creates the window
 	Window window = Window(640, 480, "Bus Driver");
 
-	Model* model = ModelReader::Read("Models\\station_01.obj");
+	//Model* model = ModelReader::Read("Models\\station_01.obj");
 
-	/*VertexArray* vertexArray = new VertexArray({ vec3(-1.5f, -0.5f, 0.0f), vec3(-0.5f, -0.5f, 0.0f), vec3(-1.0f,  0.5f, 0.0f) });
-
-	ColouredVertexArray* colouredVertexArray = new ColouredVertexArray({ vec3(0.5f, -0.5f, 0.0f), vec3(1.5f, -0.5f, 0.0f), vec3(1.0f,  0.5f, 0.0f) },
-		{ vec3(1.0f, 1.0f, 0.0f), vec3(0.0f, 1.0f, 1.0f), vec3(1.0f, 0.0f, 1.0f) });
-
-	vector<VertexArray*> vertexArrays = vector<VertexArray*>();
-	vertexArrays.push_back(vertexArray);
-	vertexArrays.push_back(colouredVertexArray);*/
+	Scene* scene = SceneReader::Read("Models\\simple.map");
 
 	// the main loop that iterates throughout the game
 	while (!window.ShouldClose())
 	{
 		window.PollEvents();
 
-		window.Draw(model);
+		window.Draw(scene);
 
 		window.SwapBuffers();
 	}
 
-	/*delete vertexArray;*/
-	delete model;
+	delete scene;
 }

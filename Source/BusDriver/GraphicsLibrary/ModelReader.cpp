@@ -16,6 +16,46 @@ namespace GraphicsLibrary
 		return fileName.substr(0, index + 1);
 	}
 
+	std::string TrimStart(std::string s)
+	{
+		s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+		return s;
+	}
+
+	std::string TrimEnd(std::string s)
+	{
+		s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+		return s;
+	}
+
+	std::string Trim(std::string s)
+	{
+		return TrimStart(TrimEnd(s));
+	}
+
+
+	vector<string> Split(string s, string delimiter)
+	{
+		vector<string> result;
+
+		while (true)
+		{
+			int position = s.find(delimiter);
+
+			if (position == string::npos)
+			{
+				result.push_back(s);
+				return result;
+			}
+
+			result.push_back(s.substr(0, position));
+
+			s = s.substr(position + delimiter.length(), s.length() - position - delimiter.length());
+		}
+
+		return result;
+	}
+
 	map<string, Material> ReadMaterialLibrary(string fileName)
 	{
 		ifstream file = ifstream(fileName);
@@ -82,6 +122,8 @@ namespace GraphicsLibrary
 
 	Model* ModelReader::Read(string fileName)
 	{
+		std::cerr << fileName << std::endl;
+
 		ifstream file = ifstream(fileName);
 
 		vector<vec3> vertices = vector<vec3>();
@@ -135,23 +177,29 @@ namespace GraphicsLibrary
 			}
 			else if (strcmp(command, "f") == 0)
 			{
-				int* vertex1 = new int();
-				int* vertex2 = new int();
-				int* vertex3 = new int();
+				string argumentString = line.substr(line.find(" ") + 1);
 
-				int* normal1 = new int();
-				int* normal2 = new int();
-				int* normal3 = new int();
+				vector<string> arguments = Split(argumentString, " ");
 
-				sscanf_s(line.c_str(), "%*255s %d/%*d/%d %d/%*d/%d %d/%*d/%d", vertex1, normal1, vertex2, normal2, vertex3, normal3);
+				vector<string> arguments1 = Split(arguments[0], "/");
+				vector<string> arguments2 = Split(arguments[1], "/");
+				vector<string> arguments3 = Split(arguments[2], "/");
 
-				colouredVertices.push_back(vertices[*vertex1 - 1]);
-				colouredVertices.push_back(vertices[*vertex2 - 1]);
-				colouredVertices.push_back(vertices[*vertex3 - 1]);
+				int vertex1 = atoi(arguments1[0].c_str());
+				int vertex2 = atoi(arguments2[0].c_str());
+				int vertex3 = atoi(arguments3[0].c_str());
 
-				colouredNormals.push_back(normals[*normal1 - 1]);
-				colouredNormals.push_back(normals[*normal2 - 1]);
-				colouredNormals.push_back(normals[*normal3 - 1]);
+				int normal1 = atoi(arguments1[2].c_str());
+				int normal2 = atoi(arguments2[2].c_str());
+				int normal3 = atoi(arguments3[2].c_str());
+
+				colouredVertices.push_back(vertices[vertex1 - 1]);
+				colouredVertices.push_back(vertices[vertex2 - 1]);
+				colouredVertices.push_back(vertices[vertex3 - 1]);
+
+				colouredNormals.push_back(normals[normal1 - 1]);
+				colouredNormals.push_back(normals[normal2 - 1]);
+				colouredNormals.push_back(normals[normal3 - 1]);
 
 				ambientColours.push_back(actualMaterial.ambientColour);
 				ambientColours.push_back(actualMaterial.ambientColour);

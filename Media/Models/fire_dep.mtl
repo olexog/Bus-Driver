@@ -1,0 +1,16 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 08.04.2014 16:41:50
+
+newmtl _vehicle_ai_fire
+	Ns 100.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.9961 0.9961 0.9961
+	Kd 1.0000 1.0000 1.0000
+	Ks 0.2129 0.2129 0.2129
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\Gergõ\Bus Driver files\vehicle\ai\fire_dep\fire_dep.dds
+	map_Kd D:\Gergõ\Bus Driver files\vehicle\ai\fire_dep\fire_dep.dds
