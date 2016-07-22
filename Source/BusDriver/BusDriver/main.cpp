@@ -11,12 +11,18 @@
 #include "VertexArray.h"
 #include "ColouredVertexArray.h"
 
+#include "Physics.h"
+
 using namespace GraphicsLibrary;
+using namespace PhysicsLibrary;
 using namespace std;
 using namespace glm;
 
 int main()
 {
+	// creates the physics environment
+	Physics* physics = new Physics();
+
 	// creates the window
 	Window window = Window(640, 480, "Bus Driver");
 
