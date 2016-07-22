@@ -9,9 +9,5 @@ namespace GraphicsLibrary
 
 	PositionedModel::~PositionedModel()
 	{
-		if (this->model != nullptr)
-		{
-			delete this->model;
-		}
 	}
 }
