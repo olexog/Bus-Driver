@@ -25,6 +25,9 @@
     <ProjectReference Include="..\GraphicsLibrary\GraphicsLibrary.vcxproj">
       <Project>{c48fc8d7-aebc-429d-bd4b-8592c5533f0b}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\PhysicsLibrary\PhysicsLibrary.vcxproj">
+      <Project>{32da10a8-695d-43fb-8f2b-70e096892263}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{46172116-68CC-4A52-8563-84E81D9761E6}</ProjectGuid>
@@ -116,7 +119,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\GraphicsLibrary;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\GraphicsLibrary;$(ProjectDir)..\PhysicsLibrary;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
