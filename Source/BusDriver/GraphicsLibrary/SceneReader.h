@@ -6,6 +6,7 @@
 
 #include "Scene.h"
 #include "ModelReader.h"
+#include "Utility.h"
 
 using namespace std;
 

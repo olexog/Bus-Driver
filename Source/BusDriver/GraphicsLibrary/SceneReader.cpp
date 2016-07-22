@@ -2,8 +2,6 @@
 
 namespace GraphicsLibrary
 {
-	string GetDirectory(string fileName);
-
 	Scene* SceneReader::Read(string fileName)
 	{
 		ifstream file = ifstream(fileName);
@@ -29,7 +27,7 @@ namespace GraphicsLibrary
 				char path[256];
 				sscanf_s(line.c_str(), "%*s %255s", path, 256);
 
-				models[currentModelIndex++] = ModelReader::Read(GetDirectory(fileName) + path);
+				models[currentModelIndex++] = ModelReader::Read(Utility::GetDirectory(fileName) + path);
 			}
 			else if (strcmp(command, "defineobject") == 0)
 			{

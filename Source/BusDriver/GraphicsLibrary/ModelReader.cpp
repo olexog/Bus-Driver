@@ -10,97 +10,6 @@ namespace GraphicsLibrary
 		vec3 specularColour;
 	};
 
-	string GetDirectory(string fileName)
-	{
-		size_t index = fileName.find_last_of("/\\");
-		return fileName.substr(0, index + 1);
-	}
-
-	std::string TrimStart(std::string s)
-	{
-		s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
-		return s;
-	}
-
-	std::string TrimEnd(std::string s)
-	{
-		s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
-		return s;
-	}
-
-	std::string Trim(std::string s)
-	{
-		return TrimStart(TrimEnd(s));
-	}
-
-	vector<string> Split(string s, string delimiter)
-	{
-		vector<string> result;
-
-		while (true)
-		{
-			int position = static_cast<int>(s.find(delimiter));
-
-			if (position == string::npos)
-			{
-				result.push_back(s);
-				return result;
-			}
-
-			result.push_back(s.substr(0, position));
-
-			s = s.substr(position + delimiter.length(), s.length() - position - delimiter.length());
-		}
-
-		return result;
-	}
-
-	void GenerateSplitTest(string fileName)
-	{
-		ofstream file = ofstream(fileName);
-
-		char chars[] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-		const int count = sizeof(chars) / sizeof(char);
-		const int wordLength = 50;
-		const int separatorLength = 1;
-
-		srand(time(nullptr));
-
-		for (int i = 0; i < 10000; i++)
-		{
-			char word[wordLength];
-			for (int j = 0; j < wordLength; j++)
-			{
-				word[j] = chars[rand() % count];
-			}
-
-			char separator[separatorLength];
-			for (int j = 0; j < separatorLength; j++)
-			{
-				separator[j] = chars[rand() % count];
-			}
-
-			for (int j = 0; j < 5; j++)
-			{
-				int pos = rand() % (wordLength - separatorLength + 1);
-				for (int k = 0; k < separatorLength; k++)
-				{
-					word[pos + k] = separator[k];
-				}
-			}
-
-			string line = (string(word) + " " + string(separator) + "\n");
-			file.write(line.c_str(), line.length());
-		}
-
-		file.close();
-	}
-
-	void SplitTest(string fileName)
-	{
-
-	}
-
 	map<string, Material> ReadMaterialLibrary(string fileName)
 	{
 		ifstream file = ifstream(fileName);
@@ -169,9 +78,7 @@ namespace GraphicsLibrary
 
 	Model* ModelReader::Read(string fileName)
 	{
-		GenerateSplitTest("Split1.test");
-
-		std::cerr << fileName << std::endl;
+		cout << "Loading " << fileName << endl;
 
 		ifstream file = ifstream(fileName);
 
@@ -228,11 +135,11 @@ namespace GraphicsLibrary
 			{
 				string argumentString = line.substr(line.find(" ") + 1);
 
-				vector<string> arguments = Split(argumentString, " ");
+				vector<string> arguments = Utility::Split(argumentString, " ");
 
-				vector<string> arguments1 = Split(arguments[0], "/");
-				vector<string> arguments2 = Split(arguments[1], "/");
-				vector<string> arguments3 = Split(arguments[2], "/");
+				vector<string> arguments1 = Utility::Split(arguments[0], "/");
+				vector<string> arguments2 = Utility::Split(arguments[1], "/");
+				vector<string> arguments3 = Utility::Split(arguments[2], "/");
 
 				int vertex1 = atoi(arguments1[0].c_str());
 				int vertex2 = atoi(arguments2[0].c_str());
@@ -268,7 +175,7 @@ namespace GraphicsLibrary
 
 				sscanf_s(line.c_str(), "%*255s %255s", materialLibraryRelativeFileName, 256);
 
-				string materialLibraryFileName = GetDirectory(fileName) + materialLibraryRelativeFileName;
+				string materialLibraryFileName = Utility::GetDirectory(fileName) + materialLibraryRelativeFileName;
 
 				materials = ReadMaterialLibrary(materialLibraryFileName);
 			}
