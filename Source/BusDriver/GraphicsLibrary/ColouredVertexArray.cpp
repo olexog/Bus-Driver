@@ -27,8 +27,6 @@ namespace GraphicsLibrary
 
 		Buffer::Unbind();
 		glBindVertexArray(0);
-
-		this->vertexCount = static_cast<int>(vertices.size());
 	}
 
 	ColouredVertexArray::~ColouredVertexArray()

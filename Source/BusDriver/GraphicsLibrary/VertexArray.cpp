@@ -21,6 +21,8 @@ namespace GraphicsLibrary
 
 		Buffer::Unbind();
 		glBindVertexArray(0);
+
+		this->vertexCount = static_cast<int>(vertices.size());
 	}
 	
 	VertexArray::~VertexArray()
@@ -34,7 +36,7 @@ namespace GraphicsLibrary
 		shaderProgram->Use();
 
 		glBindVertexArray(this->id);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, this->vertexCount);
 		glBindVertexArray(0);
 
 		ShaderProgram::Disable();

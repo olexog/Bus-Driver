@@ -13,7 +13,7 @@ namespace GraphicsLibrary
 	{
 	public:
 		PositionedModel();
-		PositionedModel(Model* model, vec3 position) : model(model), position(position) {}
+		PositionedModel(Model* model, vec3 position, vec3 rotation) : model(model), position(position), rotation(rotation) {}
 		~PositionedModel();
 
 		Model* model;

@@ -23,6 +23,5 @@ namespace GraphicsLibrary
 		Buffer* ambientColours;
 		Buffer* diffuseColours;
 		Buffer* specularColours;
-		int vertexCount;
 	};
 }

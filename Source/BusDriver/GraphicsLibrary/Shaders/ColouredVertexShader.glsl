@@ -20,7 +20,8 @@ void main()
 	gl_Position = projection * view * model * vec4(vertexPosition, 1.0);
 	
 	position = (model * vec4(vertexPosition, 1.0)).xyz;
-	normal = normalize((model * vec4(vertexNormal, 1.0)).xyz);
+	//normal = normalize((model * vec4(vertexNormal, 1.0)).xyz);
+	normal = mat3(transpose(inverse(model))) * vertexNormal;
 	ambient = ambientColour;
 	diffuse = diffuseColour;
 	specular = specularColour;

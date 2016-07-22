@@ -33,14 +33,13 @@ namespace GraphicsLibrary
 		return TrimStart(TrimEnd(s));
 	}
 
-
 	vector<string> Split(string s, string delimiter)
 	{
 		vector<string> result;
 
 		while (true)
 		{
-			int position = s.find(delimiter);
+			int position = static_cast<int>(s.find(delimiter));
 
 			if (position == string::npos)
 			{
@@ -54,6 +53,52 @@ namespace GraphicsLibrary
 		}
 
 		return result;
+	}
+
+	void GenerateSplitTest(string fileName)
+	{
+		ofstream file = ofstream(fileName);
+
+		char chars[] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+		const int count = sizeof(chars) / sizeof(char);
+		const int wordLength = 50;
+		const int separatorLength = 1;
+
+		srand(time(nullptr));
+
+		for (int i = 0; i < 10000; i++)
+		{
+			char word[wordLength];
+			for (int j = 0; j < wordLength; j++)
+			{
+				word[j] = chars[rand() % count];
+			}
+
+			char separator[separatorLength];
+			for (int j = 0; j < separatorLength; j++)
+			{
+				separator[j] = chars[rand() % count];
+			}
+
+			for (int j = 0; j < 5; j++)
+			{
+				int pos = rand() % (wordLength - separatorLength + 1);
+				for (int k = 0; k < separatorLength; k++)
+				{
+					word[pos + k] = separator[k];
+				}
+			}
+
+			string line = (string(word) + " " + string(separator) + "\n");
+			file.write(line.c_str(), line.length());
+		}
+
+		file.close();
+	}
+
+	void SplitTest(string fileName)
+	{
+
 	}
 
 	map<string, Material> ReadMaterialLibrary(string fileName)
@@ -117,11 +162,15 @@ namespace GraphicsLibrary
 			}
 		}
 
+		file.close();
+
 		return materials;
 	}
 
 	Model* ModelReader::Read(string fileName)
 	{
+		GenerateSplitTest("Split1.test");
+
 		std::cerr << fileName << std::endl;
 
 		ifstream file = ifstream(fileName);
@@ -232,6 +281,8 @@ namespace GraphicsLibrary
 				actualMaterial = materials[actualMaterialName];
 			}
 		}
+
+		file.close();
 
 		return new Model(new ColouredVertexArray(colouredVertices, colouredNormals, ambientColours, diffuseColours, specularColours));
 	}

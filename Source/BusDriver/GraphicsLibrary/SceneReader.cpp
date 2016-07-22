@@ -37,10 +37,13 @@ namespace GraphicsLibrary
 				float* x = new float();
 				float* y = new float();
 				float* z = new float();
+				float* rotateX = new float();
+				float* rotateY = new float();
+				float* rotateZ = new float();
 
-				sscanf_s(line.c_str(), "%*s %d, %f, %f, %f", index, x, y, z);
+				sscanf_s(line.c_str(), "%*s %d, %f, %f, %f, %f, %f, %f", index, x, y, z, rotateX, rotateY, rotateZ);
 
-				scene->models.push_back(new PositionedModel(models[*index], vec3(*x, *y, *z)));
+				scene->models.push_back(new PositionedModel(models[*index], vec3(*x, *y, -(*z)), vec3(*rotateX, *rotateY, *rotateZ)));
 			}
 		}
 

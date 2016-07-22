@@ -1,14 +1,17 @@
 #include "PositionedModel.h"
 
-
 namespace GraphicsLibrary
 {
 	PositionedModel::PositionedModel()
 	{
+
 	}
 
 	PositionedModel::~PositionedModel()
 	{
-		delete this->model;
+		if (this->model != nullptr)
+		{
+			delete this->model;
+		}
 	}
 }

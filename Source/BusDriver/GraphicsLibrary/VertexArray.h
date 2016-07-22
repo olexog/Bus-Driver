@@ -22,6 +22,7 @@ namespace GraphicsLibrary
 		virtual void Draw(ShaderProgram* shaderProgram);
 	protected:
 		GLuint id;
+		int vertexCount;
 	private:
 		Buffer* vertices;
 		Buffer* normals;

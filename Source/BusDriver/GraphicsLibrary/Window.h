@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -38,11 +39,25 @@ namespace GraphicsLibrary
 		void PollEvents();
 
 		void SwapBuffers();
+
+		void WindowSizeCallback(GLFWwindow* window, int width, int height);
+
+		void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 	private:
 		GLFWwindow* glfwWindow;
 
+		bool pressedKeys[GLFW_KEY_LAST];
+
 		ShaderProgram* shaderProgram;
 		ShaderProgram* colouredShaderProgram;
+
+		float prevoiusTime;
+
+		const float CAMERA_VELOCITY = 100.0f;
+		const float CAMERA_ANGULAR_VELOCITY = 1.0f;
+
+		vec3 cameraPosition;
+		vec3 cameraDirection;
 
 		mat4 projection;
 		mat4 view;

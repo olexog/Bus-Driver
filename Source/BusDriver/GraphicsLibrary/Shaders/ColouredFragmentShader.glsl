@@ -9,6 +9,7 @@ in vec3 specular;
 out vec4 colour;
 
 uniform vec3 lightPosition;
+uniform vec3 lightColour;
 
 void main()
 {
@@ -20,5 +21,6 @@ void main()
 	float diffuseStrength = max(dot(normal, light), 0.0);
 	
 	// Calculating final colour
-	colour = vec4(ambientStrength * ambient + diffuseStrength * diffuse, 1.0);
+	colour = vec4(lightColour * (ambientStrength * ambient + diffuseStrength * diffuse), 1.0);
+	//colour = vec4(normal, 1.0);
 }
