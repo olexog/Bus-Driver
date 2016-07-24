@@ -76,6 +76,49 @@ namespace GraphicsLibrary
 		return materials;
 	}
 
+	int* ParseFace(const char* &token)
+	{
+		int* result = new int[3];
+
+		result[0] = atoi(token);
+		token += strcspn(token, "/ \t\r\n");
+
+		// a vertex index singleton
+		if (token[0] != '/')
+		{
+			return result;
+		}
+
+		// skip the / sign
+		token++;
+
+		// texture coordinate skipped
+		if (token[0] == '/')
+		{
+			token++;
+
+			result[2] = atoi(token);
+			token += strcspn(token, "/ \t\r\n");
+
+			return result;
+		}
+
+		result[1] = atoi(token);
+		token += strcspn(token, "/ \t\r\n");
+
+		if (token[0] != '/')
+		{
+			return result;
+		}
+
+		token++;
+
+		result[2] = atoi(token);
+		token += strcspn(token, "/ \t\r\n");
+
+		return result;
+	}
+
 	Model* ModelReader::Read(string fileName)
 	{
 		cout << "Loading " << fileName << endl;
@@ -93,61 +136,81 @@ namespace GraphicsLibrary
 		vector<vec3> specularColours = vector<vec3>();
 
 		string line;
-		char command[256];
 
 		map<string, Material> materials;
 		Material actualMaterial;
 
 		while (getline(file, line))
 		{
-			sscanf_s(line.c_str(), "%255s", command, 256);
+			const char* token = line.c_str();
+			token += strspn(token, " \t\r\n");
 
-			if (strcmp(command, "v") == 0)
+			if (token[0] == '\0')
+				continue;
+
+			if (token[0] == '#')
+				continue;
+
+			if (token[0] == 'v' && token[1] == ' ')
 			{
+				token += 1;
+				token += strspn(token, " \t");
+
 				float* x = new float();
 				float* y = new float();
 				float* z = new float();
 
-				sscanf_s(line.c_str(), "%*255s %f %f %f", x, y, z);
+				sscanf_s(token, "%f %f %f", x, y, z);
 
 				vertices.push_back(vec3(*x, *y, *z));
 			}
-			else if (strcmp(command, "vn") == 0)
+			else if (token[0] == 'v' && token[1] == 'n' && token[2] == ' ')
 			{
+				token += 2;
+				token += strspn(token, " \t");
+
 				float* x = new float();
 				float* y = new float();
 				float* z = new float();
 
-				sscanf_s(line.c_str(), "%*255s %f %f %f", x, y, z);
+				sscanf_s(token, "%f %f %f", x, y, z);
 
 				normals.push_back(vec3(*x, *y, *z));
 			}
-			else if (strcmp(command, "vt") == 0)
+			else if (token[0] == 'v' && token[1] == 't' && token[2] == ' ')
 			{
+				token += 2;
+				token += strspn(token, " \t");
+
 				float* x = new float();
 				float* y = new float();
 
-				sscanf_s(line.c_str(), "%*255s %f %f", x, y);
+				sscanf_s(line.c_str(), "%f %f", x, y);
 
 				texCoords.push_back(vec2(*x, *y));
 			}
-			else if (strcmp(command, "f") == 0)
+			else if (token[0] == 'f' && token[1] == ' ')
 			{
-				string argumentString = line.substr(line.find(" ") + 1);
+				token += 1;
+				token += strspn(token, " \t");
 
-				vector<string> arguments = Utility::Split(argumentString, " ");
+				int* face1 = ParseFace(token);
 
-				vector<string> arguments1 = Utility::Split(arguments[0], "/");
-				vector<string> arguments2 = Utility::Split(arguments[1], "/");
-				vector<string> arguments3 = Utility::Split(arguments[2], "/");
+				token += strspn(token, " \t");
 
-				int vertex1 = atoi(arguments1[0].c_str());
-				int vertex2 = atoi(arguments2[0].c_str());
-				int vertex3 = atoi(arguments3[0].c_str());
+				int* face2 = ParseFace(token);
 
-				int normal1 = atoi(arguments1[2].c_str());
-				int normal2 = atoi(arguments2[2].c_str());
-				int normal3 = atoi(arguments3[2].c_str());
+				token += strspn(token, " \t");
+
+				int* face3 = ParseFace(token);
+
+				int vertex1 = face1[0];
+				int vertex2 = face2[0];
+				int vertex3 = face3[0];
+
+				int normal1 = face1[2];
+				int normal2 = face2[2];
+				int normal3 = face3[2];
 
 				colouredVertices.push_back(vertices[vertex1 - 1]);
 				colouredVertices.push_back(vertices[vertex2 - 1]);
@@ -169,22 +232,22 @@ namespace GraphicsLibrary
 				specularColours.push_back(actualMaterial.specularColour);
 				specularColours.push_back(actualMaterial.specularColour);
 			}
-			else if (strcmp(command, "mtllib") == 0)
+			else if (strncmp(token, "mtllib", 6) == 0 && token[6] == ' ')
 			{
-				char materialLibraryRelativeFileName[256];
-
-				sscanf_s(line.c_str(), "%*255s %255s", materialLibraryRelativeFileName, 256);
+				token += 6;
+				token += strspn(token, " \t");
+				const char* materialLibraryRelativeFileName = token;
 
 				string materialLibraryFileName = Utility::GetDirectory(fileName) + materialLibraryRelativeFileName;
 
 				materials = ReadMaterialLibrary(materialLibraryFileName);
 			}
-			else if (strcmp(command, "usemtl") == 0)
+			else if (strncmp(token, "usemtl", 6) == 0 && token[6] == ' ')
 			{
-				char actualMaterialName[256];
-
-				sscanf_s(line.c_str(), "%*255s %255s", actualMaterialName, 256);
-
+				token += 6;
+				token += strspn(token, " \t");
+				const char* actualMaterialName = token;
+				
 				actualMaterial = materials[actualMaterialName];
 			}
 		}

@@ -25,6 +25,20 @@ namespace GraphicsLibrary
 		return TrimStart(TrimEnd(s));
 	}
 
+	vector<string> Utility::Split(string s, char delimiter)
+	{
+		stringstream input(s);
+		vector<string> result = vector<string>();
+
+		string word;
+		while (getline(input, word, delimiter))
+		{
+			result.push_back(word);
+		}
+
+		return result;
+	}
+
 	vector<string> Utility::Split(string s, string delimiter)
 	{
 		const size_t sLength = s.length();

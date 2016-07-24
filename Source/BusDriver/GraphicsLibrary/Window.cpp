@@ -61,7 +61,7 @@ namespace GraphicsLibrary
 		this->cameraPosition = vec3(0.0f, 3.0f, -100.0f);
 		this->cameraDirection = vec3(0.0f, 0.0f, 1.0f);
 
-		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);		
 	}
 
 	Window::~Window()
@@ -77,65 +77,70 @@ namespace GraphicsLibrary
 
 	void Window::Draw(Scene* scene)
 	{
-		glClearColor(0, 0, 0.7f, 0);
+		//glClearColor(0.71f, 0.27f, 0.05f, 0);
+		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// move the camera
 		float totalTime = static_cast<float>(glfwGetTime());
-		float elapsedTime = totalTime - prevoiusTime;
-		prevoiusTime = totalTime;
+		float elapsedTime = totalTime - previousTime;
+		previousTime = totalTime;
 
 		vec3 up = vec3(0.0f, 1.0f, 0.0f);
+
+		// define camera velocity / angular velocity
+		float cameraVelocity = this->pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_VELOCITY : CAMERA_VELOCITY;
+		float cameraAngularVelocity = this->pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_ANGULAR_VELOCITY : CAMERA_ANGULAR_VELOCITY;
 
 		// rotate up
 		if (this->pressedKeys[GLFW_KEY_I])
 		{
-			this->cameraDirection = vec3(glm::rotate(mat4(), CAMERA_ANGULAR_VELOCITY * elapsedTime, cross(this->cameraDirection, up)) * vec4(this->cameraDirection, 0.0f));
+			this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, cross(this->cameraDirection, up)) * vec4(this->cameraDirection, 0.0f));
 		}
 		// rotate down
 		if (this->pressedKeys[GLFW_KEY_K])
 		{
-			this->cameraDirection = vec3(glm::rotate(mat4(), CAMERA_ANGULAR_VELOCITY * elapsedTime, -cross(this->cameraDirection, up)) * vec4(this->cameraDirection, 0.0f));
+			this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -cross(this->cameraDirection, up)) * vec4(this->cameraDirection, 0.0f));
 		}
 		// rotate left
 		if (this->pressedKeys[GLFW_KEY_J])
 		{
-			this->cameraDirection = vec3(glm::rotate(mat4(), CAMERA_ANGULAR_VELOCITY * elapsedTime, up) * vec4(this->cameraDirection, 0.0f));
+			this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, up) * vec4(this->cameraDirection, 0.0f));
 		}
 		// rotate right
 		if (this->pressedKeys[GLFW_KEY_L])
 		{
-			this->cameraDirection = vec3(glm::rotate(mat4(), CAMERA_ANGULAR_VELOCITY * elapsedTime, -up) * vec4(this->cameraDirection, 0.0f));
+			this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -up) * vec4(this->cameraDirection, 0.0f));
 		}
 		// translate up
 		if (this->pressedKeys[GLFW_KEY_W])
 		{
-			this->cameraPosition += CAMERA_VELOCITY * elapsedTime * up;
+			this->cameraPosition += cameraVelocity * elapsedTime * up;
 		}
 		// translate down
 		if (this->pressedKeys[GLFW_KEY_S])
 		{
-			this->cameraPosition -= CAMERA_VELOCITY * elapsedTime * up;
+			this->cameraPosition -= cameraVelocity * elapsedTime * up;
 		}
 		// translate left
 		if (this->pressedKeys[GLFW_KEY_A])
 		{
-			this->cameraPosition -= CAMERA_VELOCITY * elapsedTime * cross(this->cameraDirection, up);
+			this->cameraPosition -= cameraVelocity * elapsedTime * cross(this->cameraDirection, up);
 		}
 		// translate right
 		if (this->pressedKeys[GLFW_KEY_D])
 		{
-			this->cameraPosition += CAMERA_VELOCITY * elapsedTime * cross(this->cameraDirection, up);
+			this->cameraPosition += cameraVelocity * elapsedTime * cross(this->cameraDirection, up);
 		}
 		// translate forward
 		if (this->pressedKeys[GLFW_KEY_E])
 		{
-			this->cameraPosition += CAMERA_VELOCITY * elapsedTime * this->cameraDirection;
+			this->cameraPosition += cameraVelocity * elapsedTime * this->cameraDirection;
 		}
 		// translate backward
 		if (this->pressedKeys[GLFW_KEY_Q])
 		{
-			this->cameraPosition -= CAMERA_VELOCITY * elapsedTime * this->cameraDirection;
+			this->cameraPosition -= cameraVelocity * elapsedTime * this->cameraDirection;
 		}
 
 		// calculate the view
@@ -146,7 +151,8 @@ namespace GraphicsLibrary
 		this->shaderProgram->SetUniform("view", this->view);
 
 		vec3 lightPosition = vec3(0.0f, 200.0f, 1000.0f);
-		vec3 lightColour = vec3(0.71f, 0.27f, 0.05f);
+		//vec3 lightColour = vec3(0.71f, 0.27f, 0.05f);
+		vec3 lightColour = vec3(1.0f);
 
 		this->colouredShaderProgram->SetUniform("projection", this->projection);
 		this->colouredShaderProgram->SetUniform("view", this->view);
@@ -158,9 +164,7 @@ namespace GraphicsLibrary
 		{
 			mat4 modelMatrix;
 			modelMatrix = translate(modelMatrix, positionedModel->position);
-			modelMatrix = glm::rotate(modelMatrix, radians(positionedModel->rotation.x), vec3(1.0f, 0.0f, 0.0f));
-			modelMatrix = glm::rotate(modelMatrix, radians(positionedModel->rotation.y), vec3(0.0f, 1.0f, 0.0f));
-			modelMatrix = glm::rotate(modelMatrix, radians(positionedModel->rotation.z), vec3(0.0f, 0.0f, 1.0f));
+			modelMatrix *= static_cast<mat4>(positionedModel->rotation);
 			this->colouredShaderProgram->SetUniform("model", modelMatrix);
 			positionedModel->model->Draw(this->shaderProgram, this->colouredShaderProgram);
 		}
@@ -205,6 +209,14 @@ namespace GraphicsLibrary
 		{
 			glfwSetWindowShouldClose(this->glfwWindow, GL_TRUE);
 		}
+		else if (key == GLFW_KEY_M && action == GLFW_PRESS)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else if (key == GLFW_KEY_M && action == GLFW_RELEASE)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
 		else if (action == GLFW_PRESS)
 		{
 			this->pressedKeys[key] = true;
@@ -213,5 +225,12 @@ namespace GraphicsLibrary
 		{
 			this->pressedKeys[key] = false;
 		}
+	}
+
+	float Window::GetElapsedTime()
+	{
+		float totalTime = static_cast<float>(glfwGetTime());
+		float elapsedTime = totalTime - this->previousTime;
+		return elapsedTime;
 	}
 }

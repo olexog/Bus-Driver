@@ -2,6 +2,8 @@
 
 #include <PxPhysicsAPI.h>
 
+#include "VehicleFilterShader.h"
+
 using namespace physx;
 
 namespace PhysicsLibrary
@@ -11,12 +13,33 @@ namespace PhysicsLibrary
 	public:
 		Physics();
 		~Physics();
+
+		void Simulate(float elapsedTime);
+
+		PxPhysics* GetPhysics();
+		PxMaterial* GetMaterial();
+		PxCooking* GetCooking();
+		PxAllocatorCallback& GetAllocator();
+		PxScene* GetScene();
+
+		void AddActor(PxActor &actor);
+
+		PxFilterData obstacleSimFilterData;
 	private:
-		PxDefaultAllocator		gAllocator;
-		PxDefaultErrorCallback	gErrorCallback;
+		PxDefaultAllocator allocator;
+		PxDefaultErrorCallback  errorCallback;
 
-		PxFoundation*			gFoundation = NULL;
-		PxPhysics*				gPhysics = NULL;
+		PxFoundation* foundation;
+		PxPhysics* physics;
 
+		PxCooking* cooking;
+
+		PxVisualDebuggerConnection* connection;
+
+		PxDefaultCpuDispatcher* dispatcher;
+		PxScene* scene;
+		PxMaterial* material;
+
+		PxRigidStatic* plane;
 	};
 }

@@ -12,6 +12,8 @@
 #include "ColouredVertexArray.h"
 
 #include "Physics.h"
+#include "Actor.h"
+#include "Vehicle.h"
 
 using namespace GraphicsLibrary;
 using namespace PhysicsLibrary;
@@ -23,18 +25,38 @@ int main()
 	// creates the physics environment
 	Physics* physics = new Physics();
 
+	Actor* box = new Actor(physics, vec3(1.0f, 1.0f, 1.0f), vec3(0, 5, 0));
+	Vehicle* bus = new Vehicle(physics);
+
 	// creates the window
 	Window window = Window(640, 480, "Bus Driver");
 
-	//Model* model = ModelReader::Read("Models\\station_01.obj");
-
 	Scene* scene = SceneReader::Read("Models\\simple.map");
+
+	Model* boxModel = ModelReader::Read("Models\\box.obj");
+	//PositionedModel* positionedBoxModel = new PositionedModel(boxModel, box->GetPosition(), box->GetRotation());
+	//scene->models.push_back(positionedBoxModel);
+
+	Model* busModel = ModelReader::Read("Models\\ikarus_260.obj");
+	//PositionedModel* positionedBusModel = new PositionedModel(busModel, bus->GetPosition(), bus->GetRotation());
+	//scene->models.push_back(positionedBusModel)
 
 	// the main loop that iterates throughout the game
 	while (!window.ShouldClose())
 	{
 		window.PollEvents();
 
+		// Simulate physics
+		float elapsedTime = window.GetElapsedTime();
+		cout << elapsedTime << endl;
+		bus->Update(1 / 60.0f);
+		physics->Simulate(1 / 60.0f);
+
+		// Update
+		//positionedBoxModel->position = box->GetPosition();
+		//positionedBoxModel->rotation = box->GetRotation();
+
+		// Draw scene
 		window.Draw(scene);
 
 		window.SwapBuffers();

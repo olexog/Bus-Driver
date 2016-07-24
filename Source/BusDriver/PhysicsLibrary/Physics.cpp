@@ -4,13 +4,92 @@ namespace PhysicsLibrary
 {
 	Physics::Physics()
 	{
-		gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
-		PxProfileZoneManager* profileZoneManager = &PxProfileZoneManager::createProfileZoneManager(gFoundation);
-		gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, profileZoneManager);
+		// create the basic PhysX instances
+		this->foundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->allocator, this->errorCallback);
+		PxProfileZoneManager* profileZoneManager = &PxProfileZoneManager::createProfileZoneManager(this->foundation);
+		this->physics = PxCreatePhysics(PX_PHYSICS_VERSION, *this->foundation, PxTolerancesScale(), true, profileZoneManager);
 
+		// connect to the PVD if it is running
+		if (this->physics->getPvdConnectionManager())
+		{
+			this->physics->getVisualDebugger()->setVisualizeConstraints(true);
+			this->physics->getVisualDebugger()->setVisualDebuggerFlag(PxVisualDebuggerFlag::eTRANSMIT_CONTACTS, true);
+			this->physics->getVisualDebugger()->setVisualDebuggerFlag(PxVisualDebuggerFlag::eTRANSMIT_SCENEQUERIES, true);
+			this->connection = PxVisualDebuggerExt::createConnection(this->physics->getPvdConnectionManager(), "127.0.0.1", 5425, 10);
+		}
+
+		// initialize the vehicle SDK
+		PxInitVehicleSDK(*this->physics);
+		PxVehicleSetBasisVectors(PxVec3(0, 1, 0), PxVec3(0, 0, 1));
+		PxVehicleSetUpdateMode(PxVehicleUpdateMode::eVELOCITY_CHANGE);
+
+		obstacleSimFilterData.word0 = COLLISION_FLAG_GROUND;
+		obstacleSimFilterData.word1 = COLLISION_FLAG_GROUND_AGAINST;
+
+		// create scene description
+		PxSceneDesc sceneDesc(this->physics->getTolerancesScale());
+		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+
+		PxU32 numWorkers = 1;
+		this->dispatcher = PxDefaultCpuDispatcherCreate(numWorkers);
+		sceneDesc.cpuDispatcher = this->dispatcher;
+		sceneDesc.filterShader = VehicleFilterShader;
+
+		this->scene = this->physics->createScene(sceneDesc);
+
+		this->material = this->physics->createMaterial(0.5f, 0.5f, 0.6f);
+
+		this->cooking = PxCreateCooking(PX_PHYSICS_VERSION, *this->foundation, PxCookingParams(PxTolerancesScale()));
+
+		this->plane = PxCreatePlane(*this->physics, PxPlane(0, 1, 0, 0), *this->material);
+		//this->scene->addActor(*this->plane);
 	}
 
 	Physics::~Physics()
 	{
+		PxCloseVehicleSDK();
+
+		PxProfileZoneManager* profileZoneManager = this->physics->getProfileZoneManager();
+		if (this->connection != NULL)
+			this->connection->release();
+		this->physics->release();
+		profileZoneManager->release();
+		this->foundation->release();
+		// TODO: release parts
+	}
+
+	void Physics::Simulate(float elapsedTime)
+	{
+		this->scene->simulate(elapsedTime);
+		this->scene->fetchResults(true);
+	}
+	PxPhysics* Physics::GetPhysics()
+	{
+		return this->physics;
+	}
+
+	PxMaterial* Physics::GetMaterial()
+	{
+		return this->material;
+	}
+
+	PxCooking* Physics::GetCooking()
+	{
+		return this->cooking;
+	}
+
+	PxAllocatorCallback& Physics::GetAllocator()
+	{
+		return this->allocator;
+	}
+
+	PxScene* Physics::GetScene()
+	{
+		return this->scene;
+	}
+
+	void Physics::AddActor(PxActor &actor)
+	{
+		this->scene->addActor(actor);
 	}
 }

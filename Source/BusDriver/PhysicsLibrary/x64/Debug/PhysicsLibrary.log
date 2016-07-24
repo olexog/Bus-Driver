@@ -1,1 +1,11 @@
-﻿  PhysicsLibrary.vcxproj -> D:\Bus Driver\Source\BusDriver\x64\Debug\PhysicsLibrary.lib
+﻿  Physics.cpp
+  Actor.cpp
+  Generating Code...
+  Compiling...
+  Vehicle.cpp
+  Generating Code...
+PhysX3DEBUG_x64.lib(PhysX3DEBUG_x64.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in PhysX3CommonDEBUG_x64.lib(PhysX3CommonDEBUG_x64.dll); second definition ignored
+PhysX3DEBUG_x64.lib(PhysX3DEBUG_x64.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+PhysX3CookingDEBUG_x64.lib(PhysX3CookingDEBUG_x64.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in PhysX3CommonDEBUG_x64.lib(PhysX3CommonDEBUG_x64.dll); second definition ignored
+PhysX3CookingDEBUG_x64.lib(PhysX3CookingDEBUG_x64.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+  PhysicsLibrary.vcxproj -> C:\Users\Ábel\Dropbox\Programok\C++\Bus Driver\Source\BusDriver\x64\Debug\PhysicsLibrary.lib

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <algorithm>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -23,6 +24,8 @@ namespace GraphicsLibrary
 		static string TrimEnd(string s);
 
 		static string Trim(string s);
+
+		static vector<string> Split(string s, char delimiter);
 
 		static vector<string> Split(string s, string delimiter);
 	};

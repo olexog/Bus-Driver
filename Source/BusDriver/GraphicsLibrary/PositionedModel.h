@@ -3,7 +3,7 @@
 #include "Model.h"
 
 #include <glm\vec3.hpp>
-#include <glm\vec3.hpp>
+#include <glm\gtc\quaternion.hpp>
 
 using namespace glm;
 
@@ -13,12 +13,12 @@ namespace GraphicsLibrary
 	{
 	public:
 		PositionedModel();
-		PositionedModel(Model* model, vec3 position, vec3 rotation) : model(model), position(position), rotation(rotation) {}
+		PositionedModel(Model* model, vec3 position, quat rotation) : model(model), position(position), rotation(rotation) {}
 		~PositionedModel();
 
 		Model* model;
 		vec3 position;
-		vec3 rotation;
+		quat rotation;
 	};
 }
 

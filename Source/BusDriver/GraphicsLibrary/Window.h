@@ -13,6 +13,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "Scene.h"
 #include "ShaderProgram.h"
@@ -43,6 +45,8 @@ namespace GraphicsLibrary
 		void WindowSizeCallback(GLFWwindow* window, int width, int height);
 
 		void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+
+		float GetElapsedTime();
 	private:
 		GLFWwindow* glfwWindow;
 
@@ -51,10 +55,12 @@ namespace GraphicsLibrary
 		ShaderProgram* shaderProgram;
 		ShaderProgram* colouredShaderProgram;
 
-		float prevoiusTime;
+		float previousTime;
 
-		const float CAMERA_VELOCITY = 100.0f;
-		const float CAMERA_ANGULAR_VELOCITY = 1.0f;
+		const float CAMERA_VELOCITY = 20.0f;
+		const float CAMERA_ANGULAR_VELOCITY = 0.5f;
+		const float CAMERA_FAST_VELOCITY = 100.0f;
+		const float CAMERA_FAST_ANGULAR_VELOCITY = 1.0f;
 
 		vec3 cameraPosition;
 		vec3 cameraDirection;

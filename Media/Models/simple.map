@@ -19,6 +19,7 @@ addmodel bus_terminal_01.obj
 addmodel ikarus_260.obj
 addmodel ikarus_415.obj
 addmodel road_2x1_roundabout_1111.obj
+defineobject 0, 0, 10, 0
 defineobject 0, 13, 0, 20
 defineobject 0, 13, 0, 40
 defineobject 0, 13, 0, 60
