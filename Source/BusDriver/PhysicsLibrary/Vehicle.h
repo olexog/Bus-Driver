@@ -1,5 +1,8 @@
 #pragma once
 
+#include <glm/vec3.hpp>
+#include <glm/gtc/quaternion.hpp>
+
 #include <PxPhysicsAPI.h>
 #include <vehicle\PxVehicleUtil.h>
 
@@ -8,6 +11,7 @@
 #include "VehicleRaycast.h"
 #include "VehicleTireFriction.h"
 
+using namespace glm;
 using namespace physx;
 
 namespace PhysicsLibrary
@@ -19,6 +23,10 @@ namespace PhysicsLibrary
 		~Vehicle();
 
 		void Update(float elapsedTime);
+
+		vec3 GetPosition();
+
+		quat GetRotation();
 	private:
 		Physics* physics;
 		VehicleSceneQueryData*	gVehicleSceneQueryData = NULL;

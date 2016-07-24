@@ -81,4 +81,16 @@ namespace PhysicsLibrary
 		PxVehicleWheelQueryResult vehicleQueryResults[1] = { { wheelQueryResults, gVehicle4W->mWheelsSimData.getNbWheels() } };
 		PxVehicleUpdates(elapsedTime, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
 	}
+
+	vec3 Vehicle::GetPosition()
+	{
+		PxVec3 position = this->gVehicle4W->getRigidDynamicActor()->getGlobalPose().p;
+		return vec3(position.x, position.y, position.z);
+	}
+
+	quat Vehicle::GetRotation()
+	{
+		PxQuat rotation = this->gVehicle4W->getRigidDynamicActor()->getGlobalPose().q;
+		return quat(rotation.w, rotation.x, rotation.y, rotation.z);
+	}
 }

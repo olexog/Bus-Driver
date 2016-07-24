@@ -34,12 +34,12 @@ int main()
 	Scene* scene = SceneReader::Read("Models\\simple.map");
 
 	Model* boxModel = ModelReader::Read("Models\\box.obj");
-	//PositionedModel* positionedBoxModel = new PositionedModel(boxModel, box->GetPosition(), box->GetRotation());
-	//scene->models.push_back(positionedBoxModel);
+	PositionedModel* positionedBoxModel = new PositionedModel(boxModel, box->GetPosition(), box->GetRotation());
+	scene->models.push_back(positionedBoxModel);
 
 	Model* busModel = ModelReader::Read("Models\\ikarus_260.obj");
-	//PositionedModel* positionedBusModel = new PositionedModel(busModel, bus->GetPosition(), bus->GetRotation());
-	//scene->models.push_back(positionedBusModel)
+	PositionedModel* positionedBusModel = new PositionedModel(busModel, bus->GetPosition(), bus->GetRotation());
+	scene->models.push_back(positionedBusModel);
 
 	// the main loop that iterates throughout the game
 	while (!window.ShouldClose())
@@ -48,13 +48,15 @@ int main()
 
 		// Simulate physics
 		float elapsedTime = window.GetElapsedTime();
-		cout << elapsedTime << endl;
-		bus->Update(1 / 60.0f);
-		physics->Simulate(1 / 60.0f);
+		bus->Update(elapsedTime);
+		physics->Simulate(elapsedTime);
 
 		// Update
-		//positionedBoxModel->position = box->GetPosition();
-		//positionedBoxModel->rotation = box->GetRotation();
+		positionedBoxModel->position = box->GetPosition();
+		positionedBoxModel->rotation = box->GetRotation();
+
+		positionedBusModel->position = bus->GetPosition();
+		positionedBusModel->rotation = bus->GetRotation();
 
 		// Draw scene
 		window.Draw(scene);

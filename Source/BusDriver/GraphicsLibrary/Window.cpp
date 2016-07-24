@@ -229,8 +229,15 @@ namespace GraphicsLibrary
 
 	float Window::GetElapsedTime()
 	{
-		float totalTime = static_cast<float>(glfwGetTime());
-		float elapsedTime = totalTime - this->previousTime;
-		return elapsedTime;
+		if (this->previousTime == 0.0f)
+		{
+			return FLT_EPSILON;
+		}
+		else
+		{
+			float totalTime = static_cast<float>(glfwGetTime());
+			float elapsedTime = totalTime - this->previousTime;
+			return elapsedTime;
+		}
 	}
 }
