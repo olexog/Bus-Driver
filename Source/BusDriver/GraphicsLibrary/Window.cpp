@@ -158,7 +158,7 @@ namespace GraphicsLibrary
 		// bus camera
 		else if (this->cameraMode == CameraMode::FollowBus)
 		{
-			cameraPosition = vec3(0.0f, 3.0f, -8.0f);
+			cameraPosition = vec3(0.0f, 5.0f, -20.0f);
 			cameraPosition = glm::rotate(vehicleRotation, cameraPosition) + vehiclePosition;
 			this->cameraDirection = vec3(0.0f, 0.0f, 1.0f);
 			cameraDirection = glm::rotate(vehicleRotation, cameraDirection);

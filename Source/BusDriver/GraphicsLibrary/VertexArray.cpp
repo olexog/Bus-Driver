@@ -23,6 +23,8 @@ namespace GraphicsLibrary
 		glBindVertexArray(0);
 
 		this->vertexCount = static_cast<int>(vertices.size());
+
+		this->debugVertices = vertices;
 	}
 	
 	VertexArray::~VertexArray()

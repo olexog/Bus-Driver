@@ -8,7 +8,8 @@
 #include "ColouredVertexArray.h"
 
 #include "Physics.h"
-#include "Actor.h"
+#include "StaticActor.h"
+#include "DynamicActor.h"
 #include "Vehicle.h"
 
 using namespace GraphicsLibrary;
@@ -21,7 +22,7 @@ int main()
 	// creates the physics environment
 	Physics* physics = new Physics();
 
-	Actor* box = new Actor(physics, vec3(1.0f, 1.0f, 1.0f), vec3(0, 5, 0));
+	DynamicActor* box = new DynamicActor(physics, vec3(1.0f, 1.0f, 1.0f), vec3(0, 5, 0));
 	Vehicle* bus = new Vehicle(physics);
 
 	// creates the window
@@ -29,13 +30,18 @@ int main()
 
 	Scene* scene = SceneReader::Read("Models\\simple.map");
 
+	vector<StaticActor*> staticActors;
+
+	int count = 0;
+	for (PositionedModel* model : scene->models)
+	{
+		if (count++ > 10) break;
+		staticActors.push_back(new StaticActor(physics, model->model->colouredVertexArray->debugVertices, model->position, model->rotation));
+	}
+
 	Model* boxModel = ModelReader::Read("Models\\box.obj");
 	PositionedModel* positionedBoxModel = new PositionedModel(boxModel, box->GetPosition(), box->GetRotation());
 	scene->models.push_back(positionedBoxModel);
-
-	Model* busModel = ModelReader::Read("Models\\ikarus_260.obj");
-	PositionedModel* positionedBusModel = new PositionedModel(busModel, bus->GetPosition(), bus->GetRotation());
-	//scene->models.push_back(positionedBusModel);
 
 	vector<vector<vec3>> wheelVertices = bus->GetWheelVertices();
 	vector<Model*> physicsWheelModels;
@@ -89,13 +95,6 @@ int main()
 		float elapsedTime = window.GetElapsedTime();
 		bus->Update(elapsedTime);
 		physics->Simulate(elapsedTime);
-
-		// Update
-		positionedBoxModel->position = box->GetPosition();
-		positionedBoxModel->rotation = box->GetRotation();
-
-		positionedBusModel->position = bus->GetPosition();
-		positionedBusModel->rotation = bus->GetRotation();
 
 		// Draw scene
 		window.Draw(scene, bus->GetPosition(), bus->GetRotation(), physicsWheelModels, bus->GetWheelPositions(), bus->GetWheelRotations(), physicsChassisModel, bus->GetChassisPosition(), bus->GetChassisRotation(), wheelModel, chassisModel);

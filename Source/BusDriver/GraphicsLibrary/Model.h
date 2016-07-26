@@ -13,7 +13,8 @@ namespace GraphicsLibrary
 		~Model();
 
 		void Draw(ShaderProgram* shaderProgram, ShaderProgram* colouredShaderProgram);
-	private:
+	// TO DEBUG
+	//private:
 		ColouredVertexArray* colouredVertexArray;
 	};
 }

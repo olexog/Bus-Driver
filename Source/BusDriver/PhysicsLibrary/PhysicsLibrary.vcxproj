@@ -19,8 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Actor.h" />
+    <ClInclude Include="DynamicActor.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="StaticActor.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="VehicleCreate.h" />
     <ClInclude Include="VehicleFilterShader.h" />
@@ -28,8 +29,9 @@
     <ClInclude Include="VehicleTireFriction.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="DynamicActor.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="StaticActor.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="VehicleCreate.cpp" />
     <ClCompile Include="VehicleFilterShader.cpp" />

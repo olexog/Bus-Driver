@@ -12,11 +12,11 @@ using namespace physx;
 
 namespace PhysicsLibrary
 {
-	class Actor
+	class DynamicActor
 	{
 	public:
-		Actor(Physics* physics, vec3 halfExtends, vec3 position);
-		~Actor();
+		DynamicActor(Physics* physics, vec3 halfExtends, vec3 position);
+		~DynamicActor();
 
 		vec3 GetPosition();
 		quat GetRotation();
