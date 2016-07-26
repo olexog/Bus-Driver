@@ -39,7 +39,7 @@ namespace GraphicsLibrary
 		~Window();
 
 		///<summary>Draws to the context.</summary>
-		void Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<Model*> wheelModels, vector<vec3> positions, vector<quat> rotations, Model* chassisModel, vec3 chassisPosition, quat chassisRotation);
+		void Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<Model*> physicsWheelModels, vector<vec3> positions, vector<quat> rotations, Model* physicsChassisModel, vec3 chassisPosition, quat chassisRotation, Model* wheelModel, Model* chassisModel);
 
 		///<summary>Determines whether the window received closing events.</summary>
 		bool ShouldClose();

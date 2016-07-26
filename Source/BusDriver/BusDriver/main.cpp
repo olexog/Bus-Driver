@@ -43,9 +43,11 @@ int main()
 	{
 		physicsWheelModels.push_back(new Model(new ColouredVertexArray(wheelVertices[i], wheelVertices[i], wheelVertices[i], wheelVertices[i], wheelVertices[i])));
 	}
+	Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj");
 
 	vector<vec3> chassisVertices = bus->GetChassisVertices();
 	Model* physicsChassisModel = new Model(new ColouredVertexArray(chassisVertices, chassisVertices, chassisVertices, chassisVertices, chassisVertices));
+	Model* chassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
 
 	// the main loop that iterates throughout the game
 	while (!window.ShouldClose())
@@ -96,7 +98,7 @@ int main()
 		positionedBusModel->rotation = bus->GetRotation();
 
 		// Draw scene
-		window.Draw(scene, bus->GetPosition(), bus->GetRotation(), physicsWheelModels, bus->GetWheelPositions(), bus->GetWheelRotations(), physicsChassisModel, bus->GetChassisPosition(), bus->GetChassisRotation());
+		window.Draw(scene, bus->GetPosition(), bus->GetRotation(), physicsWheelModels, bus->GetWheelPositions(), bus->GetWheelRotations(), physicsChassisModel, bus->GetChassisPosition(), bus->GetChassisRotation(), wheelModel, chassisModel);
 
 		window.SwapBuffers();
 	}
