@@ -167,7 +167,7 @@ PxRigidDynamic* createVehicleActor
 		(PxConvexMeshGeometry(chassisConvexMeshes[i]), *chassisMaterials[i]);
 		chassisShape->setQueryFilterData(chassisQryFilterData);
 		chassisShape->setSimulationFilterData(chassisSimFilterData);
-		chassisShape->setLocalPose(PxTransform(PxIdentity));
+		chassisShape->setLocalPose(PxTransform(PxVec3(0.0f, -0.5f, 0.0f)));
 
 		chassis.push_back(chassisShape);
 	}
@@ -251,7 +251,7 @@ void customizeVehicleToLengthScale(const PxReal lengthScale, PxRigidDynamic* rig
 	}
 
 	//Scale the collision meshes too.
-	{
+	/*{
 		PxShape* shapes[16];
 		const PxU32 nbShapes = rigidDynamic->getShapes(shapes, 16);
 		for (PxU32 i = 0; i < nbShapes; i++)
@@ -317,7 +317,7 @@ void customizeVehicleToLengthScale(const PxReal lengthScale, PxRigidDynamic* rig
 				break;
 			}
 		}
-	}
+	}*/
 }
 
 void customizeVehicleToLengthScale(const PxReal lengthScale, PxRigidDynamic* rigidDynamic, PxVehicleWheelsSimData* wheelsSimData, PxVehicleDriveSimData4W* driveSimData)
