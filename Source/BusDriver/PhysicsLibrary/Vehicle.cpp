@@ -136,6 +136,8 @@ namespace PhysicsLibrary
 
 		//Work out if the vehicle is in the air.
 		gIsVehicleInAir = gVehicle4W->getRigidDynamicActor()->isSleeping() ? false : PxVehicleIsInAir(vehicleQueryResults[0]);
+
+		std::cout << this->gVehicle4W->getRigidDynamicActor()->getLinearVelocity().magnitude() << endl;
 	}
 
 	void Vehicle::Accelerate(float measure)

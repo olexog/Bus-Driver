@@ -145,8 +145,10 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Buffer.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="ColouredVertexArray.h" />
+    <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelReader.h" />
     <ClInclude Include="PositionedModel.h" />
@@ -158,8 +160,10 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="ColouredVertexArray.cpp" />
+    <ClCompile Include="FrameBuffer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelReader.cpp" />
     <ClCompile Include="PositionedModel.cpp" />

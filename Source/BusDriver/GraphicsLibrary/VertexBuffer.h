@@ -13,14 +13,14 @@ using namespace glm;
 namespace GraphicsLibrary
 {
 	///<summary>The handling to an OpenGL Buffer Object.</summary>
-	class Buffer
+	class VertexBuffer
 	{
 	public:
 		///<summary>Initializes a new Buffer Object of two-dimensional vectors and attaches it to the bound Vertex Array Object.</summary>
-		Buffer();
+		VertexBuffer();
 
 		///<summary>Destroys the Buffer Object.</summary>
-		~Buffer();
+		~VertexBuffer();
 
 		void LoadData(vector<vec2> elements);
 

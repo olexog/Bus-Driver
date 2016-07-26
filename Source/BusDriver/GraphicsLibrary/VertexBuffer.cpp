@@ -1,33 +1,33 @@
-#include "Buffer.h"
+#include "VertexBuffer.h"
 
 namespace GraphicsLibrary
 {
-	Buffer::Buffer()
+	VertexBuffer::VertexBuffer()
 	{
 		glGenBuffers(1, &this->id);
 	}
 
-	Buffer::~Buffer()
+	VertexBuffer::~VertexBuffer()
 	{
 		glDeleteBuffers(1, &this->id);
 	}
 
-	void Buffer::LoadData(vector<vec2> elements)
+	void VertexBuffer::LoadData(vector<vec2> elements)
 	{
 		glBufferData(GL_ARRAY_BUFFER, elements.size() * sizeof(vec2), elements.data(), GL_STATIC_DRAW);
 	}
 
-	void Buffer::LoadData(vector<vec3> elements)
+	void VertexBuffer::LoadData(vector<vec3> elements)
 	{
 		glBufferData(GL_ARRAY_BUFFER, elements.size() * sizeof(vec3), elements.data(), GL_STATIC_DRAW);
 	}
 
-	void Buffer::Bind()
+	void VertexBuffer::Bind()
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, this->id);
 	}
 
-	void Buffer::Unbind()
+	void VertexBuffer::Unbind()
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}

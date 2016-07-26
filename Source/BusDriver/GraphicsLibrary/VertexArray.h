@@ -6,7 +6,7 @@
 
 #include <glm\vec3.hpp>
 
-#include "Buffer.h"
+#include "VertexBuffer.h"
 #include "ShaderProgram.h"
 
 using namespace std;
@@ -26,7 +26,7 @@ namespace GraphicsLibrary
 		GLuint id;
 		int vertexCount;
 	private:
-		Buffer* vertices;
-		Buffer* normals;
+		VertexBuffer* vertices;
+		VertexBuffer* normals;
 	};
 }

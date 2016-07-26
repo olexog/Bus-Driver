@@ -20,8 +20,8 @@ namespace GraphicsLibrary
 		~ColouredVertexArray();
 		void Draw(ShaderProgram* shaderProgram);
 	private:
-		Buffer* ambientColours;
-		Buffer* diffuseColours;
-		Buffer* specularColours;
+		VertexBuffer* ambientColours;
+		VertexBuffer* diffuseColours;
+		VertexBuffer* specularColours;
 	};
 }
