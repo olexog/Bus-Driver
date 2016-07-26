@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 
 #include <glm/vec3.hpp>
 #include <glm/gtc/quaternion.hpp>
