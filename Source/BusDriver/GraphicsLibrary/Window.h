@@ -25,6 +25,12 @@ using namespace glm;
 
 namespace GraphicsLibrary
 {
+	enum class CameraMode
+	{
+		Static,
+		FollowBus
+	};
+
 	///<summary>Represents an OpenGL context to be drawn on.</summary>
 	class Window
 	{
@@ -58,6 +64,8 @@ namespace GraphicsLibrary
 		ShaderProgram* colouredShaderProgram;
 
 		float previousTime;
+
+		CameraMode cameraMode;
 
 		const float CAMERA_VELOCITY = 20.0f;
 		const float CAMERA_ANGULAR_VELOCITY = 0.5f;

@@ -58,8 +58,17 @@ namespace GraphicsLibrary
 
 		this->projection = perspective(45.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
 
-		this->cameraPosition = vec3(0.0f, 3.0f, -100.0f);
-		this->cameraDirection = vec3(0.0f, 0.0f, 1.0f);
+		this->cameraMode = CameraMode::FollowBus;
+
+		if (this->cameraMode == CameraMode::Static)
+		{
+			this->cameraPosition = vec3(0.0f, 3.0f, -100.0f);
+			this->cameraDirection = vec3(0.0f, 0.0f, 1.0f);
+		}
+		else if (this->cameraMode == CameraMode::FollowBus)
+		{
+
+		}
 
 		glEnable(GL_DEPTH_TEST);		
 	}
@@ -81,66 +90,78 @@ namespace GraphicsLibrary
 		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// move the camera
+		// calculate elapsed time
 		float totalTime = static_cast<float>(glfwGetTime());
 		float elapsedTime = totalTime - previousTime;
 		previousTime = totalTime;
 
-		vec3 up = vec3(0.0f, 1.0f, 0.0f);
+		// static camera
+		if (this->cameraMode == CameraMode::Static)
+		{
+			vec3 up = vec3(0.0f, 1.0f, 0.0f);
 
-		// define camera velocity / angular velocity
-		float cameraVelocity = this->pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_VELOCITY : CAMERA_VELOCITY;
-		float cameraAngularVelocity = this->pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_ANGULAR_VELOCITY : CAMERA_ANGULAR_VELOCITY;
+			// define camera velocity / angular velocity
+			float cameraVelocity = this->pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_VELOCITY : CAMERA_VELOCITY;
+			float cameraAngularVelocity = this->pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_ANGULAR_VELOCITY : CAMERA_ANGULAR_VELOCITY;
 
-		// rotate up
-		if (this->pressedKeys[GLFW_KEY_I])
-		{
-			this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, cross(this->cameraDirection, up)) * vec4(this->cameraDirection, 0.0f));
+			// rotate up
+			if (this->pressedKeys[GLFW_KEY_I])
+			{
+				this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, cross(this->cameraDirection, up)) * vec4(this->cameraDirection, 0.0f));
+			}
+			// rotate down
+			if (this->pressedKeys[GLFW_KEY_K])
+			{
+				this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -cross(this->cameraDirection, up)) * vec4(this->cameraDirection, 0.0f));
+			}
+			// rotate left
+			if (this->pressedKeys[GLFW_KEY_J])
+			{
+				this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, up) * vec4(this->cameraDirection, 0.0f));
+			}
+			// rotate right
+			if (this->pressedKeys[GLFW_KEY_L])
+			{
+				this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -up) * vec4(this->cameraDirection, 0.0f));
+			}
+			// translate up
+			if (this->pressedKeys[GLFW_KEY_KP_8])
+			{
+				this->cameraPosition += cameraVelocity * elapsedTime * up;
+			}
+			// translate down
+			if (this->pressedKeys[GLFW_KEY_KP_2])
+			{
+				this->cameraPosition -= cameraVelocity * elapsedTime * up;
+			}
+			// translate left
+			if (this->pressedKeys[GLFW_KEY_KP_4])
+			{
+				this->cameraPosition -= cameraVelocity * elapsedTime * cross(this->cameraDirection, up);
+			}
+			// translate right
+			if (this->pressedKeys[GLFW_KEY_KP_6])
+			{
+				this->cameraPosition += cameraVelocity * elapsedTime * cross(this->cameraDirection, up);
+			}
+			// translate forward
+			if (this->pressedKeys[GLFW_KEY_KP_9])
+			{
+				this->cameraPosition += cameraVelocity * elapsedTime * this->cameraDirection;
+			}
+			// translate backward
+			if (this->pressedKeys[GLFW_KEY_KP_7])
+			{
+				this->cameraPosition -= cameraVelocity * elapsedTime * this->cameraDirection;
+			}
 		}
-		// rotate down
-		if (this->pressedKeys[GLFW_KEY_K])
+		// bus camera
+		else if (this->cameraMode == CameraMode::FollowBus)
 		{
-			this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -cross(this->cameraDirection, up)) * vec4(this->cameraDirection, 0.0f));
-		}
-		// rotate left
-		if (this->pressedKeys[GLFW_KEY_J])
-		{
-			this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, up) * vec4(this->cameraDirection, 0.0f));
-		}
-		// rotate right
-		if (this->pressedKeys[GLFW_KEY_L])
-		{
-			this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -up) * vec4(this->cameraDirection, 0.0f));
-		}
-		// translate up
-		if (this->pressedKeys[GLFW_KEY_KP_8])
-		{
-			this->cameraPosition += cameraVelocity * elapsedTime * up;
-		}
-		// translate down
-		if (this->pressedKeys[GLFW_KEY_KP_2])
-		{
-			this->cameraPosition -= cameraVelocity * elapsedTime * up;
-		}
-		// translate left
-		if (this->pressedKeys[GLFW_KEY_KP_4])
-		{
-			this->cameraPosition -= cameraVelocity * elapsedTime * cross(this->cameraDirection, up);
-		}
-		// translate right
-		if (this->pressedKeys[GLFW_KEY_KP_6])
-		{
-			this->cameraPosition += cameraVelocity * elapsedTime * cross(this->cameraDirection, up);
-		}
-		// translate forward
-		if (this->pressedKeys[GLFW_KEY_KP_9])
-		{
-			this->cameraPosition += cameraVelocity * elapsedTime * this->cameraDirection;
-		}
-		// translate backward
-		if (this->pressedKeys[GLFW_KEY_KP_7])
-		{
-			this->cameraPosition -= cameraVelocity * elapsedTime * this->cameraDirection;
+			cameraPosition = vec3(0.0f, 3.0f, -8.0f);
+			cameraPosition = glm::rotate(vehicleRotation, cameraPosition) + vehiclePosition;
+			this->cameraDirection = vec3(0.0f, 0.0f, 1.0f);
+			cameraDirection = glm::rotate(vehicleRotation, cameraDirection);
 		}
 
 		// calculate the view
@@ -230,10 +251,18 @@ namespace GraphicsLibrary
 
 	void Window::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 	{
+		// handle invalid keys
+		if (key < 0)
+		{
+			return;
+		}
+
+		// Escape: exit
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		{
 			glfwSetWindowShouldClose(this->glfwWindow, GL_TRUE);
 		}
+		// M: wireframe mode
 		else if (key == GLFW_KEY_M && action == GLFW_PRESS)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -242,6 +271,20 @@ namespace GraphicsLibrary
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
+		// X: change camera mode
+		else if (key == GLFW_KEY_X && action == GLFW_PRESS)
+		{
+			switch (this->cameraMode)
+			{
+			case CameraMode::FollowBus:
+				this->cameraMode = CameraMode::Static;
+				break;
+			case CameraMode::Static:
+				this->cameraMode = CameraMode::FollowBus;
+				break;
+			}
+		}
+		// store all the other keys' state
 		else if (action == GLFW_PRESS)
 		{
 			this->pressedKeys[key] = true;
