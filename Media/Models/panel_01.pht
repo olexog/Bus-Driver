@@ -1,0 +1,74 @@
+# create main shape
+create eBOX
+let halfExtends be (10; 10; 12.25)
+let position be (0.612; -0.03; 0.344)
+add
+
+# create balconies
+create eBOX
+let halfExtends be (3.7; 2; 1.7)
+let position be (-11; -4.1; 5.9)
+add
+create eBOX
+let halfExtends be (3.7; 2; 1.7)
+let position be (-11; -4.1; 11.2)
+add
+create eBOX
+let halfExtends be (3.7; 2; 1.7)
+let position be (-11; -4.1; 16.6)
+add
+create eBOX
+let halfExtends be (3.7; 2; 1.7)
+let position be (-11; -4.1; 22)
+add
+
+create eBOX
+let halfExtends be (3.7; 3.8; 1.7)
+let position be (-11; -4.1; 5.9)
+add
+create eBOX
+let halfExtends be (3.7; 3.8; 1.7)
+let position be (-11; -4.1; 11.2)
+add
+create eBOX
+let halfExtends be (3.7; 3.8; 1.7)
+let position be (-11; -4.1; 16.6)
+add
+create eBOX
+let halfExtends be (3.7; 3.8; 1.7)
+let position be (-11; -4.1; 22)
+add
+
+create eBOX
+let halfExtends be (12; 2; 1.7)
+let position be (-11; -4.1; 5.9)
+add
+create eBOX
+let halfExtends be (12; 2; 1.7)
+let position be (-11; -4.1; 11.2)
+add
+create eBOX
+let halfExtends be (12; 2; 1.7)
+let position be (-11; -4.1; 16.6)
+add
+create eBOX
+let halfExtends be (12; 2; 1.7)
+let position be (-11; -4.1; 22)
+add
+
+create eBOX
+let halfExtends be (12; 3.8; 1.7)
+let position be (-11; -4.1; 5.9)
+add
+create eBOX
+let halfExtends be (12; 3.8; 1.7)
+let position be (-11; -4.1; 11.2)
+add
+create eBOX
+let halfExtends be (12; 3.8; 1.7)
+let position be (-11; -4.1; 16.6)
+add
+create eBOX
+let halfExtends be (12; 3.8; 1.7)
+let position be (-11; -4.1; 22)
+add

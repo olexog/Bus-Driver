@@ -1,0 +1,9 @@
+# load thingies
+load "panel_01.thy" to thingies["panel"]
+
+# place thingies
+place thingies["panel"] to (30; 0; -50)
+place thingies["panel"] to (35; 0; -100)
+place thingies["panel"] to (30; 0; -150)
+place thingies["panel"] to (35; 0; -200)
+place thingies["panel"] to (30; 0; -250)
