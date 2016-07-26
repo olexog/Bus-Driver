@@ -20,7 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DynamicActor.h" />
+    <ClInclude Include="PositionedGeometry.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="PhysicsThingy.h" />
+    <ClInclude Include="PhysicsThingyReader.h" />
     <ClInclude Include="StaticActor.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="VehicleCreate.h" />
@@ -30,7 +33,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DynamicActor.cpp" />
+    <ClCompile Include="PositionedGeometry.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="PhysicsThingy.cpp" />
+    <ClCompile Include="PhysicsThingyReader.cpp" />
     <ClCompile Include="StaticActor.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="VehicleCreate.cpp" />
