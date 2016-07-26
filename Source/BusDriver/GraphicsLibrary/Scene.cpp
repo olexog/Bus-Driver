@@ -9,16 +9,16 @@ namespace GraphicsLibrary
 
 	Scene::~Scene()
 	{
-		set<Model*> modelAdresses;
+		set<Model*> modelAddresses;
 		for (PositionedModel* positionedModel : this->models)
 		{
-			modelAdresses.insert(positionedModel->model);
+			modelAddresses.insert(positionedModel->model);
 			delete positionedModel;
 		}
 
-		for (Model* modelAdress : modelAdresses)
+		for (Model* modelAddress : modelAddresses)
 		{
-			delete modelAdress;
+			delete modelAddress;
 		}
 	}
 }

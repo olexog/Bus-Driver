@@ -38,8 +38,8 @@ PxConvexMesh* createWheelMesh(const PxF32 width, const PxF32 radius, PxPhysics& 
 
 PxRigidDynamic* createVehicleActor
 (const PxVehicleChassisData& chassisData,
-	PxMaterial** wheelMaterials, PxConvexMesh** wheelConvexMeshes, const PxU32 numWheels,
-	PxMaterial** chassisMaterials, PxConvexMesh** chassisConvexMeshes, const PxU32 numChassisMeshes,
+	PxMaterial** wheelMaterials, PxConvexMesh** wheelConvexMeshes, vector<PxShape*> &wheels, const PxU32 numWheels,
+	PxMaterial** chassisMaterials, PxConvexMesh** chassisConvexMeshes, vector<PxShape*> &chassis, const PxU32 numChassisMeshes,
 	PxPhysics& physics);
 
 ////////////////////////////////////////////////
@@ -59,7 +59,7 @@ struct VehicleDesc
 	PxU32 numWheels;
 };
 
-PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehDesc, PxPhysics* physics, PxCooking* cooking);
+PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, vector<PxShape*> &wheels, vector<PxShape*> &chassis, PxPhysics* physics, PxCooking* cooking);
 
 void customizeVehicleToLengthScale(const PxReal lengthScale, PxRigidDynamic* rigidDynamic, PxVehicleWheelsSimData* wheelsSimData, PxVehicleDriveSimData* driveSimData);
 

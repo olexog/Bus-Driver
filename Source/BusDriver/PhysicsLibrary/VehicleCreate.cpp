@@ -125,8 +125,8 @@ PxConvexMesh* createWheelMesh(const PxF32 width, const PxF32 radius, PxPhysics& 
 
 PxRigidDynamic* createVehicleActor
 (const PxVehicleChassisData& chassisData,
-	PxMaterial** wheelMaterials, PxConvexMesh** wheelConvexMeshes, const PxU32 numWheels,
-	PxMaterial** chassisMaterials, PxConvexMesh** chassisConvexMeshes, const PxU32 numChassisMeshes,
+	PxMaterial** wheelMaterials, PxConvexMesh** wheelConvexMeshes, vector<PxShape*> &wheels, const PxU32 numWheels,
+	PxMaterial** chassisMaterials, PxConvexMesh** chassisConvexMeshes, vector<PxShape*> &chassis, const PxU32 numChassisMeshes,
 	PxPhysics& physics)
 {
 	//We need a rigid body actor for the vehicle.
@@ -156,6 +156,8 @@ PxRigidDynamic* createVehicleActor
 		wheelShape->setQueryFilterData(wheelQryFilterData);
 		wheelShape->setSimulationFilterData(wheelSimFilterData);
 		wheelShape->setLocalPose(PxTransform(PxIdentity));
+
+		wheels.push_back(wheelShape);
 	}
 
 	//Add the chassis shapes to the actor.
@@ -166,6 +168,8 @@ PxRigidDynamic* createVehicleActor
 		chassisShape->setQueryFilterData(chassisQryFilterData);
 		chassisShape->setSimulationFilterData(chassisSimFilterData);
 		chassisShape->setLocalPose(PxTransform(PxIdentity));
+
+		chassis.push_back(chassisShape);
 	}
 
 	vehActor->setMass(chassisData.mMass);
@@ -479,7 +483,7 @@ namespace FourWheel
 
 } //namespace FourWheel
 
-PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* physics, PxCooking* cooking)
+PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, vector<PxShape*> &wheels, vector<PxShape*> &chassis, PxPhysics* physics, PxCooking* cooking)
 {
 	const PxVec3 chassisDims = vehicle4WDesc.chassisDims;
 	const PxF32 wheelWidth = vehicle4WDesc.wheelWidth;
@@ -522,8 +526,8 @@ PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, PxPhysics* p
 
 		veh4WActor = createVehicleActor
 		(rigidBodyData,
-			wheelMaterials, wheelConvexMeshes, numWheels,
-			chassisMaterials, chassisConvexMeshes, 1,
+			wheelMaterials, wheelConvexMeshes, wheels, numWheels,
+			chassisMaterials, chassisConvexMeshes, chassis, 1,
 			*physics);
 	}
 

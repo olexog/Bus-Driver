@@ -33,7 +33,7 @@ namespace GraphicsLibrary
 		~Window();
 
 		///<summary>Draws to the context.</summary>
-		void Draw(Scene* scene);
+		void Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<Model*> wheelModels, vector<vec3> positions, vector<quat> rotations, Model* chassisModel, vec3 chassisPosition, quat chassisRotation);
 
 		///<summary>Determines whether the window received closing events.</summary>
 		bool ShouldClose();
@@ -45,6 +45,8 @@ namespace GraphicsLibrary
 		void WindowSizeCallback(GLFWwindow* window, int width, int height);
 
 		void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+
+		bool IsPressed(int key);
 
 		float GetElapsedTime();
 	private:

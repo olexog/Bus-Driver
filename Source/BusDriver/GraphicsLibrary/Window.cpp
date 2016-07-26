@@ -75,7 +75,7 @@ namespace GraphicsLibrary
 		delete this->colouredShaderProgram;
 	}
 
-	void Window::Draw(Scene* scene)
+	void Window::Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<Model*> wheelModels, vector<vec3> positions, vector<quat> rotations, Model* chassisModel, vec3 chassisPosition, quat chassisRotation)
 	{
 		//glClearColor(0.71f, 0.27f, 0.05f, 0);
 		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -113,32 +113,32 @@ namespace GraphicsLibrary
 			this->cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -up) * vec4(this->cameraDirection, 0.0f));
 		}
 		// translate up
-		if (this->pressedKeys[GLFW_KEY_W])
+		if (this->pressedKeys[GLFW_KEY_KP_8])
 		{
 			this->cameraPosition += cameraVelocity * elapsedTime * up;
 		}
 		// translate down
-		if (this->pressedKeys[GLFW_KEY_S])
+		if (this->pressedKeys[GLFW_KEY_KP_2])
 		{
 			this->cameraPosition -= cameraVelocity * elapsedTime * up;
 		}
 		// translate left
-		if (this->pressedKeys[GLFW_KEY_A])
+		if (this->pressedKeys[GLFW_KEY_KP_4])
 		{
 			this->cameraPosition -= cameraVelocity * elapsedTime * cross(this->cameraDirection, up);
 		}
 		// translate right
-		if (this->pressedKeys[GLFW_KEY_D])
+		if (this->pressedKeys[GLFW_KEY_KP_6])
 		{
 			this->cameraPosition += cameraVelocity * elapsedTime * cross(this->cameraDirection, up);
 		}
 		// translate forward
-		if (this->pressedKeys[GLFW_KEY_E])
+		if (this->pressedKeys[GLFW_KEY_KP_9])
 		{
 			this->cameraPosition += cameraVelocity * elapsedTime * this->cameraDirection;
 		}
 		// translate backward
-		if (this->pressedKeys[GLFW_KEY_Q])
+		if (this->pressedKeys[GLFW_KEY_KP_7])
 		{
 			this->cameraPosition -= cameraVelocity * elapsedTime * this->cameraDirection;
 		}
@@ -158,6 +158,31 @@ namespace GraphicsLibrary
 		this->colouredShaderProgram->SetUniform("view", this->view);
 		this->colouredShaderProgram->SetUniform("lightPosition", lightPosition);
 		this->colouredShaderProgram->SetUniform("lightColour", lightColour);
+
+		for (int i = 0; i < wheelModels.size(); i++)
+		{
+			mat4 localTranslation;
+			localTranslation = translate(localTranslation, positions[i]);
+			mat4 localRotation = static_cast<mat4>(rotations[i]);
+			mat4 globalTranslation;
+			globalTranslation = translate(globalTranslation, vehiclePosition);
+			mat4 globalRotation = static_cast<mat4>(vehicleRotation);
+			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
+			this->colouredShaderProgram->SetUniform("model", modelMatrix);
+			wheelModels[i]->Draw(this->shaderProgram, this->colouredShaderProgram);
+		}
+
+		{
+			mat4 localTranslation;
+			localTranslation = translate(localTranslation, chassisPosition);
+			mat4 localRotation = static_cast<mat4>(chassisRotation);
+			mat4 globalTranslation;
+			globalTranslation = translate(globalTranslation, vehiclePosition);
+			mat4 globalRotation = static_cast<mat4>(vehicleRotation);
+			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
+			this->colouredShaderProgram->SetUniform("model", modelMatrix);
+			chassisModel->Draw(this->shaderProgram, this->colouredShaderProgram);
+		}
 
 		// draw the models
 		for (PositionedModel* positionedModel : scene->models)
@@ -225,6 +250,11 @@ namespace GraphicsLibrary
 		{
 			this->pressedKeys[key] = false;
 		}
+	}
+
+	bool Window::IsPressed(int key)
+	{
+		return this->pressedKeys[key];
 	}
 
 	float Window::GetElapsedTime()
