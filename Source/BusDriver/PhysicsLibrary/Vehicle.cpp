@@ -181,7 +181,7 @@ namespace PhysicsLibrary
 
 				PxVec3* vertices = new PxVec3[nbVerts];
 
-				for (int i = 0; i < nbVerts; i++)
+				for (PxU32 i = 0; i < nbVerts; i++)
 				{
 					vertices[i] = pose.transform(verts[i]);
 				}
@@ -230,7 +230,7 @@ namespace PhysicsLibrary
 
 				PxVec3* vertices = new PxVec3[nbVerts];
 
-				for (int i = 0; i < nbVerts; i++)
+				for (PxU32 i = 0; i < nbVerts; i++)
 				{
 					vertices[i] = pose.transform(verts[i]);
 				}
