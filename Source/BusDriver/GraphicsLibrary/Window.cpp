@@ -301,6 +301,20 @@ namespace GraphicsLibrary
 		}
 	}
 
+	vector<float> Window::GetAxes()
+	{
+		int count;
+		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+		vector<float> result;
+
+		for (int i = 0; i < count; i++)
+		{
+			result.push_back(axes[i]);
+		}
+
+		return result;
+	}
+
 	bool Window::IsPressed(int key)
 	{
 		return this->pressedKeys[key];

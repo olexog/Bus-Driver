@@ -52,6 +52,8 @@ namespace GraphicsLibrary
 
 		void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
+		vector<float> GetAxes();
+
 		bool IsPressed(int key);
 
 		float GetElapsedTime();

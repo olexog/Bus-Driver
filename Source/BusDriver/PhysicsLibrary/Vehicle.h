@@ -31,6 +31,7 @@ namespace PhysicsLibrary
 		void Accelerate(float measure);
 		void Brake(float measure);
 		void Turn(float measure);
+		void Handbrake(float measure);
 
 		vector<vec3> GetShape();
 

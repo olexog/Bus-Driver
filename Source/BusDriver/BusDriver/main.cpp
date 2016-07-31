@@ -32,12 +32,12 @@ int main()
 
 	vector<StaticActor*> staticActors;
 
-	int count = 0;
-	for (PositionedModel* model : scene->models)
-	{
-		if (count++ > 10) break;
-		staticActors.push_back(new StaticActor(physics, model->model->colouredVertexArray->debugVertices, model->position, model->rotation));
-	}
+	//int count = 0;
+	//for (PositionedModel* model : scene->models)
+	//{
+	//	if (count++ > 10) break;
+	//	staticActors.push_back(new StaticActor(physics, model->model->colouredVertexArray->debugVertices, model->position, model->rotation));
+	//}
 
 	Model* boxModel = ModelReader::Read("Models\\box.obj");
 	PositionedModel* positionedBoxModel = new PositionedModel(boxModel, box->GetPosition(), box->GetRotation());
@@ -89,6 +89,31 @@ int main()
 		else
 		{
 			bus->Turn(0.0f);
+		}
+
+		if (window.IsPressed(GLFW_KEY_SPACE))
+		{
+			bus->Handbrake(1.0f);
+		}
+		else
+		{
+			bus->Handbrake(0.0f);
+		}
+
+		if (glfwJoystickPresent(GLFW_JOYSTICK_1) == GL_TRUE)
+		{
+			vector<float> axes = window.GetAxes();
+			
+			bus->Turn(-axes[0]);
+			
+			if (axes[1] < 0)
+			{
+				bus->Accelerate(-axes[1]);
+			}
+			else
+			{
+				bus->Brake(axes[1]);
+			}
 		}
 
 		// Simulate physics

@@ -156,6 +156,11 @@ namespace PhysicsLibrary
 		this->gVehicleInputData.setAnalogSteer(measure);
 	}
 
+	void Vehicle::Handbrake(float measure)
+	{
+		this->gVehicleInputData.setAnalogHandbrake(measure);
+	}
+
 	vector<vec3> Vehicle::GetShape()
 	{
 		vector<vec3> result;
