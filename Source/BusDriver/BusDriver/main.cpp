@@ -8,6 +8,7 @@
 #include "ColouredVertexArray.h"
 
 #include "Physics.h"
+#include "PhysicsScene.h"
 #include "StaticActor.h"
 #include "DynamicActor.h"
 #include "Vehicle.h"
@@ -19,25 +20,25 @@ using namespace glm;
 
 int main()
 {
-	// creates the physics environment
+	// create the physics environment
 	Physics* physics = new Physics();
 
-	DynamicActor* box = new DynamicActor(physics, vec3(1.0f, 1.0f, 1.0f), vec3(0, 5, 0));
-	Vehicle* bus = new Vehicle(physics);
+	// initialize the physics scene
+	PhysicsScene* physicsScene = new PhysicsScene(physics);
 
-	// creates the window
+	// add a moving box to the scene
+	DynamicActor* box = new DynamicActor(physics, vec3(1.0f, 1.0f, 1.0f), vec3(0, 5, 0));
+	physicsScene->AddActor(box);
+
+	// add a movable vehicle to the scene
+	Vehicle* bus = new Vehicle(physics);
+	physicsScene->AddActor(bus);
+	bus->SetToRestState();
+
+	// create the window
 	Window window = Window(640, 480, "Bus Driver");
 
 	Scene* scene = SceneReader::Read("Models\\simple.map");
-
-	vector<StaticActor*> staticActors;
-
-	//int count = 0;
-	//for (PositionedModel* model : scene->models)
-	//{
-	//	if (count++ > 10) break;
-	//	staticActors.push_back(new StaticActor(physics, model->model->colouredVertexArray->debugVertices, model->position, model->rotation));
-	//}
 
 	Model* boxModel = ModelReader::Read("Models\\box.obj");
 	PositionedModel* positionedBoxModel = new PositionedModel(boxModel, box->GetPosition(), box->GetRotation());
@@ -116,12 +117,11 @@ int main()
 			}
 		}
 
-		// Simulate physics
+		// simulate physics
 		float elapsedTime = window.GetElapsedTime();
-		bus->Update(elapsedTime);
-		physics->Simulate(elapsedTime);
+		physicsScene->Simulate(elapsedTime);
 
-		// Draw scene
+		// draw scene
 		window.Draw(scene, bus->GetPosition(), bus->GetRotation(), physicsWheelModels, bus->GetWheelPositions(), bus->GetWheelRotations(), physicsChassisModel, bus->GetChassisPosition(), bus->GetChassisRotation(), wheelModel, chassisModel);
 
 		window.SwapBuffers();

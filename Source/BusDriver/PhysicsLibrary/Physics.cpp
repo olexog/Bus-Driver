@@ -26,22 +26,11 @@ namespace PhysicsLibrary
 		obstacleSimFilterData.word0 = COLLISION_FLAG_GROUND;
 		obstacleSimFilterData.word1 = COLLISION_FLAG_GROUND_AGAINST;
 
-		// create scene description
-		PxSceneDesc sceneDesc(this->physics->getTolerancesScale());
-		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
-
-		PxU32 numWorkers = 1;
-		this->dispatcher = PxDefaultCpuDispatcherCreate(numWorkers);
-		sceneDesc.cpuDispatcher = this->dispatcher;
-		sceneDesc.filterShader = VehicleFilterShader;
-
-		this->scene = this->physics->createScene(sceneDesc);
-
 		this->material = this->physics->createMaterial(0.5f, 0.5f, 0.6f);
 
 		this->cooking = PxCreateCooking(PX_PHYSICS_VERSION, *this->foundation, PxCookingParams(PxTolerancesScale()));
 
-		this->plane = PxCreatePlane(*this->physics, PxPlane(0, 1, 0, 0), *this->material);
+		//this->plane = PxCreatePlane(*this->physics, PxPlane(0, 1, 0, 0), *this->material);
 		//this->scene->addActor(*this->plane);
 	}
 
@@ -58,11 +47,6 @@ namespace PhysicsLibrary
 		// TODO: release parts
 	}
 
-	void Physics::Simulate(float elapsedTime)
-	{
-		this->scene->simulate(elapsedTime);
-		this->scene->fetchResults(true);
-	}
 	PxPhysics* Physics::GetPhysics()
 	{
 		return this->physics;
@@ -81,15 +65,5 @@ namespace PhysicsLibrary
 	PxAllocatorCallback& Physics::GetAllocator()
 	{
 		return this->allocator;
-	}
-
-	PxScene* Physics::GetScene()
-	{
-		return this->scene;
-	}
-
-	void Physics::AddActor(PxActor &actor)
-	{
-		this->scene->addActor(actor);
 	}
 }

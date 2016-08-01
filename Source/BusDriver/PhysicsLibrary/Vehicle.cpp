@@ -92,52 +92,48 @@ namespace PhysicsLibrary
 	Vehicle::Vehicle(Physics* physics)
 	{
 		this->physics = physics;
-		//Create the batched scene queries for the suspension raycasts.
-		gVehicleSceneQueryData = VehicleSceneQueryData::allocate(1, PX_MAX_NB_WHEELS, 1, physics->GetAllocator());
-		gBatchQuery = VehicleSceneQueryData::setUpBatchedSceneQuery(0, *gVehicleSceneQueryData, physics->GetScene());
 
 		//Create the friction table for each combination of tire and surface type.
 		gFrictionPairs = createFrictionPairs(physics->GetMaterial());
 
 		//Create a plane to drive on.
 		gGroundPlane = createDrivablePlane(physics->GetMaterial(), physics->GetPhysics());
-		physics->AddActor(*gGroundPlane);
 
 		VehicleDesc vehicleDesc = initVehicleDesc(physics->GetMaterial());
 		gVehicle4W = createVehicle4W(vehicleDesc, wheels, chassis, physics->GetPhysics(), physics->GetCooking());
 		PxTransform startTransform(PxVec3(0, (vehicleDesc.chassisDims.y*0.5f + vehicleDesc.wheelRadius + 1.0f), 0), PxQuat(PxPi, PxVec3(0, 1, 0)));
 		gVehicle4W->getRigidDynamicActor()->setGlobalPose(startTransform);
-		physics->AddActor(*gVehicle4W->getRigidDynamicActor());
-
-		gVehicle4W->setToRestState();
-		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
-		gVehicle4W->mDriveDynData.setUseAutoGears(true);
 	}
 
 	Vehicle::~Vehicle()
 	{
 	}
 
-	void Vehicle::Update(float elapsedTime)
+	void Vehicle::SetToRestState()
 	{
-		PxVehicleDrive4WSmoothAnalogRawInputsAndSetAnalogInputs(gPadSmoothingData, gSteerVsForwardSpeedTable, gVehicleInputData, elapsedTime, gIsVehicleInAir, *gVehicle4W);
+		gVehicle4W->setToRestState();
+		gVehicle4W->mDriveDynData.forceGearChange(PxVehicleGearsData::eFIRST);
+		gVehicle4W->mDriveDynData.setUseAutoGears(true);
+	}
 
-		//Raycasts.
+	void Vehicle::Update(float elapsedTime, PxBatchQuery* batchQuery, PxRaycastQueryResult* raycastResults, PxU32 raycastResultsSize, PxVec3 gravity)
+	{
+		// suspension raycasts
 		PxVehicleWheels* vehicles[1] = { gVehicle4W };
-		PxRaycastQueryResult* raycastResults = gVehicleSceneQueryData->getRaycastQueryResultBuffer(0);
-		const PxU32 raycastResultsSize = gVehicleSceneQueryData->getRaycastQueryResultBufferSize();
-		PxVehicleSuspensionRaycasts(gBatchQuery, 1, vehicles, raycastResultsSize, raycastResults);
+		PxVehicleSuspensionRaycasts(batchQuery, 1, vehicles, raycastResultsSize, raycastResults);
 
-		//Vehicle update.
-		const PxVec3 grav = this->physics->GetScene()->getGravity();
+		// update vehicle
 		PxWheelQueryResult wheelQueryResults[PX_MAX_NB_WHEELS];
 		PxVehicleWheelQueryResult vehicleQueryResults[1] = { { wheelQueryResults, gVehicle4W->mWheelsSimData.getNbWheels() } };
-		PxVehicleUpdates(elapsedTime, grav, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
+		PxVehicleUpdates(elapsedTime, gravity, *gFrictionPairs, 1, vehicles, vehicleQueryResults);
 
 		//Work out if the vehicle is in the air.
 		gIsVehicleInAir = gVehicle4W->getRigidDynamicActor()->isSleeping() ? false : PxVehicleIsInAir(vehicleQueryResults[0]);
+	}
 
-		std::cout << this->gVehicle4W->getRigidDynamicActor()->getLinearVelocity().magnitude() << endl;
+	void Vehicle::UpdateInput(float elapsedTime)
+	{
+		PxVehicleDrive4WSmoothAnalogRawInputsAndSetAnalogInputs(gPadSmoothingData, gSteerVsForwardSpeedTable, gVehicleInputData, elapsedTime, gIsVehicleInAir, *gVehicle4W);
 	}
 
 	void Vehicle::Accelerate(float measure)
@@ -159,6 +155,12 @@ namespace PhysicsLibrary
 	void Vehicle::Handbrake(float measure)
 	{
 		this->gVehicleInputData.setAnalogHandbrake(measure);
+	}
+
+	void Vehicle::AddToScene(PxScene* scene)
+	{
+		scene->addActor(*gVehicle4W->getRigidDynamicActor());
+		scene->addActor(*gGroundPlane);
 	}
 
 	vector<vec3> Vehicle::GetShape()

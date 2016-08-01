@@ -33,7 +33,11 @@ namespace PhysicsLibrary
 
 		PxShape* cubeShape = this->actor->createShape(geometry, *physics->GetMaterial(), PxTransform(PxIdentity));
 		cubeShape->setSimulationFilterData(physics->obstacleSimFilterData);
-		physics->AddActor(*this->actor);
+	}
+
+	void StaticActor::AddToScene(PxScene* scene)
+	{
+		scene->addActor(*this->actor);
 	}
 
 	StaticActor::~StaticActor()

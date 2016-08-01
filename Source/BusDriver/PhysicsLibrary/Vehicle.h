@@ -26,12 +26,17 @@ namespace PhysicsLibrary
 		Vehicle(Physics* physics);
 		~Vehicle();
 
-		void Update(float elapsedTime);
+		void SetToRestState();
+
+		void Update(float elapsedTime, PxBatchQuery* batchQuery, PxRaycastQueryResult* raycastResults, PxU32 raycastResultsSize, PxVec3 gravity);
+		void UpdateInput(float elapsedTime);
 
 		void Accelerate(float measure);
 		void Brake(float measure);
 		void Turn(float measure);
 		void Handbrake(float measure);
+
+		void AddToScene(PxScene* scene);
 
 		vector<vec3> GetShape();
 
@@ -48,8 +53,6 @@ namespace PhysicsLibrary
 		quat GetChassisRotation();
 	private:
 		Physics* physics;
-		VehicleSceneQueryData*	gVehicleSceneQueryData = NULL;
-		PxBatchQuery*			gBatchQuery = NULL;
 
 		PxVehicleDrivableSurfaceToTireFrictionPairs* gFrictionPairs = NULL;
 

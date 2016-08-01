@@ -20,8 +20,6 @@ namespace GraphicsLibrary
 		VertexArray(vector<vec3> vertices, vector<vec3> normals);
 		~VertexArray();
 		virtual void Draw(ShaderProgram* shaderProgram);
-		// TO DEBUG
-		vector<vec3> debugVertices;
 	protected:
 		GLuint id;
 		int vertexCount;

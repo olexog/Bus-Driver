@@ -14,15 +14,10 @@ namespace PhysicsLibrary
 		Physics();
 		~Physics();
 
-		void Simulate(float elapsedTime);
-
 		PxPhysics* GetPhysics();
 		PxMaterial* GetMaterial();
 		PxCooking* GetCooking();
 		PxAllocatorCallback& GetAllocator();
-		PxScene* GetScene();
-
-		void AddActor(PxActor &actor);
 
 		PxFilterData obstacleSimFilterData;
 	private:
@@ -36,8 +31,6 @@ namespace PhysicsLibrary
 
 		PxVisualDebuggerConnection* connection;
 
-		PxDefaultCpuDispatcher* dispatcher;
-		PxScene* scene;
 		PxMaterial* material;
 
 		PxRigidStatic* plane;

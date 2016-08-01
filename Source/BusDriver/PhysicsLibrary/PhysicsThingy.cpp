@@ -15,7 +15,7 @@ namespace PhysicsLibrary
 			shape->setSimulationFilterData(physics->obstacleSimFilterData);
 		}
 
-		physics->AddActor(*this->actor);
+		//physics->AddActor(*this->actor);
 	}
 
 	PhysicsThingy::~PhysicsThingy()

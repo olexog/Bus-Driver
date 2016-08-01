@@ -86,8 +86,8 @@ namespace GraphicsLibrary
 
 	void Window::Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<Model*> physicsWheelModels, vector<vec3> positions, vector<quat> rotations, Model* physicsChassisModel, vec3 chassisPosition, quat chassisRotation, Model* wheelModel, Model* chassisModel)
 	{
-		//glClearColor(0.71f, 0.27f, 0.05f, 0);
-		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+		glClearColor(0.71f, 0.27f, 0.05f, 0);
+		//glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// calculate elapsed time

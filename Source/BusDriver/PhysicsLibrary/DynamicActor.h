@@ -18,6 +18,8 @@ namespace PhysicsLibrary
 		DynamicActor(Physics* physics, vec3 halfExtends, vec3 position);
 		~DynamicActor();
 
+		void AddToScene(PxScene* scene);
+
 		vec3 GetPosition();
 		quat GetRotation();
 	private:

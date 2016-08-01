@@ -8,12 +8,16 @@ namespace PhysicsLibrary
 		this->actor = physics->GetPhysics()->createRigidDynamic(PxTransform(Pxposition));
 		PxShape* cubeShape = this->actor->createShape(PxBoxGeometry(0.5f, 0.5f, 0.5f), *physics->GetMaterial(), PxTransform(PxIdentity));
 		cubeShape->setSimulationFilterData(physics->obstacleSimFilterData);
-		physics->AddActor(*this->actor);
 	}
 
 	DynamicActor::~DynamicActor()
 	{
 
+	}
+
+	void DynamicActor::AddToScene(PxScene* scene)
+	{
+		scene->addActor(*this->actor);
 	}
 	
 	vec3 DynamicActor::GetPosition()

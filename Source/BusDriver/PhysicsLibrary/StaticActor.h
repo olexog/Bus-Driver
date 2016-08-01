@@ -20,6 +20,8 @@ namespace PhysicsLibrary
 	public:
 		StaticActor(Physics* physics, vector<vec3> points, vec3 position, quat orientation);
 		~StaticActor();
+
+		void AddToScene(PxScene* scene);
 	private:
 		PxRigidStatic* actor;
 	};
