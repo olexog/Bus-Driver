@@ -17,6 +17,9 @@ namespace GraphicsLibrary
 	class Utility
 	{
 	public:
+		///<summary>Represents the whitespace characters.</summary>
+		static constexpr const char* WHITESPACES = " \t\r\n";
+
 		static string GetDirectory(string fileName);
 
 		static string TrimStart(string s);

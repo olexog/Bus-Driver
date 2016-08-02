@@ -88,10 +88,10 @@ namespace GraphicsLibrary
 		for (PositionedModel* positionedModel : scene->models)
 		{
 			mat4 modelMatrix;
-			modelMatrix = translate(modelMatrix, positionedModel->position);
-			modelMatrix *= static_cast<mat4>(positionedModel->rotation);
+			modelMatrix = translate(modelMatrix, *positionedModel->GetPosition());
+			modelMatrix *= static_cast<mat4>(*positionedModel->GetOrientation());
 			this->colouredShaderProgram->SetUniform("model", modelMatrix);
-			positionedModel->model->Draw(this->shaderProgram, this->colouredShaderProgram);
+			positionedModel->GetModel()->Draw(this->shaderProgram, this->colouredShaderProgram);
 		}
 	}
 

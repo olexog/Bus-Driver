@@ -12,13 +12,17 @@ namespace GraphicsLibrary
 	class PositionedModel
 	{
 	public:
-		PositionedModel();
-		PositionedModel(Model* model, vec3 position, quat rotation) : model(model), position(position), rotation(rotation) {}
+		PositionedModel(Model* model, vec3* position, quat* orientation) : model(model), position(position), orientation(orientation) {}
 		~PositionedModel();
 
+		Model* GetModel();
+		vec3* GetPosition();
+		quat* GetOrientation();
+
+	private:
 		Model* model;
-		vec3 position;
-		quat rotation;
+		vec3* position;
+		quat* orientation;
 	};
 }
 

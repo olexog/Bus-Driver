@@ -9,9 +9,10 @@
 // GLFW must be included after gl.h - which is in OpenGl.h
 #include <GLFW/glfw3.h>
 
-#include "ShaderProgram.h"
+#include "MapReader.h"
+
 #include "ModelReader.h"
-#include "SceneReader.h"
+#include "ShaderProgram.h"
 #include "VertexArray.h"
 #include "ColouredVertexArray.h"
 
@@ -308,11 +309,13 @@ int main()
 	// create the window
 	openGl = new OpenGl(640, 480);
 
-	Scene* scene = SceneReader::Read("Models\\simple.map");
+	Map map = MapReader::Read("Models\\city.map");
 
-	Model* boxModel = ModelReader::Read("Models\\box.obj");
-	PositionedModel* positionedBoxModel = new PositionedModel(boxModel, box->GetPosition(), box->GetRotation());
-	scene->models.push_back(positionedBoxModel);
+	Scene* scene = map.CreateScene();
+
+	//Model* boxModel = ModelReader::Read("Models\\box.obj");
+	//PositionedModel* positionedBoxModel = new PositionedModel(boxModel, box->GetPosition(), box->GetRotation());
+	//scene->models.push_back(positionedBoxModel);
 
 	vector<vector<vec3>> wheelVertices = bus->GetWheelVertices();
 	vector<Model*> physicsWheelModels;
