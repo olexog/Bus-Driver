@@ -1,8 +1,8 @@
-#include "PhysicsScene.h"
+#include "Playground.h"
 
 namespace PhysicsLibrary
 {
-	PhysicsScene::PhysicsScene(Physics* physics)
+	Playground::Playground(Physics* physics)
 	{
 		// create scene description
 		PxSceneDesc sceneDesc(physics->GetPhysics()->getTolerancesScale());
@@ -20,28 +20,32 @@ namespace PhysicsLibrary
 		this->batchQuery = VehicleSceneQueryData::setUpBatchedSceneQuery(0, *this->vehicleSceneQueryData, this->scene);
 	}
 
-	PhysicsScene::~PhysicsScene()
+	Playground::~Playground()
 	{
-
+		for (Actor* actor : this->actors)
+		{
+			delete actor;
+		}
 	}
 
-	void PhysicsScene::AddActor(StaticActor* actor)
+	void Playground::AddActor(Actor* actor)
+	{
+		actor->AddToScene(this->scene);
+		this->actors.push_back(actor);
+	}
+
+	void Playground::AddActor(DynamicActor* actor)
 	{
 		actor->AddToScene(this->scene);
 	}
 
-	void PhysicsScene::AddActor(DynamicActor* actor)
-	{
-		actor->AddToScene(this->scene);
-	}
-
-	void PhysicsScene::AddActor(Vehicle* actor)
+	void Playground::AddActor(Vehicle* actor)
 	{
 		actor->AddToScene(this->scene);
 		this->vehicles.push_back(actor);
 	}
 
-	void PhysicsScene::Simulate(float elapsedTime)
+	void Playground::Simulate(float elapsedTime)
 	{
 		PxRaycastQueryResult* raycastResults = this->vehicleSceneQueryData->getRaycastQueryResultBuffer(0);
 		const PxU32 raycastResultsSize = this->vehicleSceneQueryData->getRaycastQueryResultBufferSize();

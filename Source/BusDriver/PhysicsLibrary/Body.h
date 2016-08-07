@@ -7,7 +7,7 @@
 #include <PxPhysicsAPI.h>
 
 #include "Physics.h"
-#include "PositionedGeometry.h"
+#include "Shape.h"
 
 using namespace std;
 using namespace glm;
@@ -15,12 +15,14 @@ using namespace physx;
 
 namespace PhysicsLibrary
 {
-	class PhysicsThingy
+	class Body
 	{
 	public:
-		PhysicsThingy(Physics* physics, vec3 position, vector<PositionedGeometry> positionedGeometries);
-		~PhysicsThingy();
+		Body(vector<Shape*> shapes);
+		~Body();
+
+		void AddToActor(Physics* physics, PxRigidActor* actor);
 	private:
-		PxRigidActor* actor;
+		vector<Shape*> shapes;
 	};
 }

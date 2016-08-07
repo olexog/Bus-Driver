@@ -3,9 +3,10 @@
 ///<summary>Represents the whitespace characters.</summary>
 const char* WHITESPACES = " \t\r\n";
 
-Thingy* ThingyReader::Read(string fileName)
+Thingy* ThingyReader::Read(Physics* physics, string fileName)
 {
 	Model* model;
+	Body* body;
 
 	// open file stream
 	ifstream file = ifstream(fileName);
@@ -73,7 +74,7 @@ Thingy* ThingyReader::Read(string fileName)
 			}
 			else if (variableName == "physicsThingy")
 			{
-
+				body = BodyReader::Read(physics, Utility::GetDirectory(fileName) + relativeFileName);
 			}
 			// if variable is unknown
 			else
@@ -88,5 +89,5 @@ Thingy* ThingyReader::Read(string fileName)
 		}
 	}
 
-	return new Thingy(model);
+	return new Thingy(model, body);
 }

@@ -8,12 +8,13 @@
 #include "Map.h"
 #include "ThingyReader.h"
 #include "Utility.h"
+#include "Physics.h"
 
 using namespace std;
 
 class MapReader
 {
 public:
-	static Map Read(string fileName);
+	static Map Read(Physics* physics, string fileName);
 };
 

@@ -7,7 +7,7 @@
 #include "VehicleRaycast.h"
 
 #include "Physics.h"
-#include "StaticActor.h"
+#include "Actor.h"
 #include "DynamicActor.h"
 #include "Vehicle.h"
 
@@ -16,18 +16,18 @@ using namespace physx;
 
 namespace PhysicsLibrary
 {
-	class PhysicsScene
+	class Playground
 	{
 	public:
-		PhysicsScene(Physics* physics);
-		~PhysicsScene();
+		Playground(Physics* physics);
+		~Playground();
 
-		void AddActor(StaticActor* actor);
+		void AddActor(Actor* actor);
 		void AddActor(DynamicActor* actor);
 		void AddActor(Vehicle* actor);
 
 		void Simulate(float elapsedTime);
-	private:
+	//private:
 		PxScene* scene;
 		PxDefaultCpuDispatcher* dispatcher;
 
@@ -35,5 +35,6 @@ namespace PhysicsLibrary
 		PxBatchQuery* batchQuery;
 
 		vector<Vehicle*> vehicles;
+		vector<Actor*> actors;
 	};
 }

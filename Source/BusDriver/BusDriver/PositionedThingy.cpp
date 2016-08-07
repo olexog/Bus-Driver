@@ -9,6 +9,8 @@ PositionedThingy::PositionedThingy(Thingy* thingy, vec3* position, quat* orienta
 
 PositionedThingy::~PositionedThingy()
 {
+	delete this->position;
+	delete this->orientation;
 }
 
 Thingy* PositionedThingy::GetThingy()

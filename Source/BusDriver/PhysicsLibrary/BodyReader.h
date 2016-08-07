@@ -5,17 +5,19 @@
 #include <iostream>
 #include <vector>
 
-#include "PositionedGeometry.h"
+#include "Physics.h"
+#include "Shape.h"
+#include "Body.h"
 
 using namespace std;
 
 namespace PhysicsLibrary
 {
 	///<summary>This class is to read the contents of a physics thingy file.</summary>
-	class PhysicsThingyReader
+	class BodyReader
 	{
 	public:
 		///<summary>Reads the contents of the given physics thingy file and returns a vector of positioned geometries.</summary>
-		static vector<PositionedGeometry> Read(string fileName);
+		static Body* Read(Physics* physics, string fileName);
 	};
 }

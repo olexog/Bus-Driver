@@ -17,8 +17,7 @@
 #include "ColouredVertexArray.h"
 
 #include "Physics.h"
-#include "PhysicsScene.h"
-#include "StaticActor.h"
+#include "Playground.h"
 #include "DynamicActor.h"
 #include "Vehicle.h"
 
@@ -291,31 +290,38 @@ int main()
 	glfwSetWindowSizeCallback(glfwWindow, WindowSize);
 	glfwSetKeyCallback(glfwWindow, Key);
 
-	// create the physics environment
-	Physics* physics = new Physics();
-
-	// initialize the physics scene
-	PhysicsScene* physicsScene = new PhysicsScene(physics);
-
-	// add a moving box to the scene
-	DynamicActor* box = new DynamicActor(physics, vec3(1.0f, 1.0f, 1.0f), vec3(0, 5, 0));
-	physicsScene->AddActor(box);
-
-	// add a movable vehicle to the scene
-	Vehicle* bus = new Vehicle(physics);
-	physicsScene->AddActor(bus);
-	bus->SetToRestState();
-
 	// create the window
 	openGl = new OpenGl(640, 480);
 
-	Map map = MapReader::Read("Models\\city.map");
+	// create the physics environment
+	Physics* physics = new Physics();
+
+	Map map = MapReader::Read(physics, "Models\\city.map");
 
 	Scene* scene = map.CreateScene();
+
+	Playground* playground = map.CreatePlayground(physics);
+
+	// add a moving box to the scene
+	//DynamicActor* box = new DynamicActor(physics, vec3(1.0f, 1.0f, 1.0f), vec3(0, 5, 0));
+	//physicsScene->AddActor(box);
+
+	// add a movable vehicle to the scene
+	Vehicle* bus = new Vehicle(physics);
+	playground->AddActor(bus);
+	bus->SetToRestState();
 
 	//Model* boxModel = ModelReader::Read("Models\\box.obj");
 	//PositionedModel* positionedBoxModel = new PositionedModel(boxModel, box->GetPosition(), box->GetRotation());
 	//scene->models.push_back(positionedBoxModel);
+
+	vector<Model*> panelVertices;
+	vector<vec3> panelPositions;
+	for (Actor* actor : playground->actors)
+	{
+		panelVertices.push_back(new Model(new ColouredVertexArray(actor->GetPoints(), actor->GetPoints(), actor->GetPoints(), actor->GetPoints(), actor->GetPoints())));
+		panelPositions.push_back(actor->GetPosition());
+	}
 
 	vector<vector<vec3>> wheelVertices = bus->GetWheelVertices();
 	vector<Model*> physicsWheelModels;
@@ -354,7 +360,7 @@ int main()
 		SetControlls(bus);
 
 		// simulate physics
-		physicsScene->Simulate(elapsedTime);
+		playground->Simulate(elapsedTime);
 
 		// update the camera
 		UpdateCamera(elapsedTime, bus);
@@ -363,7 +369,7 @@ int main()
 		openGl->SetCamera(cameraPosition, cameraDirection);
 
 		// draw scene
-		openGl->Draw(scene, bus->GetPosition(), bus->GetRotation(), physicsWheelModels, bus->GetWheelPositions(), bus->GetWheelRotations(), physicsChassisModel, bus->GetChassisPosition(), bus->GetChassisRotation(), wheelModel, chassisModel);
+		openGl->Draw(scene, bus->GetPosition(), bus->GetRotation(), physicsWheelModels, bus->GetWheelPositions(), bus->GetWheelRotations(), physicsChassisModel, bus->GetChassisPosition(), bus->GetChassisRotation(), wheelModel, chassisModel, panelVertices, panelPositions);
 
 		// swap the screen buffers
 		glfwSwapBuffers(glfwWindow);

@@ -6,12 +6,16 @@
 #include "Utility.h"
 #include "Thingy.h"
 #include "ModelReader.h"
+#include "Physics.h"
+#include "BodyReader.h"
 
 using namespace std;
+using namespace GraphicsLibrary;
+using namespace PhysicsLibrary;
 
 class ThingyReader
 {
 public:
-	static Thingy* Read(string fileName);
+	static Thingy* Read(Physics* physics, string fileName);
 };
 

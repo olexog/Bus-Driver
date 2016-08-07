@@ -36,19 +36,19 @@
     <ClInclude Include="DynamicActor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StaticActor.h">
+    <ClInclude Include="Shape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsThingyReader.h">
+    <ClInclude Include="Body.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsThingy.h">
+    <ClInclude Include="Actor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PositionedGeometry.h">
+    <ClInclude Include="Playground.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsScene.h">
+    <ClInclude Include="BodyReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -74,19 +74,19 @@
     <ClCompile Include="DynamicActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StaticActor.cpp">
+    <ClCompile Include="Shape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsThingyReader.cpp">
+    <ClCompile Include="Body.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsThingy.cpp">
+    <ClCompile Include="Actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PositionedGeometry.cpp">
+    <ClCompile Include="Playground.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsScene.cpp">
+    <ClCompile Include="BodyReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

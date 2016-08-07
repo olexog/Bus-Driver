@@ -1,4 +1,4 @@
-#include "PhysicsThingyReader.h"
+#include "BodyReader.h"
 
 namespace PhysicsLibrary
 {
@@ -26,10 +26,10 @@ namespace PhysicsLibrary
 	///<summary>Represents the whitespace characters.</summary>
 	const char* WHITESPACES = " \t\r\n";
 
-	vector<PositionedGeometry> PhysicsThingyReader::Read(string fileName)
+	Body* BodyReader::Read(Physics* physics, string fileName)
 	{
-		// initialize positioned geometry vector
-		vector<PositionedGeometry> result = vector<PositionedGeometry>();
+		// initialize shape vector
+		vector<Shape*> result = vector<Shape*>();
 
 		// open file stream
 		ifstream file = ifstream(fileName);
@@ -86,7 +86,7 @@ namespace PhysicsLibrary
 				// if geometry type is unknown
 				else
 				{
-					cout << "Unable to create geometry due to unknown geometry type \"" << geometryType << "\" at line " << lineIndex << " while reading physics thingy file " << fileName << "." << endl;
+					cout << "Unable to create geometry due to unknown geometry type \"" << geometryType << "\" at line " << lineIndex << " while reading body file " << fileName << "." << endl;
 				}
 			}
 			// if command is "let"
@@ -94,7 +94,7 @@ namespace PhysicsLibrary
 			{
 				// read geometry parameter
 				char geometryParameter[256];
-				sscanf_s(token, "255s", geometryParameter, 256);
+				sscanf_s(token, "%255s", geometryParameter, 256);
 				token += strlen(geometryParameter);
 				// skip whitespaces
 				token += strspn(token, WHITESPACES);
@@ -107,7 +107,7 @@ namespace PhysicsLibrary
 					{
 						// read "be"
 						char substantiveVerb[256];
-						sscanf_s(token, "255s", substantiveVerb, 256);
+						sscanf_s(token, "%255s", substantiveVerb, 256);
 						token += strlen(substantiveVerb);
 						// skip whitespaces
 						token += strspn(token, WHITESPACES);
@@ -115,7 +115,7 @@ namespace PhysicsLibrary
 						// is substantive verb is not "be"
 						if (strcmp(substantiveVerb, "be") != 0)
 						{
-							cout << "\"be\" expected after " << ToString(actualGeometry) << " parameter \"" << geometryParameter << "\" at line " << lineIndex << " while reading physics thingy file " << fileName << "." << endl;
+							cout << "\"be\" expected after " << ToString(actualGeometry) << " parameter \"" << geometryParameter << "\" at line " << lineIndex << " while reading body file " << fileName << "." << endl;
 						}
 
 						// read position vector
@@ -129,7 +129,7 @@ namespace PhysicsLibrary
 					// if geometry parameter is invalid for the actual geometry
 					else
 					{
-						cout << "Unknown " << ToString(actualGeometry) << " parameter \"" << geometryParameter << "\" at line " << lineIndex << " while reading physics thingy file " << fileName << "." << endl;
+						cout << "Unknown " << ToString(actualGeometry) << " parameter \"" << geometryParameter << "\" at line " << lineIndex << " while reading body file " << fileName << "." << endl;
 					}
 				}
 				// if geometry parameter is "halfExtends"
@@ -140,7 +140,7 @@ namespace PhysicsLibrary
 					{
 						// read "be"
 						char substantiveVerb[256];
-						sscanf_s(token, "255s", substantiveVerb, 256);
+						sscanf_s(token, "%255s", substantiveVerb, 256);
 						token += strlen(substantiveVerb);
 						// skip whitespaces
 						token += strspn(token, WHITESPACES);
@@ -148,7 +148,7 @@ namespace PhysicsLibrary
 						// is substantive verb is not "be"
 						if (strcmp(substantiveVerb, "be") != 0)
 						{
-							cout << "\"be\" expected after " << ToString(actualGeometry) << " parameter \"" << geometryParameter << "\" at line " << lineIndex << " while reading physics thingy file " << fileName << "." << endl;
+							cout << "\"be\" expected after " << ToString(actualGeometry) << " parameter \"" << geometryParameter << "\" at line " << lineIndex << " while reading body file " << fileName << "." << endl;
 						}
 
 						// read half extends
@@ -163,7 +163,7 @@ namespace PhysicsLibrary
 				// if geometry parameter is unknown
 				else
 				{
-					cout << "Unknown " << ToString(actualGeometry) << " parameter \"" << geometryParameter << "\" at line " << lineIndex << " while reading physics thingy file " << fileName << "." << endl;
+					cout << "Unknown " << ToString(actualGeometry) << " parameter \"" << geometryParameter << "\" at line " << lineIndex << " while reading body file " << fileName << "." << endl;
 				}
 			}
 			// if command is "add"
@@ -174,8 +174,7 @@ namespace PhysicsLibrary
 				{
 					// add positioned geometry
 					PxGeometry* geometry = new PxBoxGeometry(halfExtends.x, halfExtends.y, halfExtends.z);
-					PositionedGeometry positionedGeometry = PositionedGeometry(geometry, position);
-					result.push_back(positionedGeometry);
+					result.push_back(new Shape(physics, geometry, position, PxQuat(PxIdentity)));
 
 					// set actual geometry type to the default value
 					actualGeometry = GeometryType::None;
@@ -183,17 +182,17 @@ namespace PhysicsLibrary
 				// if actual geometry type is at the default value
 				else
 				{
-					cout << "Unable to add nothing at line " << lineIndex << " while reading physics thingy file " << fileName << "." << endl;
+					cout << "Unable to add nothing at line " << lineIndex << " while reading body file " << fileName << "." << endl;
 				}
 			}
 			// if command is unknown
 			else
 			{
-				cout << "Unknown command \"" << command << "\" at line " << lineIndex << " while reading physics thingy file " << fileName << "." << endl;
+				cout << "Unknown command \"" << command << "\" at line " << lineIndex << " while reading body file " << fileName << "." << endl;
 			}
 		}
 
 		// return the read positioned geometries
-		return result;
+		return new Body(result);
 	}
 }

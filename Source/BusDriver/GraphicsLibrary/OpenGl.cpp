@@ -31,7 +31,7 @@ namespace GraphicsLibrary
 		delete this->colouredShaderProgram;
 	}
 
-	void OpenGl::Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<Model*> physicsWheelModels, vector<vec3> positions, vector<quat> rotations, Model* physicsChassisModel, vec3 chassisPosition, quat chassisRotation, Model* wheelModel, Model* chassisModel)
+	void OpenGl::Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<Model*> physicsWheelModels, vector<vec3> positions, vector<quat> rotations, Model* physicsChassisModel, vec3 chassisPosition, quat chassisRotation, Model* wheelModel, Model* chassisModel, vector<Model*> physicsPanelModels, vector<vec3> physicsPanelPositions)
 	{
 		glClearColor(0.71f, 0.27f, 0.05f, 0);
 		//glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -93,6 +93,18 @@ namespace GraphicsLibrary
 			this->colouredShaderProgram->SetUniform("model", modelMatrix);
 			positionedModel->GetModel()->Draw(this->shaderProgram, this->colouredShaderProgram);
 		}
+
+		glDisable(GL_DEPTH_TEST);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		for (int i = 0; i < physicsPanelModels.size(); i++)
+		{
+			mat4 modelMatrix;
+			modelMatrix = translate(modelMatrix, physicsPanelPositions[i]);
+			this->colouredShaderProgram->SetUniform("model", modelMatrix);
+			physicsPanelModels[i]->Draw(this->shaderProgram, this->colouredShaderProgram);
+		}
+		glEnable(GL_DEPTH_TEST);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
 	void OpenGl::SetViewport(int width, int height)

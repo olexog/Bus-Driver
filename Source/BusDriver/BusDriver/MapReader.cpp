@@ -1,11 +1,11 @@
 #include "MapReader.h"
 
-Map MapReader::Read(string fileName)
+Map MapReader::Read(Physics* physics, string fileName)
 {
 	// the thingies which the map consists of
 	map<string, Thingy*> thingies;
 
-	vector<PositionedThingy> positionedThingies;
+	vector<PositionedThingy*> positionedThingies;
 
 	// open file stream
 	ifstream file = ifstream(fileName);
@@ -79,7 +79,7 @@ Map MapReader::Read(string fileName)
 			string key = string(token, keyLength);
 
 			// load the thingy
-			thingies[key] = ThingyReader::Read(Utility::GetDirectory(fileName) + relativeFileName);
+			thingies[key] = ThingyReader::Read(physics, Utility::GetDirectory(fileName) + relativeFileName);
 		}
 		// if command is "place"
 		else if (strcmp(command, "place") == 0)
@@ -128,7 +128,7 @@ Map MapReader::Read(string fileName)
 			// set position
 			vec3* position = new vec3(*x, *y, *z);
 
-			positionedThingies.push_back(PositionedThingy(thingies[key], position, new quat()));
+			positionedThingies.push_back(new PositionedThingy(thingies[key], position, new quat()));
 		}
 		// if command is unknown
 		else

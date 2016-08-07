@@ -1,10 +1,7 @@
 #pragma once
 
-#include <glm\vec3.hpp>
-#include <glm\gtx\quaternion.hpp>
-
 #include "Model.h"
-#include "PhysicsThingy.h"
+#include "Body.h"
 
 using namespace GraphicsLibrary;
 using namespace PhysicsLibrary;
@@ -12,12 +9,13 @@ using namespace PhysicsLibrary;
 class Thingy
 {
 public:
-	Thingy(Model* model);
+	Thingy(Model* model, Body* body);
 	~Thingy();
 
 	Model* GetModel();
+	Body* GetBody();
 private:
 	Model* model;
-	PhysicsThingy* physicsThingy;
+	Body* body;
 };
 
