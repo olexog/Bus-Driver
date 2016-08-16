@@ -27,7 +27,7 @@ namespace PhysicsLibrary
 		void AddActor(Vehicle* actor);
 
 		void Simulate(float elapsedTime);
-	//private:
+	private:
 		PxScene* scene;
 		PxDefaultCpuDispatcher* dispatcher;
 
@@ -36,5 +36,6 @@ namespace PhysicsLibrary
 
 		vector<Vehicle*> vehicles;
 		vector<Actor*> actors;
+		vector<DynamicActor*> dynamicActors;
 	};
 }

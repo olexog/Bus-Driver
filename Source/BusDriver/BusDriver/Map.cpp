@@ -19,6 +19,16 @@ Map::~Map()
 	}
 }
 
+void Map::AddThingy(Thingy* thingy)
+{
+	this->thingies.push_back(thingy);
+}
+
+void Map::AddPositionedThingy(PositionedThingy* positionedThingy)
+{
+	this->positionedThingies.push_back(positionedThingy);
+}
+
 Scene* Map::CreateScene()
 {
 	Scene* result = new Scene();

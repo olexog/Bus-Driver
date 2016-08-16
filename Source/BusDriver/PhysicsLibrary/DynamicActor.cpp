@@ -2,33 +2,36 @@
 
 namespace PhysicsLibrary
 {
-	DynamicActor::DynamicActor(Physics* physics, vec3 halfExtends, vec3 position)
+	DynamicActor::DynamicActor(Physics* physics, Body* body, vec3* position, quat* orientation)
 	{
-		PxVec3 Pxposition = PxVec3(position.x, position.y, position.z);
-		this->actor = physics->GetPhysics()->createRigidDynamic(PxTransform(Pxposition));
-		PxShape* cubeShape = this->actor->createShape(PxBoxGeometry(0.5f, 0.5f, 0.5f), *physics->GetMaterial(), PxTransform(PxIdentity));
-		cubeShape->setSimulationFilterData(physics->obstacleSimFilterData);
+		this->body = body;
+		this->position = position;
+		this->orientation = orientation;
+
+		PxTransform globalPose = PxTransform(PxVec3(position->x, position->y, position->z), PxQuat(orientation->x, orientation->y, orientation->z, orientation->w));
+		this->actor = physics->GetPhysics()->createRigidDynamic(globalPose);
+		this->body->AddToActor(physics, this->actor);
 	}
 
 	DynamicActor::~DynamicActor()
 	{
+		this->actor->release();
+	}
 
+	void DynamicActor::Update()
+	{
+		this->position->x = this->actor->getGlobalPose().p.x;
+		this->position->y = this->actor->getGlobalPose().p.y;
+		this->position->z = this->actor->getGlobalPose().p.z;
+
+		this->orientation->x = this->actor->getGlobalPose().q.x;
+		this->orientation->y = this->actor->getGlobalPose().q.y;
+		this->orientation->z = this->actor->getGlobalPose().q.z;
+		this->orientation->w = this->actor->getGlobalPose().q.w;
 	}
 
 	void DynamicActor::AddToScene(PxScene* scene)
 	{
 		scene->addActor(*this->actor);
-	}
-	
-	vec3 DynamicActor::GetPosition()
-	{
-		PxVec3 position = this->actor->getGlobalPose().p;
-		return vec3(position.x, position.y, position.z);
-	}
-
-	quat DynamicActor::GetRotation()
-	{
-		PxQuat rotation = this->actor->getGlobalPose().q;
-		return quat(rotation.w, rotation.x, rotation.y, rotation.z);
 	}
 }

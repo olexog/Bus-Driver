@@ -19,9 +19,6 @@ namespace PhysicsLibrary
 		~Actor();
 
 		void AddToScene(PxScene* scene);
-
-		vector<vec3> GetPoints();
-		vec3 GetPosition();
 	private:
 		Body* body;
 		PxRigidActor* actor;

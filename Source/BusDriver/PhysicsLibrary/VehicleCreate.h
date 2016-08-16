@@ -61,11 +61,6 @@ struct VehicleDesc
 
 PxVehicleDrive4W* createVehicle4W(const VehicleDesc& vehicle4WDesc, vector<PxShape*> &wheels, vector<PxShape*> &chassis, PxPhysics* physics, PxCooking* cooking);
 
-void customizeVehicleToLengthScale(const PxReal lengthScale, PxRigidDynamic* rigidDynamic, PxVehicleWheelsSimData* wheelsSimData, PxVehicleDriveSimData* driveSimData);
-
-void customizeVehicleToLengthScale(const PxReal lengthScale, PxRigidDynamic* rigidDynamic, PxVehicleWheelsSimData* wheelsSimData, PxVehicleDriveSimData4W* driveSimData);
-
-
 ////////////////////////////////////////////////
 
 #endif //SNIPPET_VEHICLE_COMMON_H

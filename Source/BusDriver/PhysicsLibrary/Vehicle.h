@@ -10,6 +10,7 @@
 #include <vehicle\PxVehicleUtil.h>
 
 #include "Physics.h"
+#include "Shape.h"
 #include "VehicleCreate.h"
 #include "VehicleRaycast.h"
 #include "VehicleTireFriction.h"
@@ -63,6 +64,8 @@ namespace PhysicsLibrary
 
 		vector<PxShape*> wheels;
 		vector<PxShape*> chassis;
+
+		vector<Shape*> wheelShapes;
 	};
 }
 

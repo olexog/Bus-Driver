@@ -26,6 +26,11 @@ namespace PhysicsLibrary
 		{
 			delete actor;
 		}
+
+		for (DynamicActor* dynamicActor : this->dynamicActors)
+		{
+			delete dynamicActor;
+		}
 	}
 
 	void Playground::AddActor(Actor* actor)
@@ -37,6 +42,7 @@ namespace PhysicsLibrary
 	void Playground::AddActor(DynamicActor* actor)
 	{
 		actor->AddToScene(this->scene);
+		this->dynamicActors.push_back(actor);
 	}
 
 	void Playground::AddActor(Vehicle* actor)
@@ -54,6 +60,11 @@ namespace PhysicsLibrary
 		{
 			vehicle->UpdateInput(elapsedTime);
 			vehicle->Update(elapsedTime, this->batchQuery, raycastResults, raycastResultsSize, this->scene->getGravity());
+		}
+
+		for (DynamicActor* dynamicActor : this->dynamicActors)
+		{
+			dynamicActor->Update();
 		}
 
 		this->scene->simulate(elapsedTime);

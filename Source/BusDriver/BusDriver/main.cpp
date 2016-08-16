@@ -21,6 +21,9 @@
 #include "DynamicActor.h"
 #include "Vehicle.h"
 
+// TO DELETE
+#include "VehicleCreate.h"
+
 using namespace GraphicsLibrary;
 using namespace PhysicsLibrary;
 using namespace std;
@@ -298,30 +301,36 @@ int main()
 
 	Map map = MapReader::Read(physics, "Models\\city.map");
 
+	Thingy* wheelThingy;
+		Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj");
+
+		PxConvexMesh* wheelMesh = createWheelMesh(0.748f, 0.704f, *physics->GetPhysics(), *physics->GetCooking());
+		PxConvexMeshGeometry* geom = new PxConvexMeshGeometry(wheelMesh);
+		Shape* wheel = new Shape(physics, geom, PxVec3(PxIdentity), PxQuat(PxIdentity));
+		Body* wheelBody = new Body({ wheel });
+
+		vec3* wheelPosition = new vec3(0, 5, 0);
+		quat* wheelOrientation = new quat();
+
+		DynamicActor* wheelActor = new DynamicActor(physics, wheelBody, wheelPosition, wheelOrientation);
+
+		wheelThingy = new Thingy(wheelModel, wheelBody);
+
+	PositionedThingy* wheelPositionedThingy = new PositionedThingy(wheelThingy, wheelPosition, wheelOrientation);
+
+	//map.AddThingy(wheelThingy);
+	//map.AddPositionedThingy(wheelPositionedThingy);
+
 	Scene* scene = map.CreateScene();
+	scene->models.push_back(new PositionedModel(wheelModel, wheelPosition, wheelOrientation));
 
 	Playground* playground = map.CreatePlayground(physics);
-
-	// add a moving box to the scene
-	//DynamicActor* box = new DynamicActor(physics, vec3(1.0f, 1.0f, 1.0f), vec3(0, 5, 0));
-	//physicsScene->AddActor(box);
+	playground->AddActor(wheelActor);
 
 	// add a movable vehicle to the scene
 	Vehicle* bus = new Vehicle(physics);
 	playground->AddActor(bus);
 	bus->SetToRestState();
-
-	//Model* boxModel = ModelReader::Read("Models\\box.obj");
-	//PositionedModel* positionedBoxModel = new PositionedModel(boxModel, box->GetPosition(), box->GetRotation());
-	//scene->models.push_back(positionedBoxModel);
-
-	vector<Model*> panelVertices;
-	vector<vec3> panelPositions;
-	for (Actor* actor : playground->actors)
-	{
-		panelVertices.push_back(new Model(new ColouredVertexArray(actor->GetPoints(), actor->GetPoints(), actor->GetPoints(), actor->GetPoints(), actor->GetPoints())));
-		panelPositions.push_back(actor->GetPosition());
-	}
 
 	vector<vector<vec3>> wheelVertices = bus->GetWheelVertices();
 	vector<Model*> physicsWheelModels;
@@ -329,7 +338,7 @@ int main()
 	{
 		physicsWheelModels.push_back(new Model(new ColouredVertexArray(wheelVertices[i], wheelVertices[i], wheelVertices[i], wheelVertices[i], wheelVertices[i])));
 	}
-	Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj");
+	//Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj");
 
 	vector<vec3> chassisVertices = bus->GetChassisVertices();
 	Model* physicsChassisModel = new Model(new ColouredVertexArray(chassisVertices, chassisVertices, chassisVertices, chassisVertices, chassisVertices));
@@ -369,7 +378,7 @@ int main()
 		openGl->SetCamera(cameraPosition, cameraDirection);
 
 		// draw scene
-		openGl->Draw(scene, bus->GetPosition(), bus->GetRotation(), physicsWheelModels, bus->GetWheelPositions(), bus->GetWheelRotations(), physicsChassisModel, bus->GetChassisPosition(), bus->GetChassisRotation(), wheelModel, chassisModel, panelVertices, panelPositions);
+		openGl->Draw(scene, bus->GetPosition(), bus->GetRotation(), physicsWheelModels, bus->GetWheelPositions(), bus->GetWheelRotations(), physicsChassisModel, bus->GetChassisPosition(), bus->GetChassisRotation(), wheelModel, chassisModel);
 
 		// swap the screen buffers
 		glfwSwapBuffers(glfwWindow);
