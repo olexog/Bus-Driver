@@ -8,6 +8,7 @@
 #include "ModelReader.h"
 #include "Physics.h"
 #include "BodyReader.h"
+#include "PhysicsUtility.h"
 
 using namespace std;
 using namespace GraphicsLibrary;

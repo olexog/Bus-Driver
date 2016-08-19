@@ -47,7 +47,10 @@ Playground* Map::CreatePlayground(Physics* physics)
 
 	for (PositionedThingy* positionedThingy : this->positionedThingies)
 	{
-		result->AddActor(new Actor(physics, positionedThingy->GetThingy()->GetBody(), positionedThingy->GetPosition(), positionedThingy->GetOrientation()));
+		if (positionedThingy->GetThingy()->GetBody() != NULL)
+		{
+			result->AddActor(new Actor(physics, positionedThingy->GetThingy()->GetBody(), positionedThingy->GetPosition(), positionedThingy->GetOrientation()));
+		}
 	}
 
 	return result;

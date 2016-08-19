@@ -372,7 +372,7 @@ namespace PhysicsLibrary
 		//Free the sim data because we don't need that any more.
 		wheelsSimData->free();
 
-		PxTransform startTransform(PxVec3(0, (vehicleDesc.chassisDims.y*0.5f + vehicleDesc.wheelRadius + 1.0f), 0), PxQuat(PxPi, PxVec3(0, 1, 0)));
+		PxTransform startTransform(PxVec3(-10, 5, 0), PxQuat(PxPi, PxVec3(0, 1, 0)));
 		gVehicle4W->getRigidDynamicActor()->setGlobalPose(startTransform);
 	}
 
@@ -431,7 +431,7 @@ namespace PhysicsLibrary
 	void Vehicle::AddToScene(PxScene* scene)
 	{
 		scene->addActor(*gVehicle4W->getRigidDynamicActor());
-		scene->addActor(*gGroundPlane);
+		//scene->addActor(*gGroundPlane);
 	}
 
 	vector<vec3> Vehicle::GetShape()

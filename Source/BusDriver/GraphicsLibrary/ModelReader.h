@@ -21,5 +21,6 @@ namespace GraphicsLibrary
 	{
 	public:
 		static Model* Read(string fileName);
+		static Model* Read(string fileName, vector<vec3> &vertices);
 	};
 }

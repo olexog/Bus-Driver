@@ -3,6 +3,7 @@
 #include <PxPhysicsAPI.h>
 
 #include "VehicleFilterShader.h"
+#include "VehicleRaycast.h"
 
 using namespace physx;
 
@@ -18,6 +19,8 @@ namespace PhysicsLibrary
 		PxMaterial* GetMaterial();
 		PxCooking* GetCooking();
 		PxAllocatorCallback& GetAllocator();
+		PxFilterData GetDrivableObstacleSimulationFilterData();
+		PxFilterData GetDrivableObstacleQueryFilterData();
 
 		PxFilterData obstacleSimFilterData;
 	private:
@@ -34,5 +37,8 @@ namespace PhysicsLibrary
 		PxMaterial* material;
 
 		PxRigidStatic* plane;
+
+		PxFilterData drivableObstacleSimulationFilterData;
+		PxFilterData drivableObstacleQueryFilterData;
 	};
 }

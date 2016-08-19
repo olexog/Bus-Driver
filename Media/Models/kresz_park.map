@@ -1,0 +1,5 @@
+# load thingies
+load "kresz_park_road.thy" to thingies["road"]
+
+# place thingies
+place thingies["road"] to (0; 0; 0)

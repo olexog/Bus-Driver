@@ -11,6 +11,7 @@ namespace PhysicsLibrary
 	class Shape
 	{
 	public:
+		Shape(Physics* physics, PxGeometry* geometry);
 		Shape(Physics* physics, PxGeometry* geometry, PxVec3 position, PxQuat orientation);
 		~Shape();
 

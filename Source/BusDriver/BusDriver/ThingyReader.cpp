@@ -5,8 +5,8 @@ const char* WHITESPACES = " \t\r\n";
 
 Thingy* ThingyReader::Read(Physics* physics, string fileName)
 {
-	Model* model;
-	Body* body;
+	Model* model = NULL;
+	Body* body = NULL;
 
 	// open file stream
 	ifstream file = ifstream(fileName);
@@ -75,6 +75,12 @@ Thingy* ThingyReader::Read(Physics* physics, string fileName)
 			else if (variableName == "physicsThingy")
 			{
 				body = BodyReader::Read(physics, Utility::GetDirectory(fileName) + relativeFileName);
+			}
+			else if (variableName == "graphysicsThingy")
+			{
+				vector<vec3> vertices;
+				model = ModelReader::Read(Utility::GetDirectory(fileName) + relativeFileName, vertices);
+				body = PhysicsUtility::BodyFromTriangles(vertices, physics);
 			}
 			// if variable is unknown
 			else

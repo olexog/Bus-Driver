@@ -1,0 +1,1 @@
+load "kresz_park_road.obj" to graphicsThingy

@@ -22,6 +22,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="DynamicActor.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="PhysicsUtility.h" />
     <ClInclude Include="Playground.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Physics.h" />
@@ -38,6 +39,7 @@
     <ClCompile Include="Body.cpp" />
     <ClCompile Include="DynamicActor.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="PhysicsUtility.cpp" />
     <ClCompile Include="Playground.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="BodyReader.cpp" />

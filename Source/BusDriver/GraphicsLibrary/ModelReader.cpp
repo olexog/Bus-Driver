@@ -121,6 +121,11 @@ namespace GraphicsLibrary
 
 	Model* ModelReader::Read(string fileName)
 	{
+		return ModelReader::Read(fileName, vector<vec3>());
+	}
+
+	Model* ModelReader::Read(string fileName, vector<vec3> &outVertices)
+	{
 		cout << "Loading " << fileName << endl;
 
 		ifstream file = ifstream(fileName);
@@ -253,6 +258,8 @@ namespace GraphicsLibrary
 		}
 
 		file.close();
+
+		outVertices = colouredVertices;
 
 		return new Model(new ColouredVertexArray(colouredVertices, colouredNormals, ambientColours, diffuseColours, specularColours));
 	}

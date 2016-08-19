@@ -23,6 +23,10 @@ namespace PhysicsLibrary
 		PxVehicleSetBasisVectors(PxVec3(0, 1, 0), PxVec3(0, 0, 1));
 		PxVehicleSetUpdateMode(PxVehicleUpdateMode::eVELOCITY_CHANGE);
 
+		this->drivableObstacleSimulationFilterData.word0 = COLLISION_FLAG_GROUND;
+		this->drivableObstacleSimulationFilterData.word1 = COLLISION_FLAG_GROUND_AGAINST;
+		this->drivableObstacleQueryFilterData.word3 = (PxU32)DRIVABLE_SURFACE;
+
 		obstacleSimFilterData.word0 = COLLISION_FLAG_GROUND;
 		obstacleSimFilterData.word1 = COLLISION_FLAG_GROUND_AGAINST;
 
@@ -65,5 +69,15 @@ namespace PhysicsLibrary
 	PxAllocatorCallback& Physics::GetAllocator()
 	{
 		return this->allocator;
+	}
+
+	PxFilterData Physics::GetDrivableObstacleSimulationFilterData()
+	{
+		return this->drivableObstacleSimulationFilterData;
+	}
+
+	PxFilterData Physics::GetDrivableObstacleQueryFilterData()
+	{
+		return this->drivableObstacleQueryFilterData;
 	}
 }

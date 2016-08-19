@@ -299,7 +299,7 @@ int main()
 	// create the physics environment
 	Physics* physics = new Physics();
 
-	Map map = MapReader::Read(physics, "Models\\city.map");
+	Map map = MapReader::Read(physics, "Models\\kresz_park.map");
 
 	Thingy* wheelThingy;
 		Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj");
