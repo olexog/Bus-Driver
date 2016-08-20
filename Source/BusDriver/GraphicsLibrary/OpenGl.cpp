@@ -53,7 +53,7 @@ namespace GraphicsLibrary
 		this->colouredShaderProgram->SetUniform("lightPosition", lightPosition);
 		this->colouredShaderProgram->SetUniform("lightColour", lightColour);
 
-		for (int i = 0; i < physicsWheelModels.size(); i++)
+		for (int i = 0; i < positions.size(); i++)
 		{
 			mat4 localTranslation;
 			localTranslation = translate(localTranslation, positions[i]);

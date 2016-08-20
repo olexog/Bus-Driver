@@ -20,6 +20,7 @@
 #include "Playground.h"
 #include "DynamicActor.h"
 #include "Vehicle.h"
+#include "PhysicsUtility.h"
 
 // TO DELETE
 #include "VehicleCreate.h"
@@ -302,12 +303,19 @@ int main()
 	Map map = MapReader::Read(physics, "Models\\kresz_park.map");
 
 	Thingy* wheelThingy;
-		Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj");
+	vector<vec3> wheelVertices;
+		Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj", wheelVertices);
 
-		PxConvexMesh* wheelMesh = createWheelMesh(0.748f, 0.704f, *physics->GetPhysics(), *physics->GetCooking());
-		PxConvexMeshGeometry* geom = new PxConvexMeshGeometry(wheelMesh);
-		Shape* wheel = new Shape(physics, geom, PxVec3(PxIdentity), PxQuat(PxIdentity));
+		//PxConvexMesh* wheelMesh = createWheelMesh(0.748f, 0.704f, *physics->GetPhysics(), *physics->GetCooking());
+		//PxConvexMeshGeometry* geom = new PxConvexMeshGeometry(wheelMesh);
+		//Shape* wheel = new Shape(physics, geom, PxVec3(PxIdentity), PxQuat(PxIdentity), Shape::Type::WHEEL);
+		Shape* wheel = PhysicsUtility::ShapeFromConvexTriangles(wheelVertices, physics);
+		wheel->SetType(Shape::Type::WHEEL);
 		Body* wheelBody = new Body({ wheel });
+
+		PxConvexMesh* chassisMesh = createChassisMesh(PxVec3(2.5f, 3.4f, 11.0f), *physics->GetPhysics(), *physics->GetCooking());
+		PxConvexMeshGeometry* chassisGeometry = new PxConvexMeshGeometry(chassisMesh);
+		Shape* chassis = new Shape(physics, chassisGeometry, PxVec3(0.0f, -0.5f, 0.0f), PxQuat(PxIdentity), Shape::Type::WHEEL);
 
 		vec3* wheelPosition = new vec3(0, 5, 0);
 		quat* wheelOrientation = new quat();
@@ -328,15 +336,15 @@ int main()
 	playground->AddActor(wheelActor);
 
 	// add a movable vehicle to the scene
-	Vehicle* bus = new Vehicle(physics);
+	Vehicle* bus = new Vehicle(physics, chassis, wheel);
 	playground->AddActor(bus);
 	bus->SetToRestState();
 
-	vector<vector<vec3>> wheelVertices = bus->GetWheelVertices();
+	//vector<vector<vec3>> wheelVertices = bus->GetWheelVertices();
 	vector<Model*> physicsWheelModels;
 	for (int i = 0; i < wheelVertices.size(); i++)
 	{
-		physicsWheelModels.push_back(new Model(new ColouredVertexArray(wheelVertices[i], wheelVertices[i], wheelVertices[i], wheelVertices[i], wheelVertices[i])));
+		//physicsWheelModels.push_back(new Model(new ColouredVertexArray(wheelVertices[i], wheelVertices[i], wheelVertices[i], wheelVertices[i], wheelVertices[i])));
 	}
 	//Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj");
 

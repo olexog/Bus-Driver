@@ -10,6 +10,7 @@
 #include <vehicle\PxVehicleUtil.h>
 
 #include "Physics.h"
+#include "DynamicActor.h"
 #include "Shape.h"
 #include "VehicleCreate.h"
 #include "VehicleRaycast.h"
@@ -24,7 +25,7 @@ namespace PhysicsLibrary
 	class Vehicle
 	{
 	public:
-		Vehicle(Physics* physics);
+		Vehicle(Physics* physics, Shape* chassis, Shape* wheel);
 		~Vehicle();
 
 		void SetToRestState();

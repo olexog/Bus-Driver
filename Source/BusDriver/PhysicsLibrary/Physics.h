@@ -21,6 +21,10 @@ namespace PhysicsLibrary
 		PxAllocatorCallback& GetAllocator();
 		PxFilterData GetDrivableObstacleSimulationFilterData();
 		PxFilterData GetDrivableObstacleQueryFilterData();
+		PxFilterData GetWheelSimulationFilterData();
+		PxFilterData GetWheelQueryFilterData();
+		PxFilterData GetChassisSimulationFilterData();
+		PxFilterData GetChassisQueryFilterData();
 
 		PxFilterData obstacleSimFilterData;
 	private:
@@ -40,5 +44,9 @@ namespace PhysicsLibrary
 
 		PxFilterData drivableObstacleSimulationFilterData;
 		PxFilterData drivableObstacleQueryFilterData;
+		PxFilterData chassisSimulationFilterData;
+		PxFilterData chassisQueryFilterData;
+		PxFilterData wheelSimulationFilterData;
+		PxFilterData wheelQueryFilterData;
 	};
 }

@@ -27,6 +27,14 @@ namespace PhysicsLibrary
 		this->drivableObstacleSimulationFilterData.word1 = COLLISION_FLAG_GROUND_AGAINST;
 		this->drivableObstacleQueryFilterData.word3 = (PxU32)DRIVABLE_SURFACE;
 
+		this->wheelSimulationFilterData.word0 = COLLISION_FLAG_WHEEL;
+		this->wheelSimulationFilterData.word1 = COLLISION_FLAG_WHEEL_AGAINST;
+		this->wheelQueryFilterData.word3 = UNDRIVABLE_SURFACE;
+
+		this->chassisSimulationFilterData.word0 = COLLISION_FLAG_CHASSIS;
+		this->chassisSimulationFilterData.word1 = COLLISION_FLAG_CHASSIS_AGAINST;
+		this->chassisQueryFilterData.word3 = UNDRIVABLE_SURFACE;
+
 		obstacleSimFilterData.word0 = COLLISION_FLAG_GROUND;
 		obstacleSimFilterData.word1 = COLLISION_FLAG_GROUND_AGAINST;
 
@@ -79,5 +87,21 @@ namespace PhysicsLibrary
 	PxFilterData Physics::GetDrivableObstacleQueryFilterData()
 	{
 		return this->drivableObstacleQueryFilterData;
+	}
+	PxFilterData Physics::GetWheelSimulationFilterData()
+	{
+		return this->wheelSimulationFilterData;
+	}
+	PxFilterData Physics::GetWheelQueryFilterData()
+	{
+		return this->wheelQueryFilterData;
+	}
+	PxFilterData Physics::GetChassisSimulationFilterData()
+	{
+		return this->chassisSimulationFilterData;
+	}
+	PxFilterData Physics::GetChassisQueryFilterData()
+	{
+		return this->chassisQueryFilterData;
 	}
 }

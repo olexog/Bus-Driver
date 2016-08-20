@@ -32,7 +32,7 @@ namespace PhysicsLibrary
 		return new Body({ new Shape(physics, new PxTriangleMeshGeometry(mesh)) });
 	}
 
-	Body* PhysicsUtility::BodyFromConvexTriangles(vector<vec3> vertices, Physics* physics)
+	Shape* PhysicsUtility::ShapeFromConvexTriangles(vector<vec3> vertices, Physics* physics)
 	{
 		PxConvexMeshDesc convexMeshDesc;
 		convexMeshDesc.points.count = vertices.size();
@@ -48,6 +48,6 @@ namespace PhysicsLibrary
 			convexMesh = physics->GetPhysics()->createConvexMesh(stream);
 		}
 
-		return new Body({ new Shape(physics, new PxConvexMeshGeometry(convexMesh)) });
+		return new Shape(physics, new PxConvexMeshGeometry(convexMesh));
 	}
 }

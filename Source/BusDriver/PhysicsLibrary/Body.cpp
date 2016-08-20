@@ -17,6 +17,7 @@ void PhysicsLibrary::Body::AddToActor(Physics* physics, PxRigidActor* actor)
 {
 	for (Shape* shape : this->shapes)
 	{
-		shape->AddToActor(physics, actor);
+		PxShape* pxShape;
+		shape->AddToActor(physics, actor, pxShape);
 	}
 }

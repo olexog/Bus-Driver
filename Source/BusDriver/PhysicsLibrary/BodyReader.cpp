@@ -174,7 +174,7 @@ namespace PhysicsLibrary
 				{
 					// add positioned geometry
 					PxGeometry* geometry = new PxBoxGeometry(halfExtends.x, halfExtends.y, halfExtends.z);
-					result.push_back(new Shape(physics, geometry, position, PxQuat(PxIdentity)));
+					result.push_back(new Shape(physics, geometry, position, PxQuat(PxIdentity), Shape::Type::OBSTACLE));
 
 					// set actual geometry type to the default value
 					actualGeometry = GeometryType::None;

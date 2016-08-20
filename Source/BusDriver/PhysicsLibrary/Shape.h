@@ -11,14 +11,24 @@ namespace PhysicsLibrary
 	class Shape
 	{
 	public:
+		enum Type
+		{
+			CHASSIS,
+			WHEEL,
+			OBSTACLE
+		};
+
 		Shape(Physics* physics, PxGeometry* geometry);
-		Shape(Physics* physics, PxGeometry* geometry, PxVec3 position, PxQuat orientation);
+		Shape(Physics* physics, PxGeometry* geometry, PxVec3 position, PxQuat orientation, Type type = OBSTACLE);
 		~Shape();
 
-		void AddToActor(Physics* physics, PxRigidActor* actor);
+		void AddToActor(Physics* physics, PxRigidActor* actor, PxShape* &shape);
+
+		void SetType(Type type);
 	private:
 		PxGeometry* geometry;
 		PxVec3 position;
 		PxQuat orientation;
+		Type type;
 	};
 }

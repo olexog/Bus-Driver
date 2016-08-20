@@ -4,6 +4,7 @@
 
 #include "Physics.h"
 #include "Body.h"
+#include "Shape.h"
 
 #include <glm\vec3.hpp>
 
@@ -17,7 +18,7 @@ namespace PhysicsLibrary
 	{
 	public:
 		static Body* BodyFromTriangles(vector<vec3> vertices, Physics* physics);
-		static Body* BodyFromConvexTriangles(vector<vec3> vertices, Physics* physics);
+		static Shape* ShapeFromConvexTriangles(vector<vec3> vertices, Physics* physics);
 	};
 }
 
