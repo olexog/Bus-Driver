@@ -19,6 +19,7 @@ namespace PhysicsLibrary
 		~Actor();
 
 		void AddToScene(PxScene* scene);
+		void Update();
 	private:
 		Body* body;
 		PxRigidActor* actor;

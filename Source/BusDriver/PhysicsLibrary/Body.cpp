@@ -21,3 +21,11 @@ void PhysicsLibrary::Body::AddToActor(Physics* physics, PxRigidActor* actor)
 		shape->AddToActor(physics, actor, pxShape);
 	}
 }
+
+void PhysicsLibrary::Body::Update()
+{
+	for (Shape* shape : this->shapes)
+	{
+		shape->Update();
+	}
+}

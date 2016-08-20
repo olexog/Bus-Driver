@@ -22,6 +22,7 @@ namespace PhysicsLibrary
 		~Body();
 
 		void AddToActor(Physics* physics, PxRigidActor* actor);
+		void Update();
 	private:
 		vector<Shape*> shapes;
 	};

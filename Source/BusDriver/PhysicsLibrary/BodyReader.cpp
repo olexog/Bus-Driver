@@ -43,7 +43,7 @@ namespace PhysicsLibrary
 		GeometryType actualGeometry = GeometryType::None;
 
 		// initialize geometry parameters
-		PxVec3 position;
+		vec3* position;
 		PxVec3 halfExtends;
 
 		// iterate through the file
@@ -80,7 +80,7 @@ namespace PhysicsLibrary
 					actualGeometry = GeometryType::Box;
 
 					// set box parameters to the default values
-					position = PxVec3();
+					position = new vec3();
 					halfExtends = PxVec3();
 				}
 				// if geometry type is unknown
@@ -124,7 +124,7 @@ namespace PhysicsLibrary
 						float* z = new float();
 						sscanf_s(token, "(%f; %f; %f)", x, y, z);
 						// set position vector
-						position = PxVec3(*x, *y, *z);
+						position = new vec3(*x, *y, *z);
 					}
 					// if geometry parameter is invalid for the actual geometry
 					else
@@ -174,7 +174,7 @@ namespace PhysicsLibrary
 				{
 					// add positioned geometry
 					PxGeometry* geometry = new PxBoxGeometry(halfExtends.x, halfExtends.y, halfExtends.z);
-					result.push_back(new Shape(physics, geometry, position, PxQuat(PxIdentity), Shape::Type::OBSTACLE));
+					result.push_back(new Shape(physics, geometry, position, new quat(), Shape::Type::OBSTACLE));
 
 					// set actual geometry type to the default value
 					actualGeometry = GeometryType::None;

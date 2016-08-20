@@ -33,7 +33,7 @@ namespace GraphicsLibrary
 		~OpenGl();
 
 		///<summary>Draws to the context.</summary>
-		void Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<Model*> physicsWheelModels, vector<vec3> positions, vector<quat> rotations, Model* physicsChassisModel, vec3 chassisPosition, quat chassisRotation, Model* wheelModel, Model* chassisModel);
+		void Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<vec3*> positions, vector<quat*> rotations, vec3* chassisPosition, quat* chassisRotation, Model* wheelModel, Model* chassisModel);
 
 		///<summary>Sets the rendering context's size.</summary>
 		void SetViewport(int width, int height);

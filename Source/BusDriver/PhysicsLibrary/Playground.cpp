@@ -62,6 +62,11 @@ namespace PhysicsLibrary
 			vehicle->Update(elapsedTime, this->batchQuery, raycastResults, raycastResultsSize, this->scene->getGravity());
 		}
 
+		for (Actor* actor : this->actors)
+		{
+			actor->Update();
+		}
+
 		for (DynamicActor* dynamicActor : this->dynamicActors)
 		{
 			dynamicActor->Update();

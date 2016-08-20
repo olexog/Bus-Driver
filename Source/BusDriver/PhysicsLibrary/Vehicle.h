@@ -25,7 +25,7 @@ namespace PhysicsLibrary
 	class Vehicle
 	{
 	public:
-		Vehicle(Physics* physics, Shape* chassis, Shape* wheel);
+		Vehicle(Physics* physics, Shape* chassis, vector<Shape*> wheels);
 		~Vehicle();
 
 		void SetToRestState();
@@ -40,19 +40,8 @@ namespace PhysicsLibrary
 
 		void AddToScene(PxScene* scene);
 
-		vector<vec3> GetShape();
-
 		vec3 GetPosition();
-
 		quat GetRotation();
-
-		vector<vector<vec3>> GetWheelVertices();
-		vector<vec3> GetWheelPositions();
-		vector<quat> GetWheelRotations();
-
-		vector<vec3> GetChassisVertices();
-		vec3 GetChassisPosition();
-		quat GetChassisRotation();
 	private:
 		Physics* physics;
 
@@ -62,9 +51,6 @@ namespace PhysicsLibrary
 		PxVehicleDrive4W*		gVehicle4W = NULL;
 
 		PxVehicleDrive4WRawInputData gVehicleInputData;
-
-		vector<PxShape*> wheels;
-		vector<PxShape*> chassis;
 
 		vector<Shape*> wheelShapes;
 	};

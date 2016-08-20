@@ -31,7 +31,7 @@ namespace GraphicsLibrary
 		delete this->colouredShaderProgram;
 	}
 
-	void OpenGl::Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<Model*> physicsWheelModels, vector<vec3> positions, vector<quat> rotations, Model* physicsChassisModel, vec3 chassisPosition, quat chassisRotation, Model* wheelModel, Model* chassisModel)
+	void OpenGl::Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<vec3*> positions, vector<quat*> rotations, vec3* chassisPosition, quat* chassisRotation, Model* wheelModel, Model* chassisModel)
 	{
 		glClearColor(0.71f, 0.27f, 0.05f, 0);
 		//glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -56,8 +56,8 @@ namespace GraphicsLibrary
 		for (int i = 0; i < positions.size(); i++)
 		{
 			mat4 localTranslation;
-			localTranslation = translate(localTranslation, positions[i]);
-			mat4 localRotation = static_cast<mat4>(rotations[i]);
+			localTranslation = translate(localTranslation, *positions[i]);
+			mat4 localRotation = static_cast<mat4>(*rotations[i]);
 			mat4 globalTranslation;
 			globalTranslation = translate(globalTranslation, vehiclePosition);
 			mat4 globalRotation = static_cast<mat4>(vehicleRotation);
@@ -71,8 +71,8 @@ namespace GraphicsLibrary
 
 		{
 			mat4 localTranslation;
-			localTranslation = translate(localTranslation, chassisPosition);
-			mat4 localRotation = static_cast<mat4>(chassisRotation);
+			localTranslation = translate(localTranslation, *chassisPosition);
+			mat4 localRotation = static_cast<mat4>(*chassisRotation);
 			mat4 globalTranslation;
 			globalTranslation = translate(globalTranslation, vehiclePosition);
 			mat4 globalRotation = static_cast<mat4>(vehicleRotation);

@@ -5,19 +5,15 @@ namespace PhysicsLibrary
 	Body* PhysicsUtility::BodyFromTriangles(vector<vec3> vertices, Physics* physics)
 	{
 		PxTriangleMeshDesc meshDesc;
-		meshDesc.points.count = vertices.size();
+		meshDesc.points.count = static_cast<PxU32>(vertices.size());
 		meshDesc.points.stride = sizeof(vec3);
 		meshDesc.points.data = vertices.data();
 
-		PxU32* indices = new PxU32[vertices.size()];
-		for (int i = 0; i < vertices.size(); i++)
-		{
-			indices[i] = i;
-		}
+		vector<PxU32> indices = vector<PxU32>(0, vertices.size() - 1);
 
-		meshDesc.triangles.count = vertices.size();
+		meshDesc.triangles.count = static_cast<PxU32>(indices.size());
 		meshDesc.triangles.stride = 3 * sizeof(PxU32);
-		meshDesc.triangles.data = indices;
+		meshDesc.triangles.data = indices.data();
 
 		PxDefaultMemoryOutputStream writeBuffer;
 		bool success = physics->GetCooking()->cookTriangleMesh(meshDesc, writeBuffer);

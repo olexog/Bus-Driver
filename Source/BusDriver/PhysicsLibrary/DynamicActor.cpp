@@ -28,6 +28,8 @@ namespace PhysicsLibrary
 		this->orientation->y = this->actor->getGlobalPose().q.y;
 		this->orientation->z = this->actor->getGlobalPose().q.z;
 		this->orientation->w = this->actor->getGlobalPose().q.w;
+
+		this->body->Update();
 	}
 
 	void DynamicActor::AddToScene(PxScene* scene)

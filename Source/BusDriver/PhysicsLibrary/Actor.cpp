@@ -18,6 +18,11 @@ void PhysicsLibrary::Actor::AddToScene(PxScene* scene)
 	scene->addActor(*this->actor);
 }
 
+void PhysicsLibrary::Actor::Update()
+{
+	this->body->Update();
+}
+
 PhysicsLibrary::Actor::~Actor()
 {
 	this->actor->release();

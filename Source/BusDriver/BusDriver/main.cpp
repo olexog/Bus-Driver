@@ -302,43 +302,35 @@ int main()
 
 	Map map = MapReader::Read(physics, "Models\\kresz_park.map");
 
-	Thingy* wheelThingy;
 	vector<vec3> wheelVertices;
-		Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj", wheelVertices);
+	Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj", wheelVertices);
 
-		//PxConvexMesh* wheelMesh = createWheelMesh(0.748f, 0.704f, *physics->GetPhysics(), *physics->GetCooking());
-		//PxConvexMeshGeometry* geom = new PxConvexMeshGeometry(wheelMesh);
-		//Shape* wheel = new Shape(physics, geom, PxVec3(PxIdentity), PxQuat(PxIdentity), Shape::Type::WHEEL);
+	//PxConvexMesh* wheelMesh = createWheelMesh(0.748f, 0.704f, *physics->GetPhysics(), *physics->GetCooking());
+	//PxConvexMeshGeometry* geom = new PxConvexMeshGeometry(wheelMesh);
+	//Shape* wheel = new Shape(physics, geom, PxVec3(PxIdentity), PxQuat(PxIdentity), Shape::Type::WHEEL);
+	//Shape* wheel = PhysicsUtility::ShapeFromConvexTriangles(wheelVertices, physics);
+	//wheel->SetType(Shape::Type::WHEEL);
+	//Body* wheelBody = new Body({ wheel });
+
+	vector<vec3*> wheelPositions = { new vec3(), new vec3(), new vec3(), new vec3() };
+	vector<quat*> wheelOrientations = { new quat(), new quat(), new quat(), new quat() };
+	vector<Shape*> wheels;
+
+	for (int i = 0; i < 4; i++)
+	{
 		Shape* wheel = PhysicsUtility::ShapeFromConvexTriangles(wheelVertices, physics);
 		wheel->SetType(Shape::Type::WHEEL);
-		Body* wheelBody = new Body({ wheel });
+		wheel->SetPosePointer(wheelPositions[i], wheelOrientations[i]);
+		
+		wheels.push_back(wheel);
+	}
 
-		PxConvexMesh* chassisMesh = createChassisMesh(PxVec3(2.5f, 3.4f, 11.0f), *physics->GetPhysics(), *physics->GetCooking());
-		PxConvexMeshGeometry* chassisGeometry = new PxConvexMeshGeometry(chassisMesh);
-		Shape* chassis = new Shape(physics, chassisGeometry, PxVec3(0.0f, -0.5f, 0.0f), PxQuat(PxIdentity), Shape::Type::WHEEL);
+	vec3* chassisPosition = new vec3(0.0f, -0.5f, 0.0f);
+	quat* chassisOrientation = new quat();
 
-		vec3* wheelPosition = new vec3(0, 5, 0);
-		quat* wheelOrientation = new quat();
-
-		DynamicActor* wheelActor = new DynamicActor(physics, wheelBody, wheelPosition, wheelOrientation);
-
-		wheelThingy = new Thingy(wheelModel, wheelBody);
-
-	PositionedThingy* wheelPositionedThingy = new PositionedThingy(wheelThingy, wheelPosition, wheelOrientation);
-
-	//map.AddThingy(wheelThingy);
-	//map.AddPositionedThingy(wheelPositionedThingy);
-
-	Scene* scene = map.CreateScene();
-	scene->models.push_back(new PositionedModel(wheelModel, wheelPosition, wheelOrientation));
-
-	Playground* playground = map.CreatePlayground(physics);
-	playground->AddActor(wheelActor);
-
-	// add a movable vehicle to the scene
-	Vehicle* bus = new Vehicle(physics, chassis, wheel);
-	playground->AddActor(bus);
-	bus->SetToRestState();
+	PxConvexMesh* chassisMesh = createChassisMesh(PxVec3(2.5f, 3.4f, 11.0f), *physics->GetPhysics(), *physics->GetCooking());
+	PxConvexMeshGeometry* chassisGeometry = new PxConvexMeshGeometry(chassisMesh);
+	Shape* chassis = new Shape(physics, chassisGeometry, chassisPosition, chassisOrientation, Shape::Type::CHASSIS);
 
 	//vector<vector<vec3>> wheelVertices = bus->GetWheelVertices();
 	vector<Model*> physicsWheelModels;
@@ -348,9 +340,23 @@ int main()
 	}
 	//Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj");
 
-	vector<vec3> chassisVertices = bus->GetChassisVertices();
-	Model* physicsChassisModel = new Model(new ColouredVertexArray(chassisVertices, chassisVertices, chassisVertices, chassisVertices, chassisVertices));
+	//vector<vec3> chassisVertices = bus->GetChassisVertices();
+	//Model* physicsChassisModel = new Model(new ColouredVertexArray(chassisVertices, chassisVertices, chassisVertices, chassisVertices, chassisVertices));
 	Model* chassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
+
+	Scene* scene = map.CreateScene();
+	//for (int i = 0; i < 4; i++)
+	//{
+	//	scene->models.push_back(new PositionedModel(wheelModel, wheelPositions[i], wheelOrientations[i]));
+	//}
+	//scene->models.push_back(new PositionedModel(chassisModel, chassisPosition, chassisOrientation));
+
+	Playground* playground = map.CreatePlayground(physics);
+
+	// add a movable vehicle to the scene
+	Vehicle* bus = new Vehicle(physics, chassis, wheels);
+	playground->AddActor(bus);
+	bus->SetToRestState();
 
 	// the main loop that iterates throughout the game
 	while (glfwWindowShouldClose(glfwWindow) != GL_TRUE)
@@ -378,6 +384,11 @@ int main()
 
 		// simulate physics
 		playground->Simulate(elapsedTime);
+		for (Shape* wheel : wheels)
+		{
+			wheel->Update();
+		}
+		chassis->Update();
 
 		// update the camera
 		UpdateCamera(elapsedTime, bus);
@@ -386,7 +397,7 @@ int main()
 		openGl->SetCamera(cameraPosition, cameraDirection);
 
 		// draw scene
-		openGl->Draw(scene, bus->GetPosition(), bus->GetRotation(), physicsWheelModels, bus->GetWheelPositions(), bus->GetWheelRotations(), physicsChassisModel, bus->GetChassisPosition(), bus->GetChassisRotation(), wheelModel, chassisModel);
+		openGl->Draw(scene, bus->GetPosition(), bus->GetRotation(), wheelPositions, wheelOrientations, chassisPosition, chassisOrientation, wheelModel, chassisModel);
 
 		// swap the screen buffers
 		glfwSwapBuffers(glfwWindow);
