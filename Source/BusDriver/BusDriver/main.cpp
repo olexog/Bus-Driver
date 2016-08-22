@@ -314,23 +314,27 @@ int main()
 
 	vector<vec3*> wheelPositions = { new vec3(), new vec3(), new vec3(), new vec3() };
 	vector<quat*> wheelOrientations = { new quat(), new quat(), new quat(), new quat() };
+	vector<vec3*> wheelLocalPositions = { new vec3(), new vec3(), new vec3(), new vec3() };
+	vector<quat*> wheelLocalOrientations = { new quat(), new quat(), new quat(), new quat() };
 	vector<Shape*> wheels;
 
 	for (int i = 0; i < 4; i++)
 	{
 		Shape* wheel = PhysicsUtility::ShapeFromConvexTriangles(wheelVertices, physics);
 		wheel->SetType(Shape::Type::WHEEL);
-		wheel->SetPosePointer(wheelPositions[i], wheelOrientations[i]);
+		wheel->SetPosePointer(wheelLocalPositions[i], wheelLocalOrientations[i]);
 		
 		wheels.push_back(wheel);
 	}
 
-	vec3* chassisPosition = new vec3(0.0f, -0.5f, 0.0f);
+	vec3* chassisPosition = new vec3();
 	quat* chassisOrientation = new quat();
+	vec3* chassisLocalPosition = new vec3(0.0f, -0.5f, 0.0f);
+	quat* chassisLocalOrientation = new quat();
 
 	PxConvexMesh* chassisMesh = createChassisMesh(PxVec3(2.5f, 3.4f, 11.0f), *physics->GetPhysics(), *physics->GetCooking());
 	PxConvexMeshGeometry* chassisGeometry = new PxConvexMeshGeometry(chassisMesh);
-	Shape* chassis = new Shape(physics, chassisGeometry, chassisPosition, chassisOrientation, Shape::Type::CHASSIS);
+	Shape* chassis = new Shape(physics, chassisGeometry, chassisLocalPosition, chassisLocalOrientation, Shape::Type::CHASSIS);
 
 	//vector<vector<vec3>> wheelVertices = bus->GetWheelVertices();
 	vector<Model*> physicsWheelModels;
@@ -345,11 +349,11 @@ int main()
 	Model* chassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
 
 	Scene* scene = map.CreateScene();
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	scene->models.push_back(new PositionedModel(wheelModel, wheelPositions[i], wheelOrientations[i]));
-	//}
-	//scene->models.push_back(new PositionedModel(chassisModel, chassisPosition, chassisOrientation));
+	for (int i = 0; i < 4; i++)
+	{
+		scene->models.push_back(new PositionedModel(wheelModel, wheelPositions[i], wheelOrientations[i]));
+	}
+	scene->models.push_back(new PositionedModel(chassisModel, chassisPosition, chassisOrientation));
 
 	Playground* playground = map.CreatePlayground(physics);
 
@@ -390,6 +394,50 @@ int main()
 		}
 		chassis->Update();
 
+		for (int i = 0; i < wheelLocalPositions.size(); i++)
+		{
+			mat4 localTranslation;
+			localTranslation = translate(localTranslation, *wheelLocalPositions[i]);
+			mat4 localRotation = static_cast<mat4>(*wheelLocalOrientations[i]);
+			mat4 globalTranslation;
+			globalTranslation = translate(globalTranslation, bus->GetPosition());
+			mat4 globalRotation = static_cast<mat4>(bus->GetRotation());
+			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
+			vec3 position = vec3(modelMatrix[3]);
+			quat orientation = static_cast<quat>(modelMatrix);
+
+			wheelPositions[i]->x = position.x;
+			wheelPositions[i]->y = position.y;
+			wheelPositions[i]->z = position.z;
+
+			wheelOrientations[i]->x = orientation.x;
+			wheelOrientations[i]->y = orientation.y;
+			wheelOrientations[i]->z = orientation.z;
+			wheelOrientations[i]->w = orientation.w;
+		}
+
+		{
+			mat4 localTranslation;
+			localTranslation = translate(localTranslation, *chassisLocalPosition);
+			mat4 localRotation = static_cast<mat4>(*chassisLocalOrientation);
+			mat4 globalTranslation;
+			globalTranslation = translate(globalTranslation, bus->GetPosition());
+			mat4 globalRotation = static_cast<mat4>(bus->GetRotation());
+			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
+
+			vec3 position = vec3(modelMatrix[3]);
+			quat orientation = static_cast<quat>(modelMatrix);
+
+			chassisPosition->x = position.x;
+			chassisPosition->y = position.y;
+			chassisPosition->z = position.z;
+
+			chassisOrientation->x = orientation.x;
+			chassisOrientation->y = orientation.y;
+			chassisOrientation->z = orientation.z;
+			chassisOrientation->w = orientation.w;
+		}
+
 		// update the camera
 		UpdateCamera(elapsedTime, bus);
 
@@ -397,7 +445,7 @@ int main()
 		openGl->SetCamera(cameraPosition, cameraDirection);
 
 		// draw scene
-		openGl->Draw(scene, bus->GetPosition(), bus->GetRotation(), wheelPositions, wheelOrientations, chassisPosition, chassisOrientation, wheelModel, chassisModel);
+		openGl->Draw(scene);
 
 		// swap the screen buffers
 		glfwSwapBuffers(glfwWindow);

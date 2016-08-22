@@ -1,1 +1,1 @@
-load "kresz_park_road.obj" to graphicsThingy
+load "kresz_park_road.obj" to graphysicsThingy

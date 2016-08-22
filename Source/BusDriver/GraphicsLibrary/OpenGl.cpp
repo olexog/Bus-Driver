@@ -31,7 +31,7 @@ namespace GraphicsLibrary
 		delete this->colouredShaderProgram;
 	}
 
-	void OpenGl::Draw(Scene* scene, vec3 vehiclePosition, quat vehicleRotation, vector<vec3*> positions, vector<quat*> rotations, vec3* chassisPosition, quat* chassisRotation, Model* wheelModel, Model* chassisModel)
+	void OpenGl::Draw(Scene* scene)
 	{
 		glClearColor(0.71f, 0.27f, 0.05f, 0);
 		//glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -52,37 +52,6 @@ namespace GraphicsLibrary
 		this->colouredShaderProgram->SetUniform("view", this->view);
 		this->colouredShaderProgram->SetUniform("lightPosition", lightPosition);
 		this->colouredShaderProgram->SetUniform("lightColour", lightColour);
-
-		for (int i = 0; i < positions.size(); i++)
-		{
-			mat4 localTranslation;
-			localTranslation = translate(localTranslation, *positions[i]);
-			mat4 localRotation = static_cast<mat4>(*rotations[i]);
-			mat4 globalTranslation;
-			globalTranslation = translate(globalTranslation, vehiclePosition);
-			mat4 globalRotation = static_cast<mat4>(vehicleRotation);
-			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
-			this->colouredShaderProgram->SetUniform("model", modelMatrix);
-			//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			//physicsWheelModels[i]->Draw(this->shaderProgram, this->colouredShaderProgram);
-			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			wheelModel->Draw(this->shaderProgram, this->colouredShaderProgram);
-		}
-
-		{
-			mat4 localTranslation;
-			localTranslation = translate(localTranslation, *chassisPosition);
-			mat4 localRotation = static_cast<mat4>(*chassisRotation);
-			mat4 globalTranslation;
-			globalTranslation = translate(globalTranslation, vehiclePosition);
-			mat4 globalRotation = static_cast<mat4>(vehicleRotation);
-			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
-			this->colouredShaderProgram->SetUniform("model", modelMatrix);
-			//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			//physicsChassisModel->Draw(this->shaderProgram, this->colouredShaderProgram);
-			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			chassisModel->Draw(this->shaderProgram, this->colouredShaderProgram);
-		}
 
 		// draw the models
 		for (PositionedModel* positionedModel : scene->models)
