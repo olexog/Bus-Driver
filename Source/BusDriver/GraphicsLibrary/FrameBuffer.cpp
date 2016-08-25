@@ -1,10 +1,10 @@
-#include "FrameBuffer.h"
+﻿#include "FrameBuffer.h"
 
 namespace GraphicsLibrary
 {
 	FrameBuffer::FrameBuffer()
 	{
-		glGenBuffers(1, &this->id);
+		glGenFramebuffers(1, &this->id);
 	}
 
 	FrameBuffer::~FrameBuffer()
@@ -15,6 +15,11 @@ namespace GraphicsLibrary
 	void FrameBuffer::Bind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, this->id);
+	}
+
+	bool FrameBuffer::IsComplete()
+	{
+		return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 	}
 
 	void FrameBuffer::Unbind()

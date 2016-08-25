@@ -10,10 +10,13 @@ out vec3 normal;
 out vec3 ambient;
 out vec3 diffuse;
 out vec3 specular;
+out vec4 positionLightSpace;
 
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
+
+uniform mat4 lightTransform;
 
 void main()
 {
@@ -25,4 +28,5 @@ void main()
 	ambient = ambientColour;
 	diffuse = diffuseColour;
 	specular = specularColour;
+	positionLightSpace = lightTransform * vec4(position, 1.0);
 }

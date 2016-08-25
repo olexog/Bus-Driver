@@ -45,9 +45,24 @@ namespace GraphicsLibrary
 
 		///<summary>Sets whether the scene should be rendered in wireframe mode or not.</summary>
 		void SetWireframeMode(bool wireframeMode);
+
+		///<summary>Sets whether the scene should be rendered from the light's position and with the light's view transformation.</summary>
+		void SetViewFromLight(bool viewFromLight);
 	private:
+		void DrawModels(vector<PositionedModel*> models, ShaderProgram* shaderProgram);
+
 		ShaderProgram* shaderProgram;
 		ShaderProgram* colouredShaderProgram;
+		ShaderProgram* depthShaderProgram;
+
+		const int SHADOW_MAP_WIDTH = 1024;
+		const int SHADOW_MAP_HEIGHT = 1024;
+
+		int contextWidth;
+		int contextHeight;
+
+		FrameBuffer* depthMapBuffer;
+		Texture* depthMapTexture;
 
 		mat4 projection;
 		mat4 view;
@@ -56,5 +71,6 @@ namespace GraphicsLibrary
 		vec3 cameraDirection;
 
 		bool wireframeMode = false;
+		bool viewFromLight = false;
 	};
 }

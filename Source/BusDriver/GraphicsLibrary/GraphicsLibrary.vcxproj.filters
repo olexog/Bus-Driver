@@ -112,5 +112,11 @@
     <None Include="Shaders\ColouredVertexShader.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\DepthVertexShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\DepthFragmentShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -12,6 +12,8 @@ namespace GraphicsLibrary
 
 		void Bind();
 
+		bool IsComplete();
+
 		static void Unbind();
 	private:
 		GLuint id;

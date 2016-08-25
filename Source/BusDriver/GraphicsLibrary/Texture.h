@@ -18,7 +18,7 @@ namespace GraphicsLibrary
 		void LoadData(int width, int height, int internalFormat, int format, int type, void* data);
 
 		///<summary>Attaches the texture to the currently bound frame buffer object.</summary>
-		void AttachToFramebuffer();
+		void AttachToFramebuffer(int attachment);
 	private:
 		GLuint id;
 	};

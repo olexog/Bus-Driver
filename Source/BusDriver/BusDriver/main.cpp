@@ -104,6 +104,23 @@ void Key(GLFWwindow* window, int key, int scancode, int action, int mode)
 			break;
 		}
 	}
+	// CTRL + L: light's view
+	else if (pressedKeys[GLFW_KEY_LEFT_CONTROL] && key == GLFW_KEY_L && action == GLFW_PRESS)
+	{
+		if (openGl != NULL)
+		{
+			openGl->SetViewFromLight(true);
+		}
+	}
+	else if (key == GLFW_KEY_L && action == GLFW_RELEASE)
+	{
+		if (openGl != NULL)
+		{
+			openGl->SetViewFromLight(false);
+		}
+
+		pressedKeys[GLFW_KEY_L] = false;
+	}
 	// store all the other keys' state
 	else if (action == GLFW_PRESS)
 	{

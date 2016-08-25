@@ -32,8 +32,8 @@ namespace GraphicsLibrary
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
 	}
 
-	void Texture::AttachToFramebuffer()
+	void Texture::AttachToFramebuffer(int attachment)
 	{
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->id, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, this->id, 0);
 	}
 }
