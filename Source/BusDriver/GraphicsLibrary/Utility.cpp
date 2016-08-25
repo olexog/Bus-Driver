@@ -74,6 +74,22 @@ namespace GraphicsLibrary
 		return result;
 	}
 
+	Texture* Utility::LoadTexture(string fileName)
+	{
+		int width, height;
+		unsigned char* data = SOIL_load_image(fileName.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+
+		Texture* result = new Texture();
+		result->Bind();
+		result->LoadData(width, height, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		Texture::Unbind();
+
+		SOIL_free_image_data(data);
+
+		return result;
+	}
+
 	vector<string> SlowSplit(string s, string delimiter)
 	{
 		vector<string> result;

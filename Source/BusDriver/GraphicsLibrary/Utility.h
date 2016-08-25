@@ -9,6 +9,9 @@
 #include <algorithm>
 #include <fstream>
 #include <sstream>
+#include <SOIL\SOIL.h>
+
+#include "Texture.h"
 
 using namespace std;
 
@@ -31,5 +34,7 @@ namespace GraphicsLibrary
 		static vector<string> Split(string s, char delimiter);
 
 		static vector<string> Split(string s, string delimiter);
+
+		static Texture* LoadTexture(string fileName);
 	};
 }

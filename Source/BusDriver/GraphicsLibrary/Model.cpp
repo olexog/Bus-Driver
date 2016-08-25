@@ -3,18 +3,24 @@
 
 namespace GraphicsLibrary
 {
-	Model::Model(ColouredVertexArray* colouredVertexArray)
+	Model::Model(vector<VertexArray*> vertexArrays)
 	{
-		this->colouredVertexArray = colouredVertexArray;
+		this->vertexArrays = vertexArrays;
 	}
 
 	Model::~Model()
 	{
-		delete this->colouredVertexArray;
+		for (VertexArray* vertexArray : this->vertexArrays)
+		{
+			delete vertexArray;
+		}
 	}
 
-	void Model::Draw(ShaderProgram* shaderProgram, ShaderProgram* colouredShaderProgram)
+	void Model::Draw(ShaderProgram* shaderProgram)
 	{
-		this->colouredVertexArray->Draw(colouredShaderProgram);
+		for (VertexArray* vertexArray : this->vertexArrays)
+		{
+			vertexArray->Draw(shaderProgram);
+		}
 	}
 }

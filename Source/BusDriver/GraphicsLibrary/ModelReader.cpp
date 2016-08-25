@@ -136,6 +136,7 @@ namespace GraphicsLibrary
 
 		vector<vec3> colouredVertices = vector<vec3>();
 		vector<vec3> colouredNormals = vector<vec3>();
+		vector<vec2> colouredTexCoords = vector<vec2>();
 		vector<vec3> ambientColours = vector<vec3>();
 		vector<vec3> diffuseColours = vector<vec3>();
 		vector<vec3> specularColours = vector<vec3>();
@@ -190,9 +191,9 @@ namespace GraphicsLibrary
 				float* x = new float();
 				float* y = new float();
 
-				sscanf_s(line.c_str(), "%f %f", x, y);
+				sscanf_s(token, "%f %f", x, y);
 
-				texCoords.push_back(vec2(*x, *y));
+				texCoords.push_back(vec2(*x, -*y));
 			}
 			else if (token[0] == 'f' && token[1] == ' ')
 			{
@@ -213,6 +214,10 @@ namespace GraphicsLibrary
 				int vertex2 = face2[0];
 				int vertex3 = face3[0];
 
+				int texCoord1 = face1[1];
+				int texCoord2 = face2[1];
+				int texCoord3 = face3[1];
+
 				int normal1 = face1[2];
 				int normal2 = face2[2];
 				int normal3 = face3[2];
@@ -224,6 +229,10 @@ namespace GraphicsLibrary
 				colouredNormals.push_back(normals[normal1 - 1]);
 				colouredNormals.push_back(normals[normal2 - 1]);
 				colouredNormals.push_back(normals[normal3 - 1]);
+
+				colouredTexCoords.push_back(texCoords[texCoord1 - 1]);
+				colouredTexCoords.push_back(texCoords[texCoord2 - 1]);
+				colouredTexCoords.push_back(texCoords[texCoord3 - 1]);
 
 				ambientColours.push_back(actualMaterial.ambientColour);
 				ambientColours.push_back(actualMaterial.ambientColour);
@@ -252,7 +261,7 @@ namespace GraphicsLibrary
 				token += 6;
 				token += strspn(token, " \t");
 				const char* actualMaterialName = token;
-				
+
 				actualMaterial = materials[actualMaterialName];
 			}
 		}
@@ -261,6 +270,6 @@ namespace GraphicsLibrary
 
 		outVertices = colouredVertices;
 
-		return new Model(new ColouredVertexArray(colouredVertices, colouredNormals, ambientColours, diffuseColours, specularColours));
+		return new Model({ new VertexArray(colouredVertices, colouredNormals, colouredTexCoords, NULL) });
 	}
 }

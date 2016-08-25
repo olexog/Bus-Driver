@@ -1,7 +1,6 @@
 #pragma once
 
 #include "VertexArray.h"
-#include "ColouredVertexArray.h"
 #include "ShaderProgram.h"
 
 namespace GraphicsLibrary
@@ -9,13 +8,13 @@ namespace GraphicsLibrary
 	class Model
 	{
 	public:
-		Model(ColouredVertexArray* colouredVertexArray);
+		Model(vector<VertexArray*> vertexArrays);
 		~Model();
 
-		void Draw(ShaderProgram* shaderProgram, ShaderProgram* colouredShaderProgram);
+		void Draw(ShaderProgram* shaderProgram);
 	// TO DEBUG
 	//private:
-		ColouredVertexArray* colouredVertexArray;
+		vector<VertexArray*> vertexArrays;
 	};
 }
 

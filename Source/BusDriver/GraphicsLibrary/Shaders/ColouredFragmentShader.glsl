@@ -2,9 +2,7 @@
 
 in vec3 position;
 in vec3 normal;
-in vec3 ambient;
-in vec3 diffuse;
-in vec3 specular;
+in vec2 textureCoordinate;
 in vec4 positionLightSpace;
 
 out vec4 colour;
@@ -12,6 +10,7 @@ out vec4 colour;
 uniform vec3 lightPosition;
 uniform vec3 lightColour;
 
+uniform sampler2D textureSampler;
 uniform sampler2D shadowMap;
 
 // Returns 1 if the fragment is in shadow, otherwise 0
@@ -57,5 +56,7 @@ void main()
 	diffuseStrength *= 1 - inShadow;
 	
 	// Calculating final colour
-	colour = vec4(lightColour * (ambientStrength * ambient + diffuseStrength * diffuse), 1.0);
+	colour = vec4(lightColour * texture(textureSampler, textureCoordinate).rgb * (ambientStrength + diffuseStrength), 1.0);
+	//colour = texture(textureSampler, vec2(0.5, 0.5));
+	//colour = vec4(textureCoordinate, 1.0, 0);
 }

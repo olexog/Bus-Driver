@@ -27,9 +27,6 @@
     <ClInclude Include="VertexArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ColouredVertexArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -68,9 +65,6 @@
     <ClCompile Include="VertexArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ColouredVertexArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -100,12 +94,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\VertexShader.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\FragmentShader.glsl">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\ColouredFragmentShader.glsl">
       <Filter>Shaders</Filter>
     </None>

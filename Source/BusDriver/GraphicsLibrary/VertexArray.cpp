@@ -2,7 +2,7 @@
 
 namespace GraphicsLibrary
 {
-	VertexArray::VertexArray(vector<vec3> vertices, vector<vec3> normals)
+	VertexArray::VertexArray(vector<vec3> vertices, vector<vec3> normals, vector<vec2> texCoords, Texture* texture)
 	{
 		glGenVertexArrays(1, &this->id);
 		glBindVertexArray(this->id);
@@ -19,6 +19,12 @@ namespace GraphicsLibrary
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), static_cast<GLvoid*>(0));
 		glEnableVertexAttribArray(1);
 
+		this->texCoords = new VertexBuffer();
+		this->texCoords->Bind();
+		this->texCoords->LoadData(texCoords);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), static_cast<GLvoid*>(0));
+		glEnableVertexAttribArray(2);
+
 		VertexBuffer::Unbind();
 		glBindVertexArray(0);
 
@@ -29,6 +35,7 @@ namespace GraphicsLibrary
 	{
 		delete this->vertices;
 		delete this->normals;
+		delete this->texCoords;
 	}
 
 	void VertexArray::Draw(ShaderProgram* shaderProgram)

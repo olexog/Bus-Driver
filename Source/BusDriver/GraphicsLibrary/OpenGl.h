@@ -18,6 +18,7 @@
 #include "ShaderProgram.h"
 #include "FrameBuffer.h"
 #include "Texture.h"
+#include "Utility.h"
 
 using namespace std;
 using namespace glm;
@@ -51,7 +52,6 @@ namespace GraphicsLibrary
 	private:
 		void DrawModels(vector<PositionedModel*> models, ShaderProgram* shaderProgram);
 
-		ShaderProgram* shaderProgram;
 		ShaderProgram* colouredShaderProgram;
 		ShaderProgram* depthShaderProgram;
 
@@ -63,6 +63,8 @@ namespace GraphicsLibrary
 
 		FrameBuffer* depthMapBuffer;
 		Texture* depthMapTexture;
+
+		Texture* texture;
 
 		mat4 projection;
 		mat4 view;

@@ -1,15 +1,11 @@
 #version 330 core
 layout (location = 0) in vec3 vertexPosition;
 layout (location = 1) in vec3 vertexNormal;
-layout (location = 2) in vec3 ambientColour;
-layout (location = 3) in vec3 diffuseColour;
-layout (location = 4) in vec3 specularColour;
+layout (location = 2) in vec2 texCoord;
 
 out vec3 position;
 out vec3 normal;
-out vec3 ambient;
-out vec3 diffuse;
-out vec3 specular;
+out vec2 textureCoordinate;
 out vec4 positionLightSpace;
 
 uniform mat4 projection;
@@ -25,8 +21,6 @@ void main()
 	position = (model * vec4(vertexPosition, 1.0)).xyz;
 	//normal = normalize((model * vec4(vertexNormal, 1.0)).xyz);
 	normal = mat3(transpose(inverse(model))) * vertexNormal;
-	ambient = ambientColour;
-	diffuse = diffuseColour;
-	specular = specularColour;
+	textureCoordinate = texCoord;
 	positionLightSpace = lightTransform * vec4(position, 1.0);
 }

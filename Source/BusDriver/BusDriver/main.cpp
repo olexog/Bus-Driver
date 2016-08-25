@@ -14,7 +14,6 @@
 #include "ModelReader.h"
 #include "ShaderProgram.h"
 #include "VertexArray.h"
-#include "ColouredVertexArray.h"
 
 #include "Physics.h"
 #include "Playground.h"

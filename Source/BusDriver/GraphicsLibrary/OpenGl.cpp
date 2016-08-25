@@ -18,7 +18,6 @@ namespace GraphicsLibrary
 		this->SetViewport(width, height);
 
 		// load shader programs
-		this->shaderProgram = new ShaderProgram("Shaders\\VertexShader.glsl", "Shaders\\FragmentShader.glsl");
 		this->colouredShaderProgram = new ShaderProgram("Shaders\\ColouredVertexShader.glsl", "Shaders\\ColouredFragmentShader.glsl");
 		this->depthShaderProgram = new ShaderProgram("Shaders\\DepthVertexShader.glsl", "Shaders\\DepthFragmentShader.glsl");
 
@@ -43,11 +42,12 @@ namespace GraphicsLibrary
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
 		FrameBuffer::Unbind();
+
+		this->texture = Utility::LoadTexture("Models\\wood02.bmp");
 	}
 
 	OpenGl::~OpenGl()
 	{
-		delete this->shaderProgram;
 		delete this->colouredShaderProgram;
 		delete this->depthShaderProgram;
 		delete this->depthMapTexture;
@@ -68,10 +68,6 @@ namespace GraphicsLibrary
 		mat4 lightView = glm::lookAt(lightPosition, vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
 
 		mat4 lightTransform = lightProjection * lightView;
-
-		// set the uniforms
-		this->shaderProgram->SetUniform("projection", this->projection);
-		this->shaderProgram->SetUniform("view", this->view);
 
 		this->depthShaderProgram->SetUniform("projection", lightProjection);
 		this->depthShaderProgram->SetUniform("view", lightView);
@@ -106,8 +102,12 @@ namespace GraphicsLibrary
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glActiveTexture(GL_TEXTURE0);
+		texture->Bind();
+		this->colouredShaderProgram->SetUniform("textureSampler", 0);
+
+		glActiveTexture(GL_TEXTURE1);
 		depthMapTexture->Bind();
-		this->colouredShaderProgram->SetUniform("shadowMap", 0);
+		this->colouredShaderProgram->SetUniform("shadowMap", 1);
 
 		this->DrawModels(scene->models, this->colouredShaderProgram);
 	}
@@ -125,7 +125,7 @@ namespace GraphicsLibrary
 			modelMatrix = translate(modelMatrix, *positionedModel->GetPosition());
 			modelMatrix *= static_cast<mat4>(*positionedModel->GetOrientation());
 			shaderProgram->SetUniform("model", modelMatrix);
-			positionedModel->GetModel()->Draw(this->shaderProgram, shaderProgram);
+			positionedModel->GetModel()->Draw(shaderProgram);
 		}
 	}
 
