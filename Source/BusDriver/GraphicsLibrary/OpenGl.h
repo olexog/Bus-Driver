@@ -16,6 +16,8 @@
 
 #include "Scene.h"
 #include "ShaderProgram.h"
+#include "FrameBuffer.h"
+#include "Texture.h"
 
 using namespace std;
 using namespace glm;

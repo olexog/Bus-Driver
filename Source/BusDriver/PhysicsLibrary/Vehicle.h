@@ -37,6 +37,8 @@ namespace PhysicsLibrary
 		void Brake(float measure);
 		void Turn(float measure);
 		void Handbrake(float measure);
+		void SetForwardGear();
+		void SetReverseGear();
 
 		void AddToScene(PxScene* scene);
 

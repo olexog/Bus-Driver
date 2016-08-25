@@ -26,6 +26,11 @@ namespace GraphicsLibrary
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	}
+	
+	void Texture::LoadData(int width, int height, int internalFormat, int format, int type, void* data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
+	}
 
 	void Texture::AttachToFramebuffer()
 	{

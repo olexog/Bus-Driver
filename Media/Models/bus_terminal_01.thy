@@ -1,0 +1,1 @@
+load "bus_terminal_01.obj" to graphysicsThingy

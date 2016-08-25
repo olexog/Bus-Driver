@@ -157,6 +157,15 @@ void SetControlls(Vehicle* vehicle)
 		vehicle->Handbrake(0.0f);
 	}
 
+	if (pressedKeys[GLFW_KEY_F])
+	{
+		vehicle->SetForwardGear();
+	}
+	else if (pressedKeys[GLFW_KEY_R])
+	{
+		vehicle->SetReverseGear();
+	}
+
 	if (glfwJoystickPresent(GLFW_JOYSTICK_1) == GL_TRUE)
 	{
 		int count;
@@ -300,17 +309,10 @@ int main()
 	// create the physics environment
 	Physics* physics = new Physics();
 
-	Map map = MapReader::Read(physics, "Models\\kresz_park.map");
+	Map map = MapReader::Read(physics, "Models\\city.map");
 
 	vector<vec3> wheelVertices;
 	Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj", wheelVertices);
-
-	//PxConvexMesh* wheelMesh = createWheelMesh(0.748f, 0.704f, *physics->GetPhysics(), *physics->GetCooking());
-	//PxConvexMeshGeometry* geom = new PxConvexMeshGeometry(wheelMesh);
-	//Shape* wheel = new Shape(physics, geom, PxVec3(PxIdentity), PxQuat(PxIdentity), Shape::Type::WHEEL);
-	//Shape* wheel = PhysicsUtility::ShapeFromConvexTriangles(wheelVertices, physics);
-	//wheel->SetType(Shape::Type::WHEEL);
-	//Body* wheelBody = new Body({ wheel });
 
 	vector<vec3*> wheelPositions = { new vec3(), new vec3(), new vec3(), new vec3() };
 	vector<quat*> wheelOrientations = { new quat(), new quat(), new quat(), new quat() };
@@ -336,16 +338,6 @@ int main()
 	PxConvexMeshGeometry* chassisGeometry = new PxConvexMeshGeometry(chassisMesh);
 	Shape* chassis = new Shape(physics, chassisGeometry, chassisLocalPosition, chassisLocalOrientation, Shape::Type::CHASSIS);
 
-	//vector<vector<vec3>> wheelVertices = bus->GetWheelVertices();
-	vector<Model*> physicsWheelModels;
-	for (int i = 0; i < wheelVertices.size(); i++)
-	{
-		//physicsWheelModels.push_back(new Model(new ColouredVertexArray(wheelVertices[i], wheelVertices[i], wheelVertices[i], wheelVertices[i], wheelVertices[i])));
-	}
-	//Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj");
-
-	//vector<vec3> chassisVertices = bus->GetChassisVertices();
-	//Model* physicsChassisModel = new Model(new ColouredVertexArray(chassisVertices, chassisVertices, chassisVertices, chassisVertices, chassisVertices));
 	Model* chassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
 
 	Scene* scene = map.CreateScene();
@@ -394,6 +386,7 @@ int main()
 		}
 		chassis->Update();
 
+		// calculate the global positions of the vehicle's wheels
 		for (int i = 0; i < wheelLocalPositions.size(); i++)
 		{
 			mat4 localTranslation;
@@ -416,6 +409,7 @@ int main()
 			wheelOrientations[i]->w = orientation.w;
 		}
 
+		// calculate the global position of the chassis
 		{
 			mat4 localTranslation;
 			localTranslation = translate(localTranslation, *chassisLocalPosition);

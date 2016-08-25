@@ -1,0 +1,1 @@
+load "grass_50x50.obj" to graphysicsThingy

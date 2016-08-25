@@ -1,0 +1,1 @@
+load "road_2x1_straight.obj" to graphysicsThingy

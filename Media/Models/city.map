@@ -1,9 +1,32 @@
 # load thingies
-load "panel_01.thy" to thingies["panel"]
+#load "panel_01.thy" to thingies["panel"]
+load "road_2x1_straight.thy" to thingies["straight 2x1 road"]
+load "road_2x1_cross_01.thy" to thingies["cross 2x1 road"]
+
+load "bus_terminal_01.thy" to thingies["bus terminal"]
+load "grass_50x50.thy" to thingies["grass 50m"]
+load "detached_house_1a.thy" to thingies["detached house 1a"]
 
 # place thingies
-place thingies["panel"] to (30; 0; -50)
-place thingies["panel"] to (35; 0; -100)
-place thingies["panel"] to (30; 0; -150)
-place thingies["panel"] to (35; 0; -200)
-place thingies["panel"] to (30; 0; -250)
+#place thingies["panel"] to (30; 0; -50)
+#place thingies["panel"] to (35; 0; -100)
+#place thingies["panel"] to (30; 0; -150)
+#place thingies["panel"] to (35; 0; -200)
+#place thingies["panel"] to (30; 0; -250)
+
+# road
+place thingies["straight 2x1 road"] to (0; 0; 0)
+place thingies["straight 2x1 road"] to (0; 0; -25)
+place thingies["straight 2x1 road"] to (0; 0; -50)
+place thingies["straight 2x1 road"] to (0; 0; -75)
+place thingies["straight 2x1 road"] to (0; 0; -100)
+place thingies["cross 2x1 road"] to (0; 0; -125)
+
+place thingies["grass 50m"] to (30; 0.2; 12)
+place thingies["grass 50m"] to (30; 0.2; -38)
+place thingies["grass 50m"] to (30; 0.2; -88)
+
+place thingies["detached house 1a"] to (30; 0.2; 0)
+
+# bus terminal
+place thingies["bus terminal"] to (0; 0; 25)

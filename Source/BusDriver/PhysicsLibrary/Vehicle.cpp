@@ -332,7 +332,7 @@ namespace PhysicsLibrary
 		//Free the sim data because we don't need that any more.
 		wheelsSimData->free();
 
-		PxTransform startTransform(PxVec3(-10, 5, 0), PxQuat(PxPi, PxVec3(0, 1, 0)));
+		PxTransform startTransform(PxVec3(0, 2, 0), PxQuat(PxPi, PxVec3(0, 1, 0)));
 		gVehicle4W->getRigidDynamicActor()->setGlobalPose(startTransform);
 	}
 
@@ -386,6 +386,24 @@ namespace PhysicsLibrary
 	void Vehicle::Handbrake(float measure)
 	{
 		this->gVehicleInputData.setAnalogHandbrake(measure);
+	}
+
+	void Vehicle::SetForwardGear()
+	{
+		if (gVehicle4W->mDriveDynData.getCurrentGear() == PxVehicleGearsData::eREVERSE)
+		{
+			gVehicle4W->mDriveDynData.setTargetGear(PxVehicleGearsData::eFIRST);
+			gVehicle4W->mDriveDynData.setCurrentGear(PxVehicleGearsData::eFIRST);
+		}
+	}
+
+	void Vehicle::SetReverseGear()
+	{
+		if (gVehicle4W->mDriveDynData.getCurrentGear() != PxVehicleGearsData::eREVERSE)
+		{
+			gVehicle4W->mDriveDynData.setTargetGear(PxVehicleGearsData::eREVERSE);
+			gVehicle4W->mDriveDynData.setCurrentGear(PxVehicleGearsData::eREVERSE);
+		}
 	}
 
 	void Vehicle::AddToScene(PxScene* scene)

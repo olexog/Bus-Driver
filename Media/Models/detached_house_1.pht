@@ -1,0 +1,4 @@
+create eBOX
+let halfExtends be (5.5; 4.5; 11)
+let position be (0; 0; 0)
+add

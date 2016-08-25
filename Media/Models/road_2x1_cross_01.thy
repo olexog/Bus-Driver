@@ -1,0 +1,1 @@
+load "road_2x1_cross_01.obj" to graphysicsThingy
