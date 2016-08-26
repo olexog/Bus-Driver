@@ -18,7 +18,7 @@ namespace GraphicsLibrary
 		this->SetViewport(width, height);
 
 		// load shader programs
-		this->colouredShaderProgram = new ShaderProgram("Shaders\\ColouredVertexShader.glsl", "Shaders\\ColouredFragmentShader.glsl");
+		this->shaderProgram = new ShaderProgram("Shaders\\VertexShader.glsl", "Shaders\\FragmentShader.glsl");
 		this->depthShaderProgram = new ShaderProgram("Shaders\\DepthVertexShader.glsl", "Shaders\\DepthFragmentShader.glsl");
 
 		// enable the depth buffer for depth testing
@@ -63,7 +63,7 @@ namespace GraphicsLibrary
 
 	OpenGl::~OpenGl()
 	{
-		delete this->colouredShaderProgram;
+		delete this->shaderProgram;
 		delete this->depthShaderProgram;
 		delete this->depthMapTexture;
 		delete this->depthMapBuffer;
@@ -89,17 +89,17 @@ namespace GraphicsLibrary
 
 		if (this->viewFromLight)
 		{
-			this->colouredShaderProgram->SetUniform("projection", lightProjection);
-			this->colouredShaderProgram->SetUniform("view", lightView);
+			this->shaderProgram->SetUniform("projection", lightProjection);
+			this->shaderProgram->SetUniform("view", lightView);
 		}
 		else
 		{
-			this->colouredShaderProgram->SetUniform("projection", this->projection);
-			this->colouredShaderProgram->SetUniform("view", this->view);
+			this->shaderProgram->SetUniform("projection", this->projection);
+			this->shaderProgram->SetUniform("view", this->view);
 		}
-		this->colouredShaderProgram->SetUniform("lightPosition", lightPosition);
-		this->colouredShaderProgram->SetUniform("lightColour", lightColour);
-		this->colouredShaderProgram->SetUniform("lightTransform", lightTransform);
+		this->shaderProgram->SetUniform("lightPosition", lightPosition);
+		this->shaderProgram->SetUniform("lightColour", lightColour);
+		this->shaderProgram->SetUniform("lightTransform", lightTransform);
 
 		// 1. first render to depth map
 		this->depthMapBuffer->Bind();
@@ -118,13 +118,13 @@ namespace GraphicsLibrary
 
 		glActiveTexture(GL_TEXTURE0);
 		texture->Bind();
-		this->colouredShaderProgram->SetUniform("textureSampler", 0);
+		this->shaderProgram->SetUniform("textureSampler", 0);
 
 		glActiveTexture(GL_TEXTURE1);
 		depthMapTexture->Bind();
-		this->colouredShaderProgram->SetUniform("shadowMap", 1);
+		this->shaderProgram->SetUniform("shadowMap", 1);
 
-		this->DrawModels(scene->models, this->colouredShaderProgram);
+		this->DrawModels(scene->models, this->shaderProgram);
 	}
 
 	void OpenGl::SetViewFromLight(bool viewFromLight)

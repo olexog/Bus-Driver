@@ -94,16 +94,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\ColouredFragmentShader.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\ColouredVertexShader.glsl">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\DepthVertexShader.glsl">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\DepthFragmentShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\FragmentShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\VertexShader.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

@@ -52,7 +52,7 @@ namespace GraphicsLibrary
 	private:
 		void DrawModels(vector<PositionedModel*> models, ShaderProgram* shaderProgram);
 
-		ShaderProgram* colouredShaderProgram;
+		ShaderProgram* shaderProgram;
 		ShaderProgram* depthShaderProgram;
 
 		const int SHADOW_MAP_WIDTH = 1024;

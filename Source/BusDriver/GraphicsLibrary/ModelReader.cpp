@@ -254,15 +254,10 @@ namespace GraphicsLibrary
 		outVertices = vector<vec3>();
 		
 		int colourCount = colouredCollections.size();
-		vector<char> colourBytes = vector<char>(colourCount);
+		int colourIndex = 0;
+		vector<unsigned char> colourBytes = vector<unsigned char>(colourCount * 3);
 
 		Texture* colourTexture = new Texture();
-		colourTexture->Bind();
-		colourTexture->LoadData(2, 1, colourBytes.data());
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		Texture::Unbind();
 
 		for (std::pair<string, Collection> collection : colouredCollections)
 		{
@@ -270,14 +265,22 @@ namespace GraphicsLibrary
 			outVertices.insert(outVertices.end(), collection.second.vertices.begin(), collection.second.vertices.end());
 
 			vec3 colour = materials[collection.first].diffuseColour;
-			colourBytes.push_back(static_cast<char>(colour.r * 256));
-			colourBytes.push_back(static_cast<char>(colour.g * 256));
-			colourBytes.push_back(static_cast<char>(colour.b * 256));
+			colourBytes[colourIndex++] = static_cast<unsigned char>(colour.r * 255);
+			colourBytes[colourIndex++] = static_cast<unsigned char>(colour.g * 255);
+			colourBytes[colourIndex++] = static_cast<unsigned char>(colour.b * 255);
 
-			vector<vec2> texCoords = vector<vec2>(collection.second.vertices.size(), vec2((colourBytes.size() / 3) - 1, 0));
+			vec2 texCoord = vec2(static_cast<float>((colourIndex / 3) - 0.5f) / static_cast<float>(colourCount), 0.5f);
+			vector<vec2> texCoords = vector<vec2>(collection.second.vertices.size(), texCoord);
 
 			vertexArrays.push_back(new VertexArray(collection.second.vertices, collection.second.normals, texCoords, colourTexture));
 		}
+
+		colourTexture->Bind();
+		colourTexture->LoadData(colourCount, 1, colourBytes.data());
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		Texture::Unbind();
 
 		return new Model(vertexArrays);
 	}
