@@ -43,7 +43,7 @@ namespace GraphicsLibrary
 		glReadBuffer(GL_NONE);
 		FrameBuffer::Unbind();
 
-		this->texture = Utility::LoadTexture("Models\\wood02.bmp");
+		this->texture = Utility::LoadTexture("Models\\newspaper.png");
 	}
 
 	OpenGl::~OpenGl()
