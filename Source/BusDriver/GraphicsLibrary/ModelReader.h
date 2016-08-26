@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 #include <map>
+#include <set>
 #include <iostream>
 
 #include <glm\vec2.hpp>

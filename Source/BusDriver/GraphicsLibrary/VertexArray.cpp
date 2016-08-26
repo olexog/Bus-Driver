@@ -29,6 +29,8 @@ namespace GraphicsLibrary
 		glBindVertexArray(0);
 
 		this->vertexCount = static_cast<int>(vertices.size());
+
+		this->texture = texture;
 	}
 	
 	VertexArray::~VertexArray()
@@ -40,6 +42,10 @@ namespace GraphicsLibrary
 
 	void VertexArray::Draw(ShaderProgram* shaderProgram)
 	{
+		glActiveTexture(GL_TEXTURE0);
+		this->texture->Bind();
+		shaderProgram->SetUniform("textureSampler", 0);
+
 		shaderProgram->Use();
 
 		glBindVertexArray(this->id);

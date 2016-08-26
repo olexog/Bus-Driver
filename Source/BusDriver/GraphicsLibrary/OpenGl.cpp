@@ -43,7 +43,22 @@ namespace GraphicsLibrary
 		glReadBuffer(GL_NONE);
 		FrameBuffer::Unbind();
 
-		this->texture = Utility::LoadTexture("Models\\newspaper.png");
+		vector<char> data;
+		data.push_back(255);
+		data.push_back(0);
+		data.push_back(0);
+
+		data.push_back(0);
+		data.push_back(255);
+		data.push_back(0);
+		this->texture = new Texture();
+		this->texture->Bind();
+		this->texture->LoadData(2, 1, data.data());
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		Texture::Unbind();
+		//this->texture = Utility::LoadTexture("Models\\newspaper.png");
 	}
 
 	OpenGl::~OpenGl()
@@ -125,6 +140,7 @@ namespace GraphicsLibrary
 			modelMatrix = translate(modelMatrix, *positionedModel->GetPosition());
 			modelMatrix *= static_cast<mat4>(*positionedModel->GetOrientation());
 			shaderProgram->SetUniform("model", modelMatrix);
+
 			positionedModel->GetModel()->Draw(shaderProgram);
 		}
 	}

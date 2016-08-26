@@ -8,6 +8,15 @@ namespace GraphicsLibrary
 		vec3 ambientColour;
 		vec3 diffuseColour;
 		vec3 specularColour;
+		string* texturePath;
+	};
+
+	struct Collection
+	{
+	public:
+		vector<vec3> vertices;
+		vector<vec3> normals;
+		vector<vec2> texCoords;
 	};
 
 	map<string, Material> ReadMaterialLibrary(string fileName)
@@ -130,21 +139,17 @@ namespace GraphicsLibrary
 
 		ifstream file = ifstream(fileName);
 
+		map<string, Collection> texturedCollections;
+		map<string, Collection> colouredCollections;
+
 		vector<vec3> vertices = vector<vec3>();
 		vector<vec3> normals = vector<vec3>();
 		vector<vec2> texCoords = vector<vec2>();
 
-		vector<vec3> colouredVertices = vector<vec3>();
-		vector<vec3> colouredNormals = vector<vec3>();
-		vector<vec2> colouredTexCoords = vector<vec2>();
-		vector<vec3> ambientColours = vector<vec3>();
-		vector<vec3> diffuseColours = vector<vec3>();
-		vector<vec3> specularColours = vector<vec3>();
-
 		string line;
 
 		map<string, Material> materials;
-		Material actualMaterial;
+		string actualMaterialName;
 
 		while (getline(file, line))
 		{
@@ -210,41 +215,19 @@ namespace GraphicsLibrary
 
 				int* face3 = ParseFace(token);
 
-				int vertex1 = face1[0];
-				int vertex2 = face2[0];
-				int vertex3 = face3[0];
+				vector<int> vertexIndices = { face1[0], face2[0], face3[0] };
+				vector<int> texCoordIndices = { face1[1], face2[1], face3[1] };
+				vector<int> normalIndices = { face1[2], face2[2], face3[2] };
 
-				int texCoord1 = face1[1];
-				int texCoord2 = face2[1];
-				int texCoord3 = face3[1];
-
-				int normal1 = face1[2];
-				int normal2 = face2[2];
-				int normal3 = face3[2];
-
-				colouredVertices.push_back(vertices[vertex1 - 1]);
-				colouredVertices.push_back(vertices[vertex2 - 1]);
-				colouredVertices.push_back(vertices[vertex3 - 1]);
-
-				colouredNormals.push_back(normals[normal1 - 1]);
-				colouredNormals.push_back(normals[normal2 - 1]);
-				colouredNormals.push_back(normals[normal3 - 1]);
-
-				colouredTexCoords.push_back(texCoords[texCoord1 - 1]);
-				colouredTexCoords.push_back(texCoords[texCoord2 - 1]);
-				colouredTexCoords.push_back(texCoords[texCoord3 - 1]);
-
-				ambientColours.push_back(actualMaterial.ambientColour);
-				ambientColours.push_back(actualMaterial.ambientColour);
-				ambientColours.push_back(actualMaterial.ambientColour);
-
-				diffuseColours.push_back(actualMaterial.diffuseColour);
-				diffuseColours.push_back(actualMaterial.diffuseColour);
-				diffuseColours.push_back(actualMaterial.diffuseColour);
-
-				specularColours.push_back(actualMaterial.specularColour);
-				specularColours.push_back(actualMaterial.specularColour);
-				specularColours.push_back(actualMaterial.specularColour);
+				if (materials[actualMaterialName].texturePath == NULL)
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						colouredCollections[actualMaterialName].vertices.push_back(vertices[vertexIndices[i] - 1]);
+						colouredCollections[actualMaterialName].texCoords.push_back(texCoords[texCoordIndices[i] - 1]);
+						colouredCollections[actualMaterialName].normals.push_back(normals[normalIndices[i] - 1]);
+					}
+				}
 			}
 			else if (strncmp(token, "mtllib", 6) == 0 && token[6] == ' ')
 			{
@@ -260,16 +243,42 @@ namespace GraphicsLibrary
 			{
 				token += 6;
 				token += strspn(token, " \t");
-				const char* actualMaterialName = token;
-
-				actualMaterial = materials[actualMaterialName];
+				actualMaterialName = string(token);
 			}
 		}
 
 		file.close();
 
-		outVertices = colouredVertices;
+		vector<VertexArray*> vertexArrays;
 
-		return new Model({ new VertexArray(colouredVertices, colouredNormals, colouredTexCoords, NULL) });
+		outVertices = vector<vec3>();
+		
+		int colourCount = colouredCollections.size();
+		vector<char> colourBytes = vector<char>(colourCount);
+
+		Texture* colourTexture = new Texture();
+		colourTexture->Bind();
+		colourTexture->LoadData(2, 1, colourBytes.data());
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		Texture::Unbind();
+
+		for (std::pair<string, Collection> collection : colouredCollections)
+		{
+			outVertices.reserve(outVertices.size() + collection.second.vertices.size());
+			outVertices.insert(outVertices.end(), collection.second.vertices.begin(), collection.second.vertices.end());
+
+			vec3 colour = materials[collection.first].diffuseColour;
+			colourBytes.push_back(static_cast<char>(colour.r * 256));
+			colourBytes.push_back(static_cast<char>(colour.g * 256));
+			colourBytes.push_back(static_cast<char>(colour.b * 256));
+
+			vector<vec2> texCoords = vector<vec2>(collection.second.vertices.size(), vec2((colourBytes.size() / 3) - 1, 0));
+
+			vertexArrays.push_back(new VertexArray(collection.second.vertices, collection.second.normals, texCoords, colourTexture));
+		}
+
+		return new Model(vertexArrays);
 	}
 }

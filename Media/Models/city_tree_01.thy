@@ -1,0 +1,1 @@
+load "city_tree_01.obj" to graphysicsThingy

@@ -28,5 +28,6 @@ namespace GraphicsLibrary
 		VertexBuffer* vertices;
 		VertexBuffer* normals;
 		VertexBuffer* texCoords;
+		Texture* texture;
 	};
 }
