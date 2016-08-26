@@ -33,6 +33,9 @@ namespace GraphicsLibrary
 		{
 			sscanf_s(line.c_str(), "%255s", command, 256);
 
+			const char* token = line.c_str();
+			token += strspn(token, Utility::WHITESPACES);
+
 			if (strcmp(command, "newmtl") == 0)
 			{
 				char materialName[256];
@@ -77,6 +80,12 @@ namespace GraphicsLibrary
 				sscanf_s(line.c_str(), "%*255s %f %f %f", red, green, blue);
 
 				materials[actualMaterialName].specularColour = vec3(*red, *green, *blue);
+			}
+			else if (strcmp(command, "map_Kd") == 0)
+			{
+				token += strlen(command);
+				token += strspn(token, Utility::WHITESPACES);
+				materials[actualMaterialName].texturePath = new string(Utility::GetDirectory(fileName) + token);
 			}
 		}
 
@@ -224,8 +233,16 @@ namespace GraphicsLibrary
 					for (int i = 0; i < 3; i++)
 					{
 						colouredCollections[actualMaterialName].vertices.push_back(vertices[vertexIndices[i] - 1]);
-						colouredCollections[actualMaterialName].texCoords.push_back(texCoords[texCoordIndices[i] - 1]);
 						colouredCollections[actualMaterialName].normals.push_back(normals[normalIndices[i] - 1]);
+					}
+				}
+				else
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						texturedCollections[actualMaterialName].vertices.push_back(vertices[vertexIndices[i] - 1]);
+						texturedCollections[actualMaterialName].texCoords.push_back(texCoords[texCoordIndices[i] - 1]);
+						texturedCollections[actualMaterialName].normals.push_back(normals[normalIndices[i] - 1]);
 					}
 				}
 			}
@@ -273,6 +290,12 @@ namespace GraphicsLibrary
 			vector<vec2> texCoords = vector<vec2>(collection.second.vertices.size(), texCoord);
 
 			vertexArrays.push_back(new VertexArray(collection.second.vertices, collection.second.normals, texCoords, colourTexture));
+		}
+
+		for (std::pair<string, Collection> collection : texturedCollections)
+		{
+			Texture* texture = Utility::LoadTexture(*materials[collection.first].texturePath);
+			vertexArrays.push_back(new VertexArray(collection.second.vertices, collection.second.normals, collection.second.texCoords, texture));
 		}
 
 		colourTexture->Bind();
