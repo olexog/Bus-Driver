@@ -105,9 +105,7 @@ namespace GraphicsLibrary
 		this->depthMapBuffer->Bind();
 		glViewport(0, 0, this->SHADOW_MAP_WIDTH, this->SHADOW_MAP_HEIGHT);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		glCullFace(GL_FRONT);
 		this->DrawModels(scene->models, this->depthShaderProgram);
-		glCullFace(GL_BACK);
 
 		// 2. then render scene as normal with shadow mapping (using depth map)
 		FrameBuffer::Unbind();
@@ -136,6 +134,8 @@ namespace GraphicsLibrary
 	{
 		for (PositionedModel* positionedModel : models)
 		{
+			if (glm::length((*positionedModel->GetPosition() - this->cameraPosition)) > 1000.0f) continue;
+
 			mat4 modelMatrix;
 			modelMatrix = translate(modelMatrix, *positionedModel->GetPosition());
 			modelMatrix *= static_cast<mat4>(*positionedModel->GetOrientation());

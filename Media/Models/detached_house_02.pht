@@ -1,0 +1,9 @@
+create eBOX
+let halfExtends be (3; 4; 7)
+let position be (0; 4; 0)
+add
+
+create eBOX
+let halfExtends be (2.5; 4; 3)
+let position be (-5.6; 4; 0)
+add
