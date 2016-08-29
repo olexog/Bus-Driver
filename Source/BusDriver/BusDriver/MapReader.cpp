@@ -4,6 +4,7 @@ Map MapReader::Read(Physics* physics, string fileName)
 {
 	// the thingies which the map consists of
 	map<string, Thingy*> thingies;
+	map<string, Thingy*> models;
 
 	vector<PositionedThingy*> positionedThingies;
 
@@ -62,8 +63,10 @@ Map MapReader::Read(Physics* physics, string fileName)
 			token += 2;
 			// skip whitespaces
 			token += strspn(token, Utility::WHITESPACES);
-			// skip thingies
-			token += 8;
+
+			// parse variable name
+			string variableName = string(token, strcspn(token, "["));
+			token += variableName.length();
 
 			// check the indexer
 			if (token[0] != '[' || token[1] != '\"')
@@ -79,15 +82,28 @@ Map MapReader::Read(Physics* physics, string fileName)
 			string key = string(token, keyLength);
 
 			// load the thingy
-			thingies[key] = ThingyReader::Read(physics, Utility::GetDirectory(fileName) + relativeFileName);
+			if (variableName == "thingies")
+			{
+				thingies[key] = ThingyReader::Read(physics, Utility::GetDirectory(fileName) + relativeFileName);
+			}
+			else if (variableName == "models")
+			{
+				models[key] = new Thingy(ModelReader::Read(Utility::GetDirectory(fileName) + relativeFileName), NULL);
+			}
+			else
+			{
+				cout << "Unknown variable name \"" << variableName << "\" at line " << lineIndex << " while reading map file " << fileName << "." << endl;
+			}
 		}
 		// if command is "place"
 		else if (strcmp(command, "place") == 0)
 		{
 			// skip whitespaces
 			token += strspn(token, Utility::WHITESPACES);
-			// skip thingies
-			token += 8;
+
+			// parse variable name
+			string variableName = string(token, strcspn(token, "["));
+			token += variableName.length();
 
 			// check the indexer
 			if (token[0] != '[' || token[1] != '\"')
@@ -128,7 +144,45 @@ Map MapReader::Read(Physics* physics, string fileName)
 			// set position
 			vec3* position = new vec3(*x, *y, *z);
 
-			positionedThingies.push_back(new PositionedThingy(thingies[key], position, new quat()));
+			// initialize orientation
+			quat* orientation = new quat(1, 0, 0, 0);
+
+			// skip vector
+			token += strcspn(token, ")");
+			token += 1;
+
+			// skip whitespaces
+			token += strspn(token, Utility::WHITESPACES);
+
+			if (strcmp(token, "") != 0)
+			{
+				// skip "as"
+				token += 2;
+				// skip whitespaces
+				token += strspn(token, Utility::WHITESPACES);
+				
+				// read orientation
+				float* x = new float();
+				float* y = new float();
+				float* z = new float();
+				float* w = new float();
+				sscanf_s(token, "(%f; %f; %f; %f)", x, y, z, w);
+				// set orientation
+				orientation = new quat(*w, *x, *y, *z);
+			}
+
+			if (variableName == "thingies")
+			{
+				positionedThingies.push_back(new PositionedThingy(thingies[key], position, orientation));
+			}
+			else if (variableName == "models")
+			{
+				positionedThingies.push_back(new PositionedThingy(models[key], position, orientation));
+			}
+			else
+			{
+				cout << "Unknown variable name \"" << variableName << "\" at line " << lineIndex << " while reading map file " << fileName << "." << endl;
+			}
 		}
 		// if command is unknown
 		else
@@ -140,6 +194,10 @@ Map MapReader::Read(Physics* physics, string fileName)
 	// collect thingies
 	vector<Thingy*> thingyVector;
 	for (map<string, Thingy*>::iterator iterator = thingies.begin(); iterator != thingies.end(); ++iterator)
+	{
+		thingyVector.push_back(iterator->second);
+	}
+	for (map<string, Thingy*>::iterator iterator = models.begin(); iterator != models.end(); ++iterator)
 	{
 		thingyVector.push_back(iterator->second);
 	}

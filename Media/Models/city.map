@@ -7,7 +7,6 @@ load "grass_50x50.thy" to thingies["grass 50m"]
 load "detached_house_02a.thy" to thingies["detached house 2a"]
 load "city_tree_01.thy" to thingies["tree 1"]
 
-# place thingies
 
 # road
 place thingies["straight 2x1 road"] to (0; 0; 0)
@@ -16,6 +15,8 @@ place thingies["straight 2x1 road"] to (0; 0; -50)
 place thingies["straight 2x1 road"] to (0; 0; -75)
 place thingies["straight 2x1 road"] to (0; 0; -100)
 place thingies["cross 2x1 road"] to (0; 0; -125)
+place thingies["straight 2x1 road"] to (50; 0; -150) as (0; 0.7071; 0; 0.7071)
+place thingies["straight 2x1 road"] to (75; 0; -150) as (0; 0.7071; 0; 0.7071)
 
 place thingies["grass 50m"] to (30; 0.2; 12)
 place thingies["grass 50m"] to (30; 0.2; -38)
