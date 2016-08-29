@@ -7,7 +7,6 @@ load "grass_50x50.thy" to thingies["grass 50m"]
 load "detached_house_02a.thy" to thingies["detached house 2a"]
 load "city_tree_01.thy" to thingies["tree 1"]
 
-
 # road
 place thingies["straight 2x1 road"] to (0; 0; 0)
 place thingies["straight 2x1 road"] to (0; 0; -25)
