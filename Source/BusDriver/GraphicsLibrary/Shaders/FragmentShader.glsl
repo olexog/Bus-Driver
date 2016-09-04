@@ -21,9 +21,6 @@ float IsInShadow(vec4 positionLightSpace, float angleOfIncidence)
 	// Clip it into [0; 1] since depth range is the same
 	positionLightSpaceNDC = positionLightSpaceNDC * 0.5 + 0.5;
 
-	// The distance between the light and the lit obstacle, which can be seen from the light's viewport
-	float obstacleDepth = texture(shadowMap, positionLightSpaceNDC.xy).r;
-
 	// The distance between the light and this fragment
 	float fragmentDepth = positionLightSpaceNDC.z;
 	
@@ -31,10 +28,21 @@ float IsInShadow(vec4 positionLightSpace, float angleOfIncidence)
 	// being that farther from the light than the obstacle will also be lit
 	float bias = max(0.05 * (1.0 - angleOfIncidence), 0.005); 
 
-	// Determine whether the fragment is farther to the light than the lit obstacle meaning that it is in shadow
-	float inShadow = fragmentDepth - bias > obstacleDepth ? 1.0 : 0.0;
+	float inShadow = 0.0f;
+	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+	for (int x = -1; x <= 1; x++)
+	{
+		for (int y = -1; y <=1; y++)
+		{
+			// The distance between the light and the lit obstacle, which can be seen from the light's viewport
+			float obstacleDepth = texture(shadowMap, positionLightSpaceNDC.xy + vec2(x, y) * texelSize).r;
 
-	return inShadow;
+			// Determine whether the fragment is farther to the light than the lit obstacle meaning that it is in shadow
+			inShadow += fragmentDepth - bias > obstacleDepth ? 1.0 : 0.0;
+		}
+	}
+
+	return inShadow / 9.0f;
 }
 
 void main()
