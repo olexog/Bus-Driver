@@ -9,6 +9,7 @@
 // GLFW must be included after gl.h - which is in OpenGl.h
 #include <GLFW/glfw3.h>
 
+#include "Camera.h"
 #include "MapReader.h"
 
 #include "ModelReader.h"
@@ -33,21 +34,13 @@ GLFWwindow* glfwWindow;
 
 OpenGl* openGl;
 
+Camera* camera;
+
 bool pressedKeys[GLFW_KEY_LAST];
 
-enum class CameraMode
-{
-	Static,
-	FollowBus
-} cameraMode;
-
-const float CAMERA_VELOCITY = 20.0f;
-const float CAMERA_ANGULAR_VELOCITY = 0.5f;
-const float CAMERA_FAST_VELOCITY = 100.0f;
-const float CAMERA_FAST_ANGULAR_VELOCITY = 1.0f;
-
-vec3 cameraPosition;
-vec3 cameraDirection;
+bool firstMouse = true;
+float lastX;
+float lastY;
 
 float previousTime;
 
@@ -93,13 +86,13 @@ void Key(GLFWwindow* window, int key, int scancode, int action, int mode)
 	// X: change camera mode
 	else if (key == GLFW_KEY_X && action == GLFW_PRESS)
 	{
-		switch (cameraMode)
+		switch (camera->GetMode())
 		{
-		case CameraMode::FollowBus:
-			cameraMode = CameraMode::Static;
+		case CameraMode::FollowTarget:
+			camera->SetMode(CameraMode::Static);
 			break;
 		case CameraMode::Static:
-			cameraMode = CameraMode::FollowBus;
+			camera->SetMode(CameraMode::FollowTarget);
 			break;
 		}
 	}
@@ -129,6 +122,23 @@ void Key(GLFWwindow* window, int key, int scancode, int action, int mode)
 	{
 		pressedKeys[key] = false;
 	}
+}
+
+void CursorPos(GLFWwindow* window, double posX, double posY)
+{
+	if (firstMouse)
+	{
+		lastX = posX;
+		lastY = posY;
+		firstMouse = false;
+	}
+
+	float offsetX = posX - lastX;
+	float offsetY = lastY - posY;
+	lastX = posX;
+	lastY = posY;
+
+	camera->Rotate(offsetX, offsetY, true);
 }
 
 void SetControlls(Vehicle* vehicle)
@@ -206,91 +216,49 @@ void SetControlls(Vehicle* vehicle)
 	}
 }
 
-void UpdateCamera(float elapsedTime, Vehicle* vehicle)
+void MoveCamera(float elapsedTime)
 {
-	// static camera
-	if (cameraMode == CameraMode::Static)
+	// translate up
+	if (pressedKeys[GLFW_KEY_KP_8])
 	{
-		vec3 up = vec3(0.0f, 1.0f, 0.0f);
-
-		// define camera velocity / angular velocity
-		float cameraVelocity = pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_VELOCITY : CAMERA_VELOCITY;
-		float cameraAngularVelocity = pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_ANGULAR_VELOCITY : CAMERA_ANGULAR_VELOCITY;
-
-		// rotate up
-		if (pressedKeys[GLFW_KEY_I])
-		{
-			cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, cross(cameraDirection, up)) * vec4(cameraDirection, 0.0f));
-		}
-		// rotate down
-		if (pressedKeys[GLFW_KEY_K])
-		{
-			cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -cross(cameraDirection, up)) * vec4(cameraDirection, 0.0f));
-		}
-		// rotate left
-		if (pressedKeys[GLFW_KEY_J])
-		{
-			cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, up) * vec4(cameraDirection, 0.0f));
-		}
-		// rotate right
-		if (pressedKeys[GLFW_KEY_L])
-		{
-			cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -up) * vec4(cameraDirection, 0.0f));
-		}
-		// translate up
-		if (pressedKeys[GLFW_KEY_KP_8])
-		{
-			cameraPosition += cameraVelocity * elapsedTime * up;
-		}
-		// translate down
-		if (pressedKeys[GLFW_KEY_KP_2])
-		{
-			cameraPosition -= cameraVelocity * elapsedTime * up;
-		}
-		// translate left
-		if (pressedKeys[GLFW_KEY_KP_4])
-		{
-			cameraPosition -= cameraVelocity * elapsedTime * cross(cameraDirection, up);
-		}
-		// translate right
-		if (pressedKeys[GLFW_KEY_KP_6])
-		{
-			cameraPosition += cameraVelocity * elapsedTime * cross(cameraDirection, up);
-		}
-		// translate forward
-		if (pressedKeys[GLFW_KEY_KP_9])
-		{
-			cameraPosition += cameraVelocity * elapsedTime * cameraDirection;
-		}
-		// translate backward
-		if (pressedKeys[GLFW_KEY_KP_7])
-		{
-			cameraPosition -= cameraVelocity * elapsedTime * cameraDirection;
-		}
+		camera->Move(CameraMovement::Up, elapsedTime);
 	}
+	// translate down
+	if (pressedKeys[GLFW_KEY_KP_2])
+	{
+		camera->Move(CameraMovement::Down, elapsedTime);
+	}
+	// translate left
+	if (pressedKeys[GLFW_KEY_KP_4])
+	{
+		camera->Move(CameraMovement::Left, elapsedTime);
+	}
+	// translate right
+	if (pressedKeys[GLFW_KEY_KP_6])
+	{
+		camera->Move(CameraMovement::Right, elapsedTime);
+	}
+	// translate forward
+	if (pressedKeys[GLFW_KEY_KP_9])
+	{
+		camera->Move(CameraMovement::Forward, elapsedTime);
+	}
+	// translate backward
+	if (pressedKeys[GLFW_KEY_KP_7])
+	{
+		camera->Move(CameraMovement::Backward, elapsedTime);
+	}
+
 	// bus camera
-	else if (cameraMode == CameraMode::FollowBus)
-	{
-		cameraPosition = vec3(0.0f, 5.0f, -20.0f);
-		cameraPosition = glm::rotate(vehicle->GetRotation(), cameraPosition) + vehicle->GetPosition();
-		cameraDirection = vec3(0.0f, 0.0f, 1.0f);
-		cameraDirection = glm::rotate(vehicle->GetRotation(), cameraDirection);
-	}
+	/*cameraPosition = vec3(0.0f, 5.0f, -20.0f);
+	cameraPosition = glm::rotate(vehicle->GetRotation(), cameraPosition) + vehicle->GetPosition();
+	cameraDirection = vec3(0.0f, 0.0f, 1.0f);
+	cameraDirection = glm::rotate(vehicle->GetRotation(), cameraDirection);*/
 }
 
 int main()
 {
-	cameraMode = CameraMode::FollowBus;
-
-	if (cameraMode == CameraMode::Static)
-	{
-		cameraPosition = vec3(0.0f, 3.0f, -100.0f);
-		cameraDirection = vec3(0.0f, 0.0f, 1.0f);
-	}
-	else if (cameraMode == CameraMode::FollowBus)
-	{
-
-	}
+	camera = new Camera(vec3(0.0f, 3.0f, -100.0f), 0.0f, 0.0f);
 
 	// initialize GLFW
 	glfwInit();
@@ -318,6 +286,7 @@ int main()
 	// callbacks
 	glfwSetWindowSizeCallback(glfwWindow, WindowSize);
 	glfwSetKeyCallback(glfwWindow, Key);
+	glfwSetCursorPosCallback(glfwWindow, CursorPos);
 
 	// create the window
 	openGl = new OpenGl(640, 480);
@@ -448,11 +417,11 @@ int main()
 			chassisOrientation->w = orientation.w;
 		}
 
-		// update the camera
-		UpdateCamera(elapsedTime, bus);
+		// move the camera
+		MoveCamera(elapsedTime);
 
 		// transfer the camera pose to the renderer
-		openGl->SetCamera(cameraPosition, cameraDirection);
+		openGl->SetCamera(camera->GetPosition(), camera->GetFront());
 
 		// draw scene
 		openGl->Draw(scene);
@@ -461,7 +430,7 @@ int main()
 		glfwSwapBuffers(glfwWindow);
 	}
 
-	// call the constructors
+	// call the destructors
 	delete scene;
 	delete openGl;
 
