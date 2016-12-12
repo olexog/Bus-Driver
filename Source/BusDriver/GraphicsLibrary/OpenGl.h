@@ -60,6 +60,7 @@ namespace GraphicsLibrary
 
 		int contextWidth;
 		int contextHeight;
+		const float FIELD_OF_VIEW = 45.0f;
 
 		FrameBuffer* depthMapBuffer;
 		Texture* depthMapTexture;

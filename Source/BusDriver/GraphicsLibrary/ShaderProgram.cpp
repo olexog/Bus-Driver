@@ -80,11 +80,20 @@ namespace GraphicsLibrary
 		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 		ShaderProgram::Disable();
 	}
+
 	void ShaderProgram::SetUniform(string name, int value)
 	{
 		this->Use();
 		GLuint transformLocation = glGetUniformLocation(this->id, name.c_str());
 		glUniform1i(transformLocation, value);
+		ShaderProgram::Disable();
+	}
+
+	void ShaderProgram::SetUniform(string name, vector<float> values)
+	{
+		this->Use();
+		GLuint transformLocation = glGetUniformLocation(this->id, name.c_str());
+		glUniform1fv(transformLocation, values.size(), values.data());
 		ShaderProgram::Disable();
 	}
 }

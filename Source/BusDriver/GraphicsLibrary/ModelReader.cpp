@@ -207,7 +207,7 @@ namespace GraphicsLibrary
 
 				sscanf_s(token, "%f %f", x, y);
 
-				texCoords.push_back(vec2(*x, -*y));
+				texCoords.push_back(vec2(*x, 1.0f - *y));
 			}
 			else if (token[0] == 'f' && token[1] == ' ')
 			{

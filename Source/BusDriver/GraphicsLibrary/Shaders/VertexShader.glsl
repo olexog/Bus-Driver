@@ -7,6 +7,7 @@ out vec3 position;
 out vec3 normal;
 out vec2 textureCoordinate;
 out vec4 positionLightSpace;
+out float depthToCamera;
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -23,4 +24,5 @@ void main()
 	normal = mat3(transpose(inverse(model))) * vertexNormal;
 	textureCoordinate = texCoord;
 	positionLightSpace = lightTransform * vec4(position, 1.0);
+	depthToCamera = gl_Position.z;
 }

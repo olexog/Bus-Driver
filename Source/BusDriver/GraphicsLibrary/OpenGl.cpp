@@ -71,21 +71,83 @@ namespace GraphicsLibrary
 
 	void OpenGl::Draw(Scene* scene)
 	{
+		// calculate view matrices
+		this->view = lookAt(this->cameraPosition, this->cameraPosition + this->cameraDirection, vec3(0.0f, 1.0f, 0.0f));
+
+		vec3 lightDirection = vec3(-1, 0, 0);
+
+		const int CASCADE_COUNT = 3;
+		float nearPlane = 0.1f;
+		float farPlane = 500.0f;
+
+		vector<float> cascadeEnds = { nearPlane, 30.0f, 100.0f, farPlane };
+
+		float aspect = static_cast<float>(this->contextHeight) / static_cast<float>(this->contextWidth);
+		float tanHalfHFOV = tanf(radians(this->FIELD_OF_VIEW / 2.0f));
+		float tanHalfVFOV = tanf(radians((this->FIELD_OF_VIEW * aspect) / 2.0f));
+
+		mat4 lightViews[CASCADE_COUNT];
+		mat4 lightTranslation = lookAt(vec3(), lightDirection, vec3(0, 1, 0));
+
+		for (int i = 0; i < CASCADE_COUNT; i++) {
+			float xn = -cascadeEnds[i] * tanHalfHFOV;
+			float xf = -cascadeEnds[i + 1] * tanHalfHFOV;
+			float yn = -cascadeEnds[i] * tanHalfVFOV;
+			float yf = -cascadeEnds[i + 1] * tanHalfVFOV;
+
+			vec4 frustumCorners[8] = {
+				// near face
+				vec4(xn,   yn, -cascadeEnds[i], 1.0),
+				vec4(-xn,  yn, -cascadeEnds[i], 1.0),
+				vec4(xn,  -yn, -cascadeEnds[i], 1.0),
+				vec4(-xn, -yn, -cascadeEnds[i], 1.0),
+
+				// far face
+				vec4(xf,   yf, -cascadeEnds[i + 1], 1.0),
+				vec4(-xf,  yf, -cascadeEnds[i + 1], 1.0),
+				vec4(xf,  -yf, -cascadeEnds[i + 1], 1.0),
+				vec4(-xf, -yf, -cascadeEnds[i + 1], 1.0)
+			};
+
+			vec4 frustumCornersL[8];
+
+			float minX = std::numeric_limits<float>::max();
+			float maxX = std::numeric_limits<float>::min();
+			float minY = std::numeric_limits<float>::max();
+			float maxY = std::numeric_limits<float>::min();
+			float minZ = std::numeric_limits<float>::max();
+			float maxZ = std::numeric_limits<float>::min();
+
+			for (uint j = 0; j < 8; j++) {
+				vec4 vW = inverse(this->view) * frustumCorners[j];
+				frustumCornersL[j] = lightTranslation * vW;
+
+				minX = glm::min(minX, frustumCornersL[j].x);
+				maxX = glm::max(maxX, frustumCornersL[j].x);
+				minY = glm::min(minY, frustumCornersL[j].y);
+				maxY = glm::max(maxY, frustumCornersL[j].y);
+				minZ = glm::min(minZ, frustumCornersL[j].z);
+				maxZ = glm::max(maxZ, frustumCornersL[j].z);
+			}
+
+			lightViews[i] = ortho(minX, maxX, minY, maxY, minZ, maxZ);
+		}
+
 		vec3 lightPosition = vec3(0.0f, 25.0f, 50.0f);
 		//vec3 lightColour = vec3(0.71f, 0.27f, 0.05f);
 		vec3 lightColour = vec3(1.0f);
 
 		// calculate projection matrix
-		mat4 lightProjection = ortho(-50.0f, 50.0f, -50.0f, 50.0f, 1.0f, 100.0f);
+		mat4 lightProjection = lightViews[0];
 
-		// calculate view matrices
-		this->view = lookAt(this->cameraPosition, this->cameraPosition + this->cameraDirection, vec3(0.0f, 1.0f, 0.0f));
-		mat4 lightView = glm::lookAt(lightPosition, vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+		mat4 lightView = mat4();
 
 		mat4 lightTransform = lightProjection * lightView;
 
 		this->depthShaderProgram->SetUniform("projection", lightProjection);
 		this->depthShaderProgram->SetUniform("view", lightView);
+
+		this->shaderProgram->SetUniform("cascadeEnds", cascadeEnds);
 
 		if (this->viewFromLight)
 		{
@@ -151,7 +213,7 @@ namespace GraphicsLibrary
 		this->contextHeight = height;
 
 		// calculate the projection matrix
-		this->projection = perspective(45.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
+		this->projection = perspective(this->FIELD_OF_VIEW, static_cast<float>(this->contextWidth) / static_cast<float>(this->contextHeight), 0.1f, 500.0f);
 	}
 
 	void OpenGl::SetWireframeMode(bool wireframeMode)
