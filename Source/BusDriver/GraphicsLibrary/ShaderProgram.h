@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 #include <GL\glew.h>
 
@@ -30,6 +31,7 @@ namespace GraphicsLibrary
 		void SetUniform(string name, vec3 matrix);
 		void SetUniform(string name, mat4 matrix);
 		void SetUniform(string name, int value);
+		void SetUniform(string name, vector<float> values);
 	private:
 		GLuint id;
 	};
