@@ -78,6 +78,8 @@ namespace GraphicsLibrary
 		const int SHADOW_MAP_WIDTH = 1024;
 		const int SHADOW_MAP_HEIGHT = 1024;
 
+		const int CASCADE_COUNT = 3;
+
 		const float FIELD_OF_VIEW_Y = 45.0f;
 		const float Z_NEAR = 0.1f;
 		const float Z_FAR_STATIC = 500.0f;
@@ -90,6 +92,8 @@ namespace GraphicsLibrary
 
 		FrameBuffer* depthMapBuffer;
 		Texture* depthMapTexture;
+
+		vector<float> cascadeZEnds;
 
 		Texture* texture;
 

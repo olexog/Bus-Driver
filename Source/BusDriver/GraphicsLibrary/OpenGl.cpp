@@ -62,6 +62,10 @@ namespace GraphicsLibrary
 		Texture::Unbind();
 		//this->texture = Utility::LoadTexture("Models\\newspaper.png");
 
+		// initialize cascade z-ends
+		cascadeZEnds = vector<float>({0.1f, 3.0f, 10.0f, 50.0f});
+
+		// initialize primitives
 		this->lightSegment = new Segment(vec3(0.0f, 1.0f, 0.0f));
 		this->cameraPoint = new Point(10.0f, vec3(0.0f, 0.0f, 1.0f));
 		this->frustumEdgeSegment = new Segment(vec3(0.0f, 0.0f, 1.0f));
@@ -78,6 +82,9 @@ namespace GraphicsLibrary
 
 	void OpenGl::Draw(Scene* scene)
 	{
+		// defines which cascade has to be used when view is from light
+		int viewFromLightCascadeIndex = 1;
+
 		// define light parameters
 		vec3 lightDirection = normalize(vec3(0.0f, -1.0f, -2.0f));
 		vec3 lightPosition = -100.0f * lightDirection;
@@ -89,80 +96,91 @@ namespace GraphicsLibrary
 		this->viewDynamic = lookAt(this->cameraPositionDynamic, this->cameraPositionDynamic + this->cameraDirectionDynamic, vec3(0.0f, 1.0f, 0.0f));
 		mat4 lightView = lookAt(vec3(0.0f), lightDirection, vec3(0.0f, 1.0f, 0.0f));
 
-		// calculate frustum corners in view space
+		// CSM
 		float tanHalfFOVy = tan(FIELD_OF_VIEW_Y / 2.0f);
 		float tanHalfFOVx = this->aspectRatio * tanHalfFOVy;
-		float xNear = tanHalfFOVx * Z_NEAR;
-		float xFar = tanHalfFOVx * Z_FAR_DYNAMIC;
-		float yNear = tanHalfFOVy * Z_NEAR;
-		float yFar = tanHalfFOVy * Z_FAR_DYNAMIC;
-		vector<vec3> frustumCornersViewSpace = vector<vec3>({
-			vec3(xNear, yNear, -Z_NEAR),
-			vec3(xNear, -yNear, -Z_NEAR),
-			vec3(-xNear, yNear, -Z_NEAR),
-			vec3(-xNear, -yNear, -Z_NEAR),
-			vec3(xFar, yFar, -Z_FAR_DYNAMIC),
-			vec3(xFar, -yFar, -Z_FAR_DYNAMIC),
-			vec3(-xFar, yFar, -Z_FAR_DYNAMIC),
-			vec3(-xFar, -yFar, -Z_FAR_DYNAMIC)
-		});
+		vector<vector<vec3>> frustumCornersWorldSpace = vector<vector<vec3>>(CASCADE_COUNT);
+		vector<vector<vec3>> frustumBoundingBoxCornersWorldSpace = vector<vector<vec3>>(CASCADE_COUNT);
+		vector<mat4> lightProjections = vector<mat4>(CASCADE_COUNT);
 
-		// calculate frustum corners in world space
-		vector<vec3> frustumCornersWorldSpace = vector<vec3>();
-		for (vec3 frustumCornerViewSpace : frustumCornersViewSpace)
+		for (int cascadeIndex = 0; cascadeIndex < CASCADE_COUNT; cascadeIndex++)
 		{
-			frustumCornersWorldSpace.push_back(Utility::Transform(frustumCornerViewSpace, inverse(this->viewDynamic)));
+			float zNear = this->cascadeZEnds[cascadeIndex];
+			float zFar = this->cascadeZEnds[cascadeIndex + 1];
+
+			// calculate frustum corners in view space
+			float xNear = tanHalfFOVx * zNear;
+			float xFar = tanHalfFOVx * zFar;
+			float yNear = tanHalfFOVy * zNear;
+			float yFar = tanHalfFOVy * zFar;
+			vector<vec3> frustumCornersViewSpace = vector<vec3>({
+				vec3(xNear, yNear, -zNear),
+				vec3(xNear, -yNear, -zNear),
+				vec3(-xNear, yNear, -zNear),
+				vec3(-xNear, -yNear, -zNear),
+				vec3(xFar, yFar, -zFar),
+				vec3(xFar, -yFar, -zFar),
+				vec3(-xFar, yFar, -zFar),
+				vec3(-xFar, -yFar, -zFar)
+			});
+
+			// calculate frustum corners in world space
+			frustumCornersWorldSpace[cascadeIndex] = vector<vec3>();
+			for (vec3 frustumCornerViewSpace : frustumCornersViewSpace)
+			{
+				frustumCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumCornerViewSpace, inverse(this->viewDynamic)));
+			}
+
+			// calculate frustum bounding box in light view space
+			float left = numeric_limits<float>::max();
+			float right = numeric_limits<float>::lowest();
+			float bottom = numeric_limits<float>::max();
+			float top = numeric_limits<float>::lowest();
+			float near = numeric_limits<float>::lowest();
+			float far = numeric_limits<float>::max();
+			for (vec3 frustumCornerWorldSpace : frustumCornersWorldSpace[cascadeIndex])
+			{
+				vec3 frustumCornerLightViewSpace = Utility::Transform(frustumCornerWorldSpace, lightView);
+
+				left = glm::min(left, frustumCornerLightViewSpace.x);
+				right = glm::max(right, frustumCornerLightViewSpace.x);
+				bottom = glm::min(bottom, frustumCornerLightViewSpace.y);
+				top = glm::max(top, frustumCornerLightViewSpace.y);
+				near = glm::max(near, frustumCornerLightViewSpace.z);
+				far = glm::min(far, frustumCornerLightViewSpace.z);
+			}
+
+			// save frustum bounding box corners in light view space to render them later
+			vector<vec3> frustumBoundingBoxCornersLightViewSpace = vector<vec3>({
+				vec3(left, bottom, near),
+				vec3(left, bottom, far),
+				vec3(left, top, near),
+				vec3(left, top, far),
+				vec3(right, bottom, near),
+				vec3(right, bottom, far),
+				vec3(right, top, near),
+				vec3(right, top, far)
+			});
+
+			// calculate frustum bounding box corners in world space
+			frustumBoundingBoxCornersWorldSpace[cascadeIndex] = vector<vec3>();
+			for (vec3 frustumBoundingBoxCornerLightViewSpace : frustumBoundingBoxCornersLightViewSpace)
+			{
+				frustumBoundingBoxCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumBoundingBoxCornerLightViewSpace, inverse(lightView)));
+			}
+
+			// calculate light projection and transform matrices
+			lightProjections[cascadeIndex] = ortho(left, right, bottom, top, -near, -far);
 		}
-
-		// calculate frustum bounding box in light view space
-		float left = numeric_limits<float>::max();
-		float right = numeric_limits<float>::lowest();
-		float bottom = numeric_limits<float>::max();
-		float top = numeric_limits<float>::lowest();
-		float zNear = numeric_limits<float>::lowest();
-		float zFar = numeric_limits<float>::max();
-		for (vec3 frustumCornerWorldSpace : frustumCornersWorldSpace)
-		{
-			vec3 frustumCornerLightViewSpace = Utility::Transform(frustumCornerWorldSpace, lightView);
-
-			left = glm::min(left, frustumCornerLightViewSpace.x);
-			right = glm::max(right, frustumCornerLightViewSpace.x);
-			bottom = glm::min(bottom, frustumCornerLightViewSpace.y);
-			top = glm::max(top, frustumCornerLightViewSpace.y);
-			zNear = glm::max(zNear, frustumCornerLightViewSpace.z);
-			zFar = glm::min(zFar, frustumCornerLightViewSpace.z);
-		}
-
-		// save frustum bounding box corners in light view space to render them later
-		vector<vec3> frustumBoundingBoxCornersLightViewSpace = vector<vec3>({
-			vec3(left, bottom, zNear),
-			vec3(left, bottom, zFar),
-			vec3(left, top, zNear),
-			vec3(left, top, zFar),
-			vec3(right, bottom, zNear),
-			vec3(right, bottom, zFar),
-			vec3(right, top, zNear),
-			vec3(right, top, zFar)
-		});
-
-		// calculate frustum bounding box corners in world space
-		vector<vec3> frustumBoundingBoxCornersWorldSpace = vector<vec3>();
-		for (vec3 frustumBoundingBoxCornerLightViewSpace : frustumBoundingBoxCornersLightViewSpace)
-		{
-			frustumBoundingBoxCornersWorldSpace.push_back(Utility::Transform(frustumBoundingBoxCornerLightViewSpace, inverse(lightView)));
-		}
-
-		// calculate light projection and transform matrices
-		mat4 lightProjection = ortho(left, right, bottom, top, -zNear, -zFar);
-		mat4 lightTransform = lightProjection * lightView;
+		mat4 lightTransform = lightProjections[viewFromLightCascadeIndex] * lightView;
 
 		// set shader uniforms
-		this->depthShaderProgram->SetUniform("projection", lightProjection);
+		this->depthShaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
 		this->depthShaderProgram->SetUniform("view", lightView);
 
 		if (this->viewFromLight)
 		{
-			this->shaderProgram->SetUniform("projection", lightProjection);
+			this->shaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
 			this->shaderProgram->SetUniform("view", lightView);
 		}
 		else
@@ -215,10 +233,10 @@ namespace GraphicsLibrary
 		if (this->viewFromLight)
 		{
 			this->pointShaderProgram->SetUniform("view", lightView);
-			this->pointShaderProgram->SetUniform("projection", lightProjection);
+			this->pointShaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
 
 			this->segmentShaderProgram->SetUniform("view", lightView);
-			this->segmentShaderProgram->SetUniform("projection", lightProjection);
+			this->segmentShaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
 		}
 		else
 		{
@@ -232,11 +250,14 @@ namespace GraphicsLibrary
 		// draw camera as a point
 		this->DrawPoint(this->cameraPoint, this->cameraPositionDynamic);
 
-		// draw frustum edges
-		this->DrawCube(this->frustumEdgeSegment, frustumCornersWorldSpace);
+		for (int cascadeIndex = 0; cascadeIndex < CASCADE_COUNT; cascadeIndex++)
+		{
+			// draw frustum edges
+			this->DrawCube(this->frustumEdgeSegment, frustumCornersWorldSpace[cascadeIndex]);
 
-		// draw frustum bounding box
-		this->DrawCube(this->frustumBoundingBoxSegment, frustumBoundingBoxCornersWorldSpace);
+			// draw frustum bounding box
+			this->DrawCube(this->frustumBoundingBoxSegment, frustumBoundingBoxCornersWorldSpace[cascadeIndex]);
+		}
 
 		// draw light as a segment
 		this->DrawSegment(this->lightSegment, lightPosition, vec3(0.0f));
