@@ -90,6 +90,12 @@ namespace GraphicsLibrary
 		return result;
 	}
 
+	vec3 Utility::Transform(vec3 vector, mat4 matrix)
+	{
+		vec4 result = matrix * vec4(vector, 1.0f);
+		return vec3(result.x / result.w, result.y / result.w, result.z / result.w);
+	}
+
 	vector<string> SlowSplit(string s, string delimiter)
 	{
 		vector<string> result;

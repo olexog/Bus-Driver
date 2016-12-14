@@ -30,6 +30,7 @@ namespace GraphicsLibrary
 		void SetUniform(string name, vec3 matrix);
 		void SetUniform(string name, mat4 matrix);
 		void SetUniform(string name, int value);
+		void SetUniform(string name, float value);
 	private:
 		GLuint id;
 	};

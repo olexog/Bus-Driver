@@ -46,8 +46,10 @@ const float CAMERA_ANGULAR_VELOCITY = 0.5f;
 const float CAMERA_FAST_VELOCITY = 100.0f;
 const float CAMERA_FAST_ANGULAR_VELOCITY = 1.0f;
 
-vec3 cameraPosition;
-vec3 cameraDirection;
+vec3 cameraPositionStatic;
+vec3 cameraDirectionStatic;
+vec3 cameraPositionDynamic;
+vec3 cameraDirectionDynamic;
 
 float previousTime;
 
@@ -97,9 +99,11 @@ void Key(GLFWwindow* window, int key, int scancode, int action, int mode)
 		{
 		case CameraMode::FollowBus:
 			cameraMode = CameraMode::Static;
+			openGl->SetCameraMode(true);
 			break;
 		case CameraMode::Static:
 			cameraMode = CameraMode::FollowBus;
+			openGl->SetCameraMode(false);
 			break;
 		}
 	}
@@ -209,88 +213,76 @@ void SetControlls(Vehicle* vehicle)
 void UpdateCamera(float elapsedTime, Vehicle* vehicle)
 {
 	// static camera
-	if (cameraMode == CameraMode::Static)
+	vec3 up = vec3(0.0f, 1.0f, 0.0f);
+
+	// define camera velocity / angular velocity
+	float cameraVelocity = pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_VELOCITY : CAMERA_VELOCITY;
+	float cameraAngularVelocity = pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_ANGULAR_VELOCITY : CAMERA_ANGULAR_VELOCITY;
+
+	// rotate up
+	if (pressedKeys[GLFW_KEY_I])
 	{
-		vec3 up = vec3(0.0f, 1.0f, 0.0f);
-
-		// define camera velocity / angular velocity
-		float cameraVelocity = pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_VELOCITY : CAMERA_VELOCITY;
-		float cameraAngularVelocity = pressedKeys[GLFW_KEY_LEFT_SHIFT] ? CAMERA_FAST_ANGULAR_VELOCITY : CAMERA_ANGULAR_VELOCITY;
-
-		// rotate up
-		if (pressedKeys[GLFW_KEY_I])
-		{
-			cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, cross(cameraDirection, up)) * vec4(cameraDirection, 0.0f));
-		}
-		// rotate down
-		if (pressedKeys[GLFW_KEY_K])
-		{
-			cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -cross(cameraDirection, up)) * vec4(cameraDirection, 0.0f));
-		}
-		// rotate left
-		if (pressedKeys[GLFW_KEY_J])
-		{
-			cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, up) * vec4(cameraDirection, 0.0f));
-		}
-		// rotate right
-		if (pressedKeys[GLFW_KEY_L])
-		{
-			cameraDirection = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -up) * vec4(cameraDirection, 0.0f));
-		}
-		// translate up
-		if (pressedKeys[GLFW_KEY_KP_8])
-		{
-			cameraPosition += cameraVelocity * elapsedTime * up;
-		}
-		// translate down
-		if (pressedKeys[GLFW_KEY_KP_2])
-		{
-			cameraPosition -= cameraVelocity * elapsedTime * up;
-		}
-		// translate left
-		if (pressedKeys[GLFW_KEY_KP_4])
-		{
-			cameraPosition -= cameraVelocity * elapsedTime * cross(cameraDirection, up);
-		}
-		// translate right
-		if (pressedKeys[GLFW_KEY_KP_6])
-		{
-			cameraPosition += cameraVelocity * elapsedTime * cross(cameraDirection, up);
-		}
-		// translate forward
-		if (pressedKeys[GLFW_KEY_KP_9])
-		{
-			cameraPosition += cameraVelocity * elapsedTime * cameraDirection;
-		}
-		// translate backward
-		if (pressedKeys[GLFW_KEY_KP_7])
-		{
-			cameraPosition -= cameraVelocity * elapsedTime * cameraDirection;
-		}
+		cameraDirectionStatic = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, cross(cameraDirectionStatic, up)) * vec4(cameraDirectionStatic, 0.0f));
 	}
+	// rotate down
+	if (pressedKeys[GLFW_KEY_K])
+	{
+		cameraDirectionStatic = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -cross(cameraDirectionStatic, up)) * vec4(cameraDirectionStatic, 0.0f));
+	}
+	// rotate left
+	if (pressedKeys[GLFW_KEY_J])
+	{
+		cameraDirectionStatic = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, up) * vec4(cameraDirectionStatic, 0.0f));
+	}
+	// rotate right
+	if (pressedKeys[GLFW_KEY_L])
+	{
+		cameraDirectionStatic = vec3(glm::rotate(mat4(), cameraAngularVelocity * elapsedTime, -up) * vec4(cameraDirectionStatic, 0.0f));
+	}
+	// translate up
+	if (pressedKeys[GLFW_KEY_KP_8])
+	{
+		cameraPositionStatic += cameraVelocity * elapsedTime * up;
+	}
+	// translate down
+	if (pressedKeys[GLFW_KEY_KP_2])
+	{
+		cameraPositionStatic -= cameraVelocity * elapsedTime * up;
+	}
+	// translate left
+	if (pressedKeys[GLFW_KEY_KP_4])
+	{
+		cameraPositionStatic -= cameraVelocity * elapsedTime * cross(cameraDirectionStatic, up);
+	}
+	// translate right
+	if (pressedKeys[GLFW_KEY_KP_6])
+	{
+		cameraPositionStatic += cameraVelocity * elapsedTime * cross(cameraDirectionStatic, up);
+	}
+	// translate forward
+	if (pressedKeys[GLFW_KEY_KP_9])
+	{
+		cameraPositionStatic += cameraVelocity * elapsedTime * cameraDirectionStatic;
+	}
+	// translate backward
+	if (pressedKeys[GLFW_KEY_KP_7])
+	{
+		cameraPositionStatic -= cameraVelocity * elapsedTime * cameraDirectionStatic;
+	}
+
 	// bus camera
-	else if (cameraMode == CameraMode::FollowBus)
-	{
-		cameraPosition = vec3(0.0f, 5.0f, -20.0f);
-		cameraPosition = glm::rotate(vehicle->GetRotation(), cameraPosition) + vehicle->GetPosition();
-		cameraDirection = vec3(0.0f, 0.0f, 1.0f);
-		cameraDirection = glm::rotate(vehicle->GetRotation(), cameraDirection);
-	}
+	cameraPositionDynamic = vec3(0.0f, 5.0f, -20.0f);
+	cameraPositionDynamic = glm::rotate(vehicle->GetRotation(), cameraPositionDynamic) + vehicle->GetPosition();
+	cameraDirectionDynamic = vec3(0.0f, 0.0f, 1.0f);
+	cameraDirectionDynamic = glm::rotate(vehicle->GetRotation(), cameraDirectionDynamic);
 }
 
 int main()
 {
 	cameraMode = CameraMode::FollowBus;
-
-	if (cameraMode == CameraMode::Static)
-	{
-		cameraPosition = vec3(0.0f, 3.0f, -100.0f);
-		cameraDirection = vec3(0.0f, 0.0f, 1.0f);
-	}
-	else if (cameraMode == CameraMode::FollowBus)
-	{
-
-	}
+	
+	cameraPositionStatic = vec3(0.0f, 3.0f, -100.0f);
+	cameraDirectionStatic = vec3(0.0f, 0.0f, 1.0f);
 
 	// initialize GLFW
 	glfwInit();
@@ -452,7 +444,8 @@ int main()
 		UpdateCamera(elapsedTime, bus);
 
 		// transfer the camera pose to the renderer
-		openGl->SetCamera(cameraPosition, cameraDirection);
+		openGl->SetCameraStatic(cameraPositionStatic, cameraDirectionStatic);
+		openGl->SetCameraDynamic(cameraPositionDynamic, cameraDirectionDynamic);
 
 		// draw scene
 		openGl->Draw(scene);

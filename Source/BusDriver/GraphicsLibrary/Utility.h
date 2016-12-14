@@ -11,9 +11,13 @@
 #include <sstream>
 #include <SOIL\SOIL.h>
 
+#include <glm/glm.hpp>
+
 #include "Texture.h"
 
 using namespace std;
+
+using namespace glm;
 
 namespace GraphicsLibrary
 {
@@ -36,5 +40,7 @@ namespace GraphicsLibrary
 		static vector<string> Split(string s, string delimiter);
 
 		static Texture* LoadTexture(string fileName);
+
+		static vec3 Transform(vec3 vector, mat4 matrix);
 	};
 }

@@ -87,4 +87,12 @@ namespace GraphicsLibrary
 		glUniform1i(transformLocation, value);
 		ShaderProgram::Disable();
 	}
+
+	void ShaderProgram::SetUniform(string name, float value)
+	{
+		this->Use();
+		GLuint transformLocation = glGetUniformLocation(this->id, name.c_str());
+		glUniform1f(transformLocation, value);
+		ShaderProgram::Disable();
+	}
 }
