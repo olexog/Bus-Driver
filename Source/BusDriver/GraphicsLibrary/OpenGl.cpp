@@ -20,6 +20,8 @@ namespace GraphicsLibrary
 		// load shader programs
 		this->shaderProgram = new ShaderProgram("Shaders\\VertexShader.glsl", "Shaders\\FragmentShader.glsl");
 		this->depthShaderProgram = new ShaderProgram("Shaders\\DepthVertexShader.glsl", "Shaders\\DepthFragmentShader.glsl");
+		this->pointShaderProgram = new ShaderProgram("Shaders\\PointVertexShader.glsl", "Shaders\\PointFragmentShader.glsl");
+		this->segmentShaderProgram = new ShaderProgram("Shaders\\SegmentVertexShader.glsl", "Shaders\\SegmentFragmentShader.glsl");
 
 		// enable the depth buffer for depth testing
 		glEnable(GL_DEPTH_TEST);
@@ -59,6 +61,11 @@ namespace GraphicsLibrary
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		Texture::Unbind();
 		//this->texture = Utility::LoadTexture("Models\\newspaper.png");
+
+		this->lightSegment = new Segment(vec3(0.0f, 1.0f, 0.0f));
+		this->cameraPoint = new Point(10.0f, vec3(0.0f, 0.0f, 1.0f));
+		this->frustumEdgeSegment = new Segment(vec3(0.0f, 0.0f, 1.0f));
+		this->frustumBoundingBoxSegment = new Segment(vec3(1.0f, 0.0f, 1.0f));
 	}
 
 	OpenGl::~OpenGl()
@@ -71,83 +78,87 @@ namespace GraphicsLibrary
 
 	void OpenGl::Draw(Scene* scene)
 	{
-		// calculate view matrices
-		this->view = lookAt(this->cameraPosition, this->cameraPosition + this->cameraDirection, vec3(0.0f, 1.0f, 0.0f));
-
-		vec3 lightDirection = vec3(-1, 0, 0);
-
-		const int CASCADE_COUNT = 3;
-		float nearPlane = 0.1f;
-		float farPlane = 500.0f;
-
-		vector<float> cascadeEnds = { nearPlane, 30.0f, 100.0f, farPlane };
-
-		float aspect = static_cast<float>(this->contextHeight) / static_cast<float>(this->contextWidth);
-		float tanHalfHFOV = tanf(radians(this->FIELD_OF_VIEW / 2.0f));
-		float tanHalfVFOV = tanf(radians((this->FIELD_OF_VIEW * aspect) / 2.0f));
-
-		mat4 lightViews[CASCADE_COUNT];
-		mat4 lightTranslation = lookAt(vec3(), lightDirection, vec3(0, 1, 0));
-
-		for (int i = 0; i < CASCADE_COUNT; i++) {
-			float xn = -cascadeEnds[i] * tanHalfHFOV;
-			float xf = -cascadeEnds[i + 1] * tanHalfHFOV;
-			float yn = -cascadeEnds[i] * tanHalfVFOV;
-			float yf = -cascadeEnds[i + 1] * tanHalfVFOV;
-
-			vec4 frustumCorners[8] = {
-				// near face
-				vec4(xn,   yn, -cascadeEnds[i], 1.0),
-				vec4(-xn,  yn, -cascadeEnds[i], 1.0),
-				vec4(xn,  -yn, -cascadeEnds[i], 1.0),
-				vec4(-xn, -yn, -cascadeEnds[i], 1.0),
-
-				// far face
-				vec4(xf,   yf, -cascadeEnds[i + 1], 1.0),
-				vec4(-xf,  yf, -cascadeEnds[i + 1], 1.0),
-				vec4(xf,  -yf, -cascadeEnds[i + 1], 1.0),
-				vec4(-xf, -yf, -cascadeEnds[i + 1], 1.0)
-			};
-
-			vec4 frustumCornersL[8];
-
-			float minX = std::numeric_limits<float>::max();
-			float maxX = std::numeric_limits<float>::min();
-			float minY = std::numeric_limits<float>::max();
-			float maxY = std::numeric_limits<float>::min();
-			float minZ = std::numeric_limits<float>::max();
-			float maxZ = std::numeric_limits<float>::min();
-
-			for (uint j = 0; j < 8; j++) {
-				vec4 vW = inverse(this->view) * frustumCorners[j];
-				frustumCornersL[j] = lightTranslation * vW;
-
-				minX = glm::min(minX, frustumCornersL[j].x);
-				maxX = glm::max(maxX, frustumCornersL[j].x);
-				minY = glm::min(minY, frustumCornersL[j].y);
-				maxY = glm::max(maxY, frustumCornersL[j].y);
-				minZ = glm::min(minZ, frustumCornersL[j].z);
-				maxZ = glm::max(maxZ, frustumCornersL[j].z);
-			}
-
-			lightViews[i] = ortho(minX, maxX, minY, maxY, minZ, maxZ);
-		}
-
-		vec3 lightPosition = vec3(0.0f, 25.0f, 50.0f);
+		// define light parameters
+		vec3 lightDirection = normalize(vec3(0.0f, -1.0f, -2.0f));
+		vec3 lightPosition = -100.0f * lightDirection;
 		//vec3 lightColour = vec3(0.71f, 0.27f, 0.05f);
 		vec3 lightColour = vec3(1.0f);
 
-		// calculate projection matrix
-		mat4 lightProjection = lightViews[0];
+		// calculate view matrices
+		this->viewStatic = lookAt(this->cameraPositionStatic, this->cameraPositionStatic + this->cameraDirectionStatic, vec3(0.0f, 1.0f, 0.0f));
+		this->viewDynamic = lookAt(this->cameraPositionDynamic, this->cameraPositionDynamic + this->cameraDirectionDynamic, vec3(0.0f, 1.0f, 0.0f));
+		mat4 lightView = lookAt(vec3(0.0f), lightDirection, vec3(0.0f, 1.0f, 0.0f));
 
-		mat4 lightView = mat4();
+		// calculate frustum corners in view space
+		float tanHalfFOVy = tan(FIELD_OF_VIEW_Y / 2.0f);
+		float tanHalfFOVx = this->aspectRatio * tanHalfFOVy;
+		float xNear = tanHalfFOVx * Z_NEAR;
+		float xFar = tanHalfFOVx * Z_FAR_DYNAMIC;
+		float yNear = tanHalfFOVy * Z_NEAR;
+		float yFar = tanHalfFOVy * Z_FAR_DYNAMIC;
+		vector<vec3> frustumCornersViewSpace = vector<vec3>({
+			vec3(xNear, yNear, -Z_NEAR),
+			vec3(xNear, -yNear, -Z_NEAR),
+			vec3(-xNear, yNear, -Z_NEAR),
+			vec3(-xNear, -yNear, -Z_NEAR),
+			vec3(xFar, yFar, -Z_FAR_DYNAMIC),
+			vec3(xFar, -yFar, -Z_FAR_DYNAMIC),
+			vec3(-xFar, yFar, -Z_FAR_DYNAMIC),
+			vec3(-xFar, -yFar, -Z_FAR_DYNAMIC)
+		});
 
+		// calculate frustum corners in world space
+		vector<vec3> frustumCornersWorldSpace = vector<vec3>();
+		for (vec3 frustumCornerViewSpace : frustumCornersViewSpace)
+		{
+			frustumCornersWorldSpace.push_back(Utility::Transform(frustumCornerViewSpace, inverse(this->viewDynamic)));
+		}
+
+		// calculate frustum bounding box in light view space
+		float left = numeric_limits<float>::max();
+		float right = numeric_limits<float>::lowest();
+		float bottom = numeric_limits<float>::max();
+		float top = numeric_limits<float>::lowest();
+		float zNear = numeric_limits<float>::lowest();
+		float zFar = numeric_limits<float>::max();
+		for (vec3 frustumCornerWorldSpace : frustumCornersWorldSpace)
+		{
+			vec3 frustumCornerLightViewSpace = Utility::Transform(frustumCornerWorldSpace, lightView);
+
+			left = glm::min(left, frustumCornerLightViewSpace.x);
+			right = glm::max(right, frustumCornerLightViewSpace.x);
+			bottom = glm::min(bottom, frustumCornerLightViewSpace.y);
+			top = glm::max(top, frustumCornerLightViewSpace.y);
+			zNear = glm::max(zNear, frustumCornerLightViewSpace.z);
+			zFar = glm::min(zFar, frustumCornerLightViewSpace.z);
+		}
+
+		// save frustum bounding box corners in light view space to render them later
+		vector<vec3> frustumBoundingBoxCornersLightViewSpace = vector<vec3>({
+			vec3(left, bottom, zNear),
+			vec3(left, bottom, zFar),
+			vec3(left, top, zNear),
+			vec3(left, top, zFar),
+			vec3(right, bottom, zNear),
+			vec3(right, bottom, zFar),
+			vec3(right, top, zNear),
+			vec3(right, top, zFar)
+		});
+
+		// calculate frustum bounding box corners in world space
+		vector<vec3> frustumBoundingBoxCornersWorldSpace = vector<vec3>();
+		for (vec3 frustumBoundingBoxCornerLightViewSpace : frustumBoundingBoxCornersLightViewSpace)
+		{
+			frustumBoundingBoxCornersWorldSpace.push_back(Utility::Transform(frustumBoundingBoxCornerLightViewSpace, inverse(lightView)));
+		}
+
+		// calculate light projection and transform matrices
+		mat4 lightProjection = ortho(left, right, bottom, top, -zNear, -zFar);
 		mat4 lightTransform = lightProjection * lightView;
 
+		// set shader uniforms
 		this->depthShaderProgram->SetUniform("projection", lightProjection);
 		this->depthShaderProgram->SetUniform("view", lightView);
-
-		this->shaderProgram->SetUniform("cascadeEnds", cascadeEnds);
 
 		if (this->viewFromLight)
 		{
@@ -156,8 +167,16 @@ namespace GraphicsLibrary
 		}
 		else
 		{
-			this->shaderProgram->SetUniform("projection", this->projection);
-			this->shaderProgram->SetUniform("view", this->view);
+			if (this->staticCamera)
+			{
+				this->shaderProgram->SetUniform("projection", this->projectionStatic);
+				this->shaderProgram->SetUniform("view", this->viewStatic);
+			}
+			else
+			{
+				this->shaderProgram->SetUniform("projection", this->projectionDynamic);
+				this->shaderProgram->SetUniform("view", this->viewDynamic);
+			}
 		}
 		this->shaderProgram->SetUniform("lightPosition", lightPosition);
 		this->shaderProgram->SetUniform("lightColour", lightColour);
@@ -185,6 +204,73 @@ namespace GraphicsLibrary
 		this->shaderProgram->SetUniform("shadowMap", 1);
 
 		this->DrawModels(scene->models, this->shaderProgram);
+
+		// render primitives to visualize frustum, camera, and light positions
+
+		if (!this->staticCamera && !this->viewFromLight)
+		{
+			return;
+		}
+
+		if (this->viewFromLight)
+		{
+			this->pointShaderProgram->SetUniform("view", lightView);
+			this->pointShaderProgram->SetUniform("projection", lightProjection);
+
+			this->segmentShaderProgram->SetUniform("view", lightView);
+			this->segmentShaderProgram->SetUniform("projection", lightProjection);
+		}
+		else
+		{
+			this->pointShaderProgram->SetUniform("view", viewStatic);
+			this->pointShaderProgram->SetUniform("projection", projectionStatic);
+
+			this->segmentShaderProgram->SetUniform("view", viewStatic);
+			this->segmentShaderProgram->SetUniform("projection", projectionStatic);
+		}
+
+		// draw camera as a point
+		this->DrawPoint(this->cameraPoint, this->cameraPositionDynamic);
+
+		// draw frustum edges
+		this->DrawCube(this->frustumEdgeSegment, frustumCornersWorldSpace);
+
+		// draw frustum bounding box
+		this->DrawCube(this->frustumBoundingBoxSegment, frustumBoundingBoxCornersWorldSpace);
+
+		// draw light as a segment
+		this->DrawSegment(this->lightSegment, lightPosition, vec3(0.0f));
+	}
+
+	void OpenGl::DrawPoint(Point* point, vec3 position)
+	{
+		this->pointShaderProgram->SetUniform("position", position);
+		point->Draw(this->pointShaderProgram);
+	}
+
+	void OpenGl::DrawSegment(Segment* segment, vec3 startPoint, vec3 endPoint)
+	{
+		this->segmentShaderProgram->SetUniform("startPoint", startPoint);
+		this->segmentShaderProgram->SetUniform("endPoint", endPoint);
+		segment->Draw(this->segmentShaderProgram);
+	}
+
+	void OpenGl::DrawCube(Segment* segment, vector<vec3> corners)
+	{
+		DrawSegment(segment, corners[0], corners[1]);
+		DrawSegment(segment, corners[1], corners[3]);
+		DrawSegment(segment, corners[3], corners[2]);
+		DrawSegment(segment, corners[2], corners[0]);
+
+		DrawSegment(segment, corners[0], corners[4]);
+		DrawSegment(segment, corners[1], corners[5]);
+		DrawSegment(segment, corners[2], corners[6]);
+		DrawSegment(segment, corners[3], corners[7]);
+
+		DrawSegment(segment, corners[4], corners[5]);
+		DrawSegment(segment, corners[5], corners[7]);
+		DrawSegment(segment, corners[7], corners[6]);
+		DrawSegment(segment, corners[6], corners[4]);
 	}
 
 	void OpenGl::SetViewFromLight(bool viewFromLight)
@@ -194,9 +280,11 @@ namespace GraphicsLibrary
 
 	void OpenGl::DrawModels(vector<PositionedModel*> models, ShaderProgram* shaderProgram)
 	{
+		vec3 cameraPosition = this->staticCamera ? this->cameraPositionStatic : this->cameraPositionDynamic;
+
 		for (PositionedModel* positionedModel : models)
 		{
-			if (glm::length((*positionedModel->GetPosition() - this->cameraPosition)) > 1000.0f) continue;
+			if (glm::length((*positionedModel->GetPosition() - cameraPosition)) > 1000.0f) continue;
 
 			mat4 modelMatrix;
 			modelMatrix = translate(modelMatrix, *positionedModel->GetPosition());
@@ -212,8 +300,11 @@ namespace GraphicsLibrary
 		this->contextWidth = width;
 		this->contextHeight = height;
 
+		this->aspectRatio = static_cast<float>(this->contextWidth) / static_cast<float>(this->contextHeight);
+
 		// calculate the projection matrix
-		this->projection = perspective(this->FIELD_OF_VIEW, static_cast<float>(this->contextWidth) / static_cast<float>(this->contextHeight), 0.1f, 500.0f);
+		this->projectionStatic = perspective(FIELD_OF_VIEW_Y, aspectRatio, Z_NEAR, Z_FAR_STATIC);
+		this->projectionDynamic = perspective(FIELD_OF_VIEW_Y, aspectRatio, Z_NEAR, Z_FAR_DYNAMIC);
 	}
 
 	void OpenGl::SetWireframeMode(bool wireframeMode)
@@ -221,9 +312,20 @@ namespace GraphicsLibrary
 		this->wireframeMode = wireframeMode;
 	}
 
-	void OpenGl::SetCamera(vec3 position, vec3 direction)
+	void OpenGl::SetCameraMode(bool isStatic)
 	{
-		this->cameraPosition = position;
-		this->cameraDirection = direction;
+		this->staticCamera = isStatic;
+	}
+
+	void OpenGl::SetCameraStatic(vec3 position, vec3 direction)
+	{
+		this->cameraPositionStatic = position;
+		this->cameraDirectionStatic = direction;
+	}
+
+	void OpenGl::SetCameraDynamic(vec3 position, vec3 direction)
+	{
+		this->cameraPositionDynamic = position;
+		this->cameraDirectionDynamic = direction;
 	}
 }
