@@ -26,24 +26,27 @@ namespace GraphicsLibrary
 		// enable the depth buffer for depth testing
 		glEnable(GL_DEPTH_TEST);
 
-		// initialize depth map
-		this->depthMapBuffer = new FrameBuffer();
-		this->depthMapTexture = new Texture();
-		this->depthMapTexture->Bind();
-		this->depthMapTexture->LoadData(this->SHADOW_MAP_WIDTH, this->SHADOW_MAP_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		// clamping to the border needed to ignore the areas which is not covered by the shadow map
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		GLfloat borderColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+		// initialize depth maps
+		for (int i = 0; i < CASCADE_COUNT; i++)
+		{
+			this->depthMapBuffers.push_back(new FrameBuffer());
+			this->depthMapTextures.push_back(new Texture());
+			this->depthMapTextures[i]->Bind();
+			this->depthMapTextures[i]->LoadData(this->SHADOW_MAP_WIDTH, this->SHADOW_MAP_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			// clamping to the border needed to ignore the areas which is not covered by the shadow map
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+			GLfloat borderColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-		this->depthMapBuffer->Bind();
-		this->depthMapTexture->AttachToFramebuffer(GL_DEPTH_ATTACHMENT);
-		glDrawBuffer(GL_NONE);
-		glReadBuffer(GL_NONE);
-		FrameBuffer::Unbind();
+			this->depthMapBuffers[i]->Bind();
+			this->depthMapTextures[i]->AttachToFramebuffer(GL_DEPTH_ATTACHMENT);
+			glDrawBuffer(GL_NONE);
+			glReadBuffer(GL_NONE);
+			FrameBuffer::Unbind();
+		}
 
 		vector<char> data;
 		data.push_back(255);
@@ -63,7 +66,9 @@ namespace GraphicsLibrary
 		//this->texture = Utility::LoadTexture("Models\\newspaper.png");
 
 		// initialize cascade z-ends
-		cascadeZEnds = vector<float>({0.1f, 3.0f, 10.0f, 50.0f});
+		cascadeZEnds = vector<float>({0.1f, 15.0f, 30.0f, 50.0f});
+
+		this->shaderProgram->SetUniform("cascadeEnds", cascadeZEnds);
 
 		// initialize primitives
 		this->lightSegment = new Segment(vec3(0.0f, 1.0f, 0.0f));
@@ -76,8 +81,12 @@ namespace GraphicsLibrary
 	{
 		delete this->shaderProgram;
 		delete this->depthShaderProgram;
-		delete this->depthMapTexture;
-		delete this->depthMapBuffer;
+
+		for (int i = 0; i < CASCADE_COUNT; i++)
+		{
+			delete this->depthMapTextures[i];
+			delete this->depthMapBuffers[i];
+		}
 	}
 
 	void OpenGl::Draw(Scene* scene)
@@ -171,12 +180,19 @@ namespace GraphicsLibrary
 
 			// calculate light projection and transform matrices
 			lightProjections[cascadeIndex] = ortho(left, right, bottom, top, -near, -far);
-		}
-		mat4 lightTransform = lightProjections[viewFromLightCascadeIndex] * lightView;
 
-		// set shader uniforms
-		this->depthShaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
-		this->depthShaderProgram->SetUniform("view", lightView);
+			mat4 lightTransform = lightProjections[cascadeIndex] * lightView;
+
+			// set shader uniforms
+			this->depthShaderProgram->SetUniform("projection", lightProjections[cascadeIndex]);
+			this->depthShaderProgram->SetUniform("view", lightView);
+
+			// 1. first render to depth map
+			this->depthMapBuffers[cascadeIndex]->Bind();
+			glViewport(0, 0, this->SHADOW_MAP_WIDTH, this->SHADOW_MAP_HEIGHT);
+			glClear(GL_DEPTH_BUFFER_BIT);
+			this->DrawModels(scene->models, this->depthShaderProgram);
+		}
 
 		if (this->viewFromLight)
 		{
@@ -198,13 +214,6 @@ namespace GraphicsLibrary
 		}
 		this->shaderProgram->SetUniform("lightPosition", lightPosition);
 		this->shaderProgram->SetUniform("lightColour", lightColour);
-		this->shaderProgram->SetUniform("lightTransform", lightTransform);
-
-		// 1. first render to depth map
-		this->depthMapBuffer->Bind();
-		glViewport(0, 0, this->SHADOW_MAP_WIDTH, this->SHADOW_MAP_HEIGHT);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		this->DrawModels(scene->models, this->depthShaderProgram);
 
 		// 2. then render scene as normal with shadow mapping (using depth map)
 		FrameBuffer::Unbind();
@@ -213,13 +222,21 @@ namespace GraphicsLibrary
 		//glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		
 		glActiveTexture(GL_TEXTURE0);
 		texture->Bind();
 		this->shaderProgram->SetUniform("textureSampler", 0);
 
-		glActiveTexture(GL_TEXTURE1);
-		depthMapTexture->Bind();
-		this->shaderProgram->SetUniform("shadowMap", 1);
+		//this->shaderProgram->SetUniform("cascadeNumber", 1);
+
+		for (int i = 0; i < CASCADE_COUNT; i++)
+		{
+			glActiveTexture(GL_TEXTURE1 + i);
+			depthMapTextures[i]->Bind();
+			this->shaderProgram->SetUniform("shadowMaps[" + to_string(i) + "]", 1 + i);
+
+			this->shaderProgram->SetUniform("lightTransforms[" + to_string(i) + "]", lightProjections[i] * lightView);
+		}
 
 		this->DrawModels(scene->models, this->shaderProgram);
 
