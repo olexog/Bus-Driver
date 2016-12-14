@@ -1,14 +1,19 @@
 #version 330 core
 
+const int CASCADE_COUNT = 3;
+
 in vec3 position;
 in vec3 normal;
 in vec2 textureCoordinate;
 in vec4 positionLightSpace;
+in float depthToCamera;
 
 out vec4 colour;
 
 uniform vec3 lightPosition;
 uniform vec3 lightColour;
+
+uniform float cascadeEnds[CASCADE_COUNT + 1];
 
 uniform sampler2D textureSampler;
 uniform sampler2D shadowMap;
@@ -42,11 +47,29 @@ float IsInShadow(vec4 positionLightSpace, float angleOfIncidence)
 		}
 	}
 
-	return inShadow / 9.0f;
+	return inShadow / 9.0;
 }
 
 void main()
 {
+	vec3 textureColour = texture(textureSampler, textureCoordinate).rgb;
+	if (depthToCamera < cascadeEnds[1])
+	{
+		//textureColour = vec3(1, 0, 0);
+	}
+	else if (depthToCamera < cascadeEnds[2])
+	{
+		//textureColour = vec3(0, 1, 0);
+	}
+	else if (depthToCamera < cascadeEnds[3])
+	{
+		//textureColour = vec3(0, 0, 1);
+	}
+	else
+	{
+		//textureColour = vec3(0.5, 0.5, 0.5);
+	}
+
 	// Ambient light
 	float ambientStrength = 0.1;
 	
@@ -56,6 +79,7 @@ void main()
 
 	// Shadow checking
 	float inShadow = IsInShadow(positionLightSpace, angleOfIncidence);
+	//float inShadow = 0;
 	
 	// Diffuse light
 	float diffuseStrength = max(angleOfIncidence, 0.0);
@@ -64,7 +88,8 @@ void main()
 	diffuseStrength *= 1 - inShadow;
 	
 	// Calculating final colour
-	colour = vec4(lightColour * texture(textureSampler, textureCoordinate).rgb * (ambientStrength + diffuseStrength), 1.0);
+	colour = vec4(lightColour * textureColour * (ambientStrength + diffuseStrength), 1.0);
+	//colour = vec4(textureColour * diffuseStrength, 1.0);
 	//colour = texture(textureSampler, vec2(0.5, 0.5));
 	//colour = vec4(textureCoordinate, 1.0, 0);
 }
