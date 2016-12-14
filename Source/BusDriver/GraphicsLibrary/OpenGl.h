@@ -90,8 +90,8 @@ namespace GraphicsLibrary
 
 		float aspectRatio;
 
-		FrameBuffer* depthMapBuffer;
-		Texture* depthMapTexture;
+		vector<FrameBuffer*> depthMapBuffers;
+		vector<Texture*> depthMapTextures;
 
 		vector<float> cascadeZEnds;
 

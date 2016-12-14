@@ -7,6 +7,7 @@ in vec3 normal;
 in vec2 textureCoordinate;
 in vec4 positionLightSpace;
 in float depthToCamera;
+flat in int cascadeNumber;
 
 out vec4 colour;
 
@@ -16,10 +17,12 @@ uniform vec3 lightColour;
 uniform float cascadeEnds[CASCADE_COUNT + 1];
 
 uniform sampler2D textureSampler;
-uniform sampler2D shadowMap;
+uniform sampler2D shadowMaps[CASCADE_COUNT];
+
+//uniform int cascadeNumber;
 
 // Returns 1 if the fragment is in shadow, otherwise 0
-float IsInShadow(vec4 positionLightSpace, float angleOfIncidence)
+float IsInShadow(vec4 positionLightSpace, float angleOfIncidence, int cascadeNumber)
 {
 	// Perspective divison will clip the position into [-1; 1] resulting Normalised Device Coordinates
 	vec3 positionLightSpaceNDC = positionLightSpace.xyz / positionLightSpace.w;
@@ -34,13 +37,13 @@ float IsInShadow(vec4 positionLightSpace, float angleOfIncidence)
 	float bias = max(0.05 * (1.0 - angleOfIncidence), 0.005); 
 
 	float inShadow = 0.0f;
-	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+	vec2 texelSize = 1.0 / textureSize(shadowMaps[cascadeNumber], 0);
 	for (int x = -1; x <= 1; x++)
 	{
 		for (int y = -1; y <=1; y++)
 		{
 			// The distance between the light and the lit obstacle, which can be seen from the light's viewport
-			float obstacleDepth = texture(shadowMap, positionLightSpaceNDC.xy + vec2(x, y) * texelSize).r;
+			float obstacleDepth = texture(shadowMaps[cascadeNumber], positionLightSpaceNDC.xy + vec2(x, y) * texelSize).r;
 
 			// Determine whether the fragment is farther to the light than the lit obstacle meaning that it is in shadow
 			inShadow += fragmentDepth - bias > obstacleDepth ? 1.0 : 0.0;
@@ -53,22 +56,7 @@ float IsInShadow(vec4 positionLightSpace, float angleOfIncidence)
 void main()
 {
 	vec3 textureColour = texture(textureSampler, textureCoordinate).rgb;
-	if (depthToCamera < cascadeEnds[1])
-	{
-		//textureColour = vec3(1, 0, 0);
-	}
-	else if (depthToCamera < cascadeEnds[2])
-	{
-		//textureColour = vec3(0, 1, 0);
-	}
-	else if (depthToCamera < cascadeEnds[3])
-	{
-		//textureColour = vec3(0, 0, 1);
-	}
-	else
-	{
-		//textureColour = vec3(0.5, 0.5, 0.5);
-	}
+	textureColour = positionLightSpace.xyz / 100.0;
 
 	// Ambient light
 	float ambientStrength = 0.1;
@@ -78,8 +66,35 @@ void main()
 	float angleOfIncidence = dot(normal, lightDirection);
 
 	// Shadow checking
-	float inShadow = IsInShadow(positionLightSpace, angleOfIncidence);
-	//float inShadow = 0;
+	float inShadow = IsInShadow(positionLightSpace, angleOfIncidence, cascadeNumber);
+
+	if (depthToCamera < cascadeEnds[1])
+	{
+		textureColour = vec3(1, 0, 0);
+	}
+	else if (depthToCamera < cascadeEnds[2])
+	{
+		textureColour = vec3(0, 1, 0);
+	}
+	else
+	{
+		textureColour = vec3(0, 0, 1);
+	}
+
+	if (cascadeNumber == 0)
+	{
+		textureColour = vec3(1, 0, 0);
+		inShadow = 0;
+	}
+	else if (cascadeNumber == 1)
+	{
+		textureColour = vec3(0, 1, 0);
+	}
+	else
+	{
+		textureColour = vec3(0, 0, 1);
+		inShadow = 0;
+	}
 	
 	// Diffuse light
 	float diffuseStrength = max(angleOfIncidence, 0.0);
@@ -89,7 +104,5 @@ void main()
 	
 	// Calculating final colour
 	colour = vec4(lightColour * textureColour * (ambientStrength + diffuseStrength), 1.0);
-	//colour = vec4(textureColour * diffuseStrength, 1.0);
-	//colour = texture(textureSampler, vec2(0.5, 0.5));
-	//colour = vec4(textureCoordinate, 1.0, 0);
+	//colour = vec4(depthToCamera * 0.01);
 }
