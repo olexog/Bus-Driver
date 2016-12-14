@@ -5,9 +5,8 @@ const int CASCADE_COUNT = 3;
 in vec3 position;
 in vec3 normal;
 in vec2 textureCoordinate;
-in vec4 positionLightSpace;
+in vec4 positionsLightSpace[CASCADE_COUNT];;
 in float depthToCamera;
-flat in int cascadeNumber;
 
 out vec4 colour;
 
@@ -56,7 +55,7 @@ float IsInShadow(vec4 positionLightSpace, float angleOfIncidence, int cascadeNum
 void main()
 {
 	vec3 textureColour = texture(textureSampler, textureCoordinate).rgb;
-	textureColour = positionLightSpace.xyz / 100.0;
+	//textureColour = positionLightSpace.xyz / 100.0;
 
 	// Ambient light
 	float ambientStrength = 0.1;
@@ -65,36 +64,19 @@ void main()
 	vec3 lightDirection = normalize(lightPosition - position);
 	float angleOfIncidence = dot(normal, lightDirection);
 
+	int cascadeNumber = 0;
+	
+	for (int i = 0; i < CASCADE_COUNT; i++)
+	{
+		if (depthToCamera < cascadeEnds[i + 1])
+		{
+			cascadeNumber = i;
+			break;
+		}
+	}
+	
 	// Shadow checking
-	float inShadow = IsInShadow(positionLightSpace, angleOfIncidence, cascadeNumber);
-
-	if (depthToCamera < cascadeEnds[1])
-	{
-		textureColour = vec3(1, 0, 0);
-	}
-	else if (depthToCamera < cascadeEnds[2])
-	{
-		textureColour = vec3(0, 1, 0);
-	}
-	else
-	{
-		textureColour = vec3(0, 0, 1);
-	}
-
-	if (cascadeNumber == 0)
-	{
-		textureColour = vec3(1, 0, 0);
-		inShadow = 0;
-	}
-	else if (cascadeNumber == 1)
-	{
-		textureColour = vec3(0, 1, 0);
-	}
-	else
-	{
-		textureColour = vec3(0, 0, 1);
-		inShadow = 0;
-	}
+	float inShadow = IsInShadow(positionsLightSpace[cascadeNumber], angleOfIncidence, cascadeNumber);
 	
 	// Diffuse light
 	float diffuseStrength = max(angleOfIncidence, 0.0);

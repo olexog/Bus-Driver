@@ -66,7 +66,7 @@ namespace GraphicsLibrary
 		//this->texture = Utility::LoadTexture("Models\\newspaper.png");
 
 		// initialize cascade z-ends
-		cascadeZEnds = vector<float>({0.1f, 15.0f, 30.0f, 50.0f});
+		cascadeZEnds = vector<float>({ 0.1f, 15.0f, 30.0f, 50.0f });
 
 		this->shaderProgram->SetUniform("cascadeEnds", cascadeZEnds);
 
@@ -215,7 +215,7 @@ namespace GraphicsLibrary
 		this->shaderProgram->SetUniform("lightPosition", lightPosition);
 		this->shaderProgram->SetUniform("lightColour", lightColour);
 
-		// 2. then render scene as normal with shadow mapping (using depth map)
+		// 2. then render scene as normal with shadow mapping (using depth maps)
 		FrameBuffer::Unbind();
 		glViewport(0, 0, this->contextWidth, this->contextHeight);
 		glClearColor(0.71f, 0.27f, 0.05f, 0);
