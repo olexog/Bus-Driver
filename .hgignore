@@ -8,3 +8,4 @@ Source\BusDriver\GraphicsLibrary\x64
 *.sdf
 Source\BusDriver\PhysicsLibrary\x64
 Source\BusDriver\x64
+Source/BusDriver/GraphicsLibrary/Debug
