@@ -93,8 +93,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -104,7 +102,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32s.lib;glu32.lib;OpenGL32.lib;SOIL.lib%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;glu32.lib;OpenGL32.lib;freetype27d.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -147,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="Point.h" />
     <ClInclude Include="Segment.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="FrameBuffer.h" />
@@ -163,6 +162,7 @@
   <ItemGroup>
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Segment.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
@@ -177,6 +177,8 @@
     <ClCompile Include="OpenGl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\FontFragmentShader.glsl" />
+    <None Include="Shaders\FontVertexShader.glsl" />
     <None Include="Shaders\FragmentShader.glsl" />
     <None Include="Shaders\PointFragmentShader.glsl" />
     <None Include="Shaders\PointVertexShader.glsl" />
@@ -187,6 +189,9 @@
     <None Include="Shaders\DepthVertexShader.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Fonts\ARIAL.TTF">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Shaders\PointVertexShader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -197,6 +202,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Shaders\SegmentFragmentShader.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shaders\FontVertexShader.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shaders\FontFragmentShader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Shaders\VertexShader.glsl">
@@ -211,6 +222,9 @@
     <Content Include="Shaders\DepthFragmentShader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Fonts\ARIAL.TTF" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,11 +2,8 @@
 
 namespace GraphicsLibrary
 {
-	Point::Point(float size, vec3 colour)
+	Point::Point()
 	{
-		this->size = size;
-		this->colour = colour;
-
 		glEnable(GL_PROGRAM_POINT_SIZE);
 
 		glGenVertexArrays(1, &this->vertexArrayId);
@@ -27,10 +24,11 @@ namespace GraphicsLibrary
 
 	}
 
-	void Point::Draw(ShaderProgram* shaderProgram)
+	void Point::Draw(ShaderProgram* shaderProgram, vec3 position, float size, vec3 colour)
 	{
-		shaderProgram->SetUniform("pointSize", this->size);
-		shaderProgram->SetUniform("colour", this->colour);
+		shaderProgram->SetUniform("position", position);
+		shaderProgram->SetUniform("pointSize", size);
+		shaderProgram->SetUniform("colour", colour);
 		shaderProgram->Use();
 
 		glBindVertexArray(this->vertexArrayId);

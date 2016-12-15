@@ -16,6 +16,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{0c64b812-8ff8-4251-a5f7-500b0c6af388}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fonts">
+      <UniqueIdentifier>{a5996ec6-6e2c-4307-b7f6-0fc79716c33b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderProgram.h">
@@ -58,6 +61,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Segment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,6 +110,9 @@
     <ClCompile Include="Segment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DepthVertexShader.glsl">
@@ -130,5 +139,16 @@
     <None Include="Shaders\SegmentVertexShader.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\FontFragmentShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\FontVertexShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Fonts\ARIAL.TTF">
+      <Filter>Fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

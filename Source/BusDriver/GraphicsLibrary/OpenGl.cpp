@@ -15,11 +15,12 @@ namespace GraphicsLibrary
 		glGetError();
 
 		// set the starting context's size
-		this->SetViewport(width, height);
+		this->SetContextSize(width, height);
 
 		// load shader programs
 		this->shaderProgram = new ShaderProgram("Shaders\\VertexShader.glsl", "Shaders\\FragmentShader.glsl");
 		this->depthShaderProgram = new ShaderProgram("Shaders\\DepthVertexShader.glsl", "Shaders\\DepthFragmentShader.glsl");
+		this->fontShaderProgram = new ShaderProgram("Shaders\\FontVertexShader.glsl", "Shaders\\FontFragmentShader.glsl");
 		this->pointShaderProgram = new ShaderProgram("Shaders\\PointVertexShader.glsl", "Shaders\\PointFragmentShader.glsl");
 		this->segmentShaderProgram = new ShaderProgram("Shaders\\SegmentVertexShader.glsl", "Shaders\\SegmentFragmentShader.glsl");
 
@@ -66,15 +67,24 @@ namespace GraphicsLibrary
 		//this->texture = Utility::LoadTexture("Models\\newspaper.png");
 
 		// initialize cascade z-ends
-		cascadeZEnds = vector<float>({ 0.1f, 15.0f, 30.0f, 50.0f });
+		float lambda = 0.5f;
+		cascadeZEnds = vector<float>();
+		for (int i = 0; i <= CASCADE_COUNT; i++)
+		{
+			float logarithmicZ = Z_NEAR * pow(Z_FAR_DYNAMIC / Z_NEAR, static_cast<float>(i) / static_cast<float>(CASCADE_COUNT));
+			float uniformZ = Z_NEAR + (Z_FAR_DYNAMIC - Z_NEAR) * (static_cast<float>(i) / static_cast<float>(CASCADE_COUNT));
+			float mixedZ = lambda * logarithmicZ + (1.0f - lambda) * uniformZ;
+			cascadeZEnds.push_back(mixedZ);
+		}
 
 		this->shaderProgram->SetUniform("cascadeEnds", cascadeZEnds);
 
+		// initialize fonts
+		this->arial = new Font("Fonts\\ARIAL.TTF", 20, 65, 90);
+
 		// initialize primitives
-		this->lightSegment = new Segment(vec3(0.0f, 1.0f, 0.0f));
-		this->cameraPoint = new Point(10.0f, vec3(0.0f, 0.0f, 1.0f));
-		this->frustumEdgeSegment = new Segment(vec3(0.0f, 0.0f, 1.0f));
-		this->frustumBoundingBoxSegment = new Segment(vec3(1.0f, 0.0f, 1.0f));
+		this->point = new Point();
+		this->segment = new Segment();
 	}
 
 	OpenGl::~OpenGl()
@@ -178,12 +188,10 @@ namespace GraphicsLibrary
 				frustumBoundingBoxCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumBoundingBoxCornerLightViewSpace, inverse(lightView)));
 			}
 
-			// calculate light projection and transform matrices
+			// calculate light projection matrix
 			lightProjections[cascadeIndex] = ortho(left, right, bottom, top, -near, -far);
 
-			mat4 lightTransform = lightProjections[cascadeIndex] * lightView;
-
-			// set shader uniforms
+			// set depth shader uniforms
 			this->depthShaderProgram->SetUniform("projection", lightProjections[cascadeIndex]);
 			this->depthShaderProgram->SetUniform("view", lightView);
 
@@ -194,6 +202,7 @@ namespace GraphicsLibrary
 			this->DrawModels(scene->models, this->depthShaderProgram);
 		}
 
+		// set main shader uniforms
 		if (this->viewFromLight)
 		{
 			this->shaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
@@ -221,7 +230,6 @@ namespace GraphicsLibrary
 		glClearColor(0.71f, 0.27f, 0.05f, 0);
 		//glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		
 		glActiveTexture(GL_TEXTURE0);
 		texture->Bind();
@@ -239,6 +247,11 @@ namespace GraphicsLibrary
 		}
 
 		this->DrawModels(scene->models, this->shaderProgram);
+
+		// draw text
+
+		this->fontShaderProgram->SetUniform("projection", ortho(0.0f, static_cast<float>(this->contextWidth), 0.0f, static_cast<float>(this->contextHeight)));
+		this->arial->DrawText(this->fontShaderProgram, "SAMPLE", vec2(10.0f, 10.0f), 1.0f, vec3(0.0f, 0.0f, 1.0f));
 
 		// render primitives to visualize frustum, camera, and light positions
 
@@ -265,50 +278,47 @@ namespace GraphicsLibrary
 		}
 
 		// draw camera as a point
-		this->DrawPoint(this->cameraPoint, this->cameraPositionDynamic);
+		this->DrawPoint(this->cameraPositionDynamic, 10.0f, vec3(0.0f, 0.0f, 1.0f));
 
 		for (int cascadeIndex = 0; cascadeIndex < CASCADE_COUNT; cascadeIndex++)
 		{
 			// draw frustum edges
-			this->DrawCube(this->frustumEdgeSegment, frustumCornersWorldSpace[cascadeIndex]);
+			this->DrawCube(frustumCornersWorldSpace[cascadeIndex], vec3(0.0f, 0.0f, 1.0f));
 
 			// draw frustum bounding box
-			this->DrawCube(this->frustumBoundingBoxSegment, frustumBoundingBoxCornersWorldSpace[cascadeIndex]);
+			this->DrawCube(frustumBoundingBoxCornersWorldSpace[cascadeIndex], vec3(1.0f, 0.0f, 1.0f));
 		}
 
 		// draw light as a segment
-		this->DrawSegment(this->lightSegment, lightPosition, vec3(0.0f));
+		this->DrawSegment(lightPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
 	}
 
-	void OpenGl::DrawPoint(Point* point, vec3 position)
+	void OpenGl::DrawPoint(vec3 position, float size, vec3 colour)
 	{
-		this->pointShaderProgram->SetUniform("position", position);
-		point->Draw(this->pointShaderProgram);
+		this->point->Draw(this->pointShaderProgram, position, size, colour);
 	}
 
-	void OpenGl::DrawSegment(Segment* segment, vec3 startPoint, vec3 endPoint)
+	void OpenGl::DrawSegment(vec3 startPoint, vec3 endPoint, vec3 colour)
 	{
-		this->segmentShaderProgram->SetUniform("startPoint", startPoint);
-		this->segmentShaderProgram->SetUniform("endPoint", endPoint);
-		segment->Draw(this->segmentShaderProgram);
+		this->segment->Draw(this->segmentShaderProgram, startPoint, endPoint, colour);
 	}
 
-	void OpenGl::DrawCube(Segment* segment, vector<vec3> corners)
+	void OpenGl::DrawCube(vector<vec3> corners, vec3 colour)
 	{
-		DrawSegment(segment, corners[0], corners[1]);
-		DrawSegment(segment, corners[1], corners[3]);
-		DrawSegment(segment, corners[3], corners[2]);
-		DrawSegment(segment, corners[2], corners[0]);
+		this->DrawSegment(corners[0], corners[1], colour);
+		this->DrawSegment(corners[1], corners[3], colour);
+		this->DrawSegment(corners[3], corners[2], colour);
+		this->DrawSegment(corners[2], corners[0], colour);
 
-		DrawSegment(segment, corners[0], corners[4]);
-		DrawSegment(segment, corners[1], corners[5]);
-		DrawSegment(segment, corners[2], corners[6]);
-		DrawSegment(segment, corners[3], corners[7]);
+		this->DrawSegment(corners[0], corners[4], colour);
+		this->DrawSegment(corners[1], corners[5], colour);
+		this->DrawSegment(corners[2], corners[6], colour);
+		this->DrawSegment(corners[3], corners[7], colour);
 
-		DrawSegment(segment, corners[4], corners[5]);
-		DrawSegment(segment, corners[5], corners[7]);
-		DrawSegment(segment, corners[7], corners[6]);
-		DrawSegment(segment, corners[6], corners[4]);
+		this->DrawSegment(corners[4], corners[5], colour);
+		this->DrawSegment(corners[5], corners[7], colour);
+		this->DrawSegment(corners[7], corners[6], colour);
+		this->DrawSegment(corners[6], corners[4], colour);
 	}
 
 	void OpenGl::SetViewFromLight(bool viewFromLight)
@@ -333,7 +343,7 @@ namespace GraphicsLibrary
 		}
 	}
 
-	void OpenGl::SetViewport(int width, int height)
+	void OpenGl::SetContextSize(int width, int height)
 	{
 		this->contextWidth = width;
 		this->contextHeight = height;

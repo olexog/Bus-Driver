@@ -26,6 +26,10 @@ namespace GraphicsLibrary
 
 		void LoadData(vector<vec3> elements);
 
+		void PrepareDynamicData(int size);
+
+		void LoadDataDynamic(vector<vec2> elements);
+
 		void Bind();
 
 		static void Unbind();

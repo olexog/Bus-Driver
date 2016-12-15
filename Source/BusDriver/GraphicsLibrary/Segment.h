@@ -8,13 +8,12 @@ namespace GraphicsLibrary
 	class Segment
 	{
 	public:
-		Segment(vec3 colour);
+		Segment();
 		~Segment();
 
-		void Draw(ShaderProgram* shaderProgram);
+		void Draw(ShaderProgram* shaderProgram, vec3 startPoint, vec3 endPoint, vec3 colour);
 	private:
 		GLuint vertexArrayId;
 		VertexBuffer* vertexBuffer;
-		vec3 colour;
 	};
 }

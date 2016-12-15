@@ -2,10 +2,8 @@
 
 namespace GraphicsLibrary
 {
-	Segment::Segment(vec3 colour)
+	Segment::Segment()
 	{
-		this->colour = colour;
-
 		glGenVertexArrays(1, &this->vertexArrayId);
 		glBindVertexArray(this->vertexArrayId);
 
@@ -24,9 +22,11 @@ namespace GraphicsLibrary
 
 	}
 
-	void Segment::Draw(ShaderProgram* shaderProgram)
+	void Segment::Draw(ShaderProgram* shaderProgram, vec3 startPoint, vec3 endPoint, vec3 colour)
 	{
-		shaderProgram->SetUniform("colour", this->colour);
+		shaderProgram->SetUniform("startPoint", startPoint);
+		shaderProgram->SetUniform("endPoint", endPoint);
+		shaderProgram->SetUniform("colour", colour);
 		shaderProgram->Use();
 
 		glBindVertexArray(this->vertexArrayId);

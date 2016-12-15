@@ -20,6 +20,7 @@
 #include "FrameBuffer.h"
 #include "Texture.h"
 #include "Utility.h"
+#include "Font.h"
 #include "Point.h"
 #include "Segment.h"
 
@@ -42,16 +43,16 @@ namespace GraphicsLibrary
 		void Draw(Scene* scene);
 
 		///<summary>Draws a point to the specified position.</summary>
-		void DrawPoint(Point* point, vec3 position);
+		void DrawPoint(vec3 position, float size, vec3 colour);
 
 		///<summary>Draws a line segment between the specified points.</summary>
-		void DrawSegment(Segment* segment, vec3 startPoint, vec3 endPoint);
+		void DrawSegment(vec3 startPoint, vec3 endPoint, vec3 colour);
 
 		///<summary>Draws a cube connecting the specified 8 points.</summary>
-		void DrawCube(Segment* segment, vector<vec3> corners);
+		void DrawCube(vector<vec3> corners, vec3 colour);
 
 		///<summary>Sets the rendering context's size.</summary>
-		void SetViewport(int width, int height);
+		void SetContextSize(int width, int height);
 
 		///<summary>Sets the camera mode to static or dynamic.</summary>
 		void SetCameraMode(bool isStatic);
@@ -72,6 +73,7 @@ namespace GraphicsLibrary
 
 		ShaderProgram* shaderProgram;
 		ShaderProgram* depthShaderProgram;
+		ShaderProgram* fontShaderProgram;
 		ShaderProgram* pointShaderProgram;
 		ShaderProgram* segmentShaderProgram;
 
@@ -83,7 +85,7 @@ namespace GraphicsLibrary
 		const float FIELD_OF_VIEW_Y = 45.0f;
 		const float Z_NEAR = 0.1f;
 		const float Z_FAR_STATIC = 500.0f;
-		const float Z_FAR_DYNAMIC = 50.0f;
+		const float Z_FAR_DYNAMIC = 500.0f;
 
 		int contextWidth;
 		int contextHeight;
@@ -112,9 +114,9 @@ namespace GraphicsLibrary
 		bool wireframeMode = false;
 		bool viewFromLight = false;
 
-		Segment* lightSegment;
-		Point* cameraPoint;
-		Segment* frustumEdgeSegment;
-		Segment* frustumBoundingBoxSegment;
+		Font* arial;
+
+		Point* point;
+		Segment* segment;
 	};
 }

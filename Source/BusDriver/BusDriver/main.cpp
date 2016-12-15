@@ -58,7 +58,7 @@ void WindowSize(GLFWwindow* window, int width, int height)
 	// set the OpenGL viewport
 	if (openGl != NULL)
 	{
-		openGl->SetViewport(width, height);
+		openGl->SetContextSize(width, height);
 	}
 }
 
