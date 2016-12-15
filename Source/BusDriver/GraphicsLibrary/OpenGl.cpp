@@ -101,9 +101,6 @@ namespace GraphicsLibrary
 
 	void OpenGl::Draw(Scene* scene)
 	{
-		// defines which cascade has to be used when view is from light
-		int viewFromLightCascadeIndex = 1;
-
 		// define light parameters
 		vec3 lightDirection = normalize(vec3(0.0f, -1.0f, -2.0f));
 		vec3 lightPosition = -100.0f * lightDirection;
@@ -205,7 +202,7 @@ namespace GraphicsLibrary
 		// set main shader uniforms
 		if (this->viewFromLight)
 		{
-			this->shaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
+			this->shaderProgram->SetUniform("projection", lightProjections[this->cascadeToVisualize]);
 			this->shaderProgram->SetUniform("view", lightView);
 		}
 		else
@@ -230,7 +227,7 @@ namespace GraphicsLibrary
 		glClearColor(0.71f, 0.27f, 0.05f, 0);
 		//glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		glActiveTexture(GL_TEXTURE0);
 		texture->Bind();
 		this->shaderProgram->SetUniform("textureSampler", 0);
@@ -263,10 +260,10 @@ namespace GraphicsLibrary
 		if (this->viewFromLight)
 		{
 			this->pointShaderProgram->SetUniform("view", lightView);
-			this->pointShaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
+			this->pointShaderProgram->SetUniform("projection", lightProjections[this->cascadeToVisualize]);
 
 			this->segmentShaderProgram->SetUniform("view", lightView);
-			this->segmentShaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
+			this->segmentShaderProgram->SetUniform("projection", lightProjections[cascadeToVisualize]);
 		}
 		else
 		{
@@ -280,14 +277,11 @@ namespace GraphicsLibrary
 		// draw camera as a point
 		this->DrawPoint(this->cameraPositionDynamic, 10.0f, vec3(0.0f, 0.0f, 1.0f));
 
-		for (int cascadeIndex = 0; cascadeIndex < CASCADE_COUNT; cascadeIndex++)
-		{
-			// draw frustum edges
-			this->DrawCube(frustumCornersWorldSpace[cascadeIndex], vec3(0.0f, 0.0f, 1.0f));
+		// draw frustum edges
+		this->DrawCube(frustumCornersWorldSpace[cascadeToVisualize], vec3(0.0f, 0.0f, 1.0f));
 
-			// draw frustum bounding box
-			this->DrawCube(frustumBoundingBoxCornersWorldSpace[cascadeIndex], vec3(1.0f, 0.0f, 1.0f));
-		}
+		// draw frustum bounding box
+		this->DrawCube(frustumBoundingBoxCornersWorldSpace[cascadeToVisualize], vec3(1.0f, 0.0f, 1.0f));
 
 		// draw light as a segment
 		this->DrawSegment(lightPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
@@ -324,6 +318,11 @@ namespace GraphicsLibrary
 	void OpenGl::SetViewFromLight(bool viewFromLight)
 	{
 		this->viewFromLight = viewFromLight;
+	}
+
+	void OpenGl::SetCascadeToVisualize(int cascadeIndex)
+	{
+		this->cascadeToVisualize = cascadeIndex;
 	}
 
 	void OpenGl::DrawModels(vector<PositionedModel*> models, ShaderProgram* shaderProgram)

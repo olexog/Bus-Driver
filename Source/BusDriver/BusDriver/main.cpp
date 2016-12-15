@@ -124,6 +124,28 @@ void Key(GLFWwindow* window, int key, int scancode, int action, int mode)
 
 		pressedKeys[GLFW_KEY_L] = false;
 	}
+	// 0, 1, 2: set actual cascade
+	else if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+	{
+		if (openGl != NULL)
+		{
+			openGl->SetCascadeToVisualize(0);
+		}
+	}
+	else if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+	{
+		if (openGl != NULL)
+		{
+			openGl->SetCascadeToVisualize(1);
+		}
+	}
+	else if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+	{
+		if (openGl != NULL)
+		{
+			openGl->SetCascadeToVisualize(2);
+		}
+	}
 	// store all the other keys' state
 	else if (action == GLFW_PRESS)
 	{
@@ -313,6 +335,8 @@ int main()
 
 	// create the window
 	openGl = new OpenGl(640, 480);
+
+	openGl->SetCascadeToVisualize(0);
 
 	// create the physics environment
 	Physics* physics = new Physics();

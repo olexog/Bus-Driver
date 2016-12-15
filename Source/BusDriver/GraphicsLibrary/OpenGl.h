@@ -68,6 +68,8 @@ namespace GraphicsLibrary
 
 		///<summary>Sets whether the scene should be rendered from the light's position and with the light's view transformation.</summary>
 		void SetViewFromLight(bool viewFromLight);
+
+		void SetCascadeToVisualize(int cascadeIndex);
 	private:
 		void DrawModels(vector<PositionedModel*> models, ShaderProgram* shaderProgram);
 
@@ -85,7 +87,7 @@ namespace GraphicsLibrary
 		const float FIELD_OF_VIEW_Y = 45.0f;
 		const float Z_NEAR = 0.1f;
 		const float Z_FAR_STATIC = 500.0f;
-		const float Z_FAR_DYNAMIC = 500.0f;
+		const float Z_FAR_DYNAMIC = 50.0f;
 
 		int contextWidth;
 		int contextHeight;
@@ -113,6 +115,8 @@ namespace GraphicsLibrary
 
 		bool wireframeMode = false;
 		bool viewFromLight = false;
+
+		int cascadeToVisualize;
 
 		Font* arial;
 
