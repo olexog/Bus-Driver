@@ -80,7 +80,7 @@ namespace GraphicsLibrary
 		this->shaderProgram->SetUniform("cascadeEnds", cascadeZEnds);
 
 		// initialize fonts
-		this->arial = new Font("Fonts\\ARIAL.TTF", 20, 65, 90);
+		this->arial = new Font("Fonts\\ARIAL.TTF", 200, 65, 90);
 
 		// initialize primitives
 		this->point = new Point();

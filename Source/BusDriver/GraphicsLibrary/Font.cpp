@@ -112,6 +112,7 @@ namespace GraphicsLibrary
 		this->texture = new Texture();
 		this->texture->Bind();
 		this->texture->LoadData(bufferWidth, bufferHeight, GL_RED, GL_RED, GL_UNSIGNED_BYTE, buffer);
+		glGenerateMipmap(GL_TEXTURE_2D);
 		Texture::Unbind();
 
 		// free resources
@@ -174,7 +175,7 @@ namespace GraphicsLibrary
 			vec2 characterPosition = actualPosition + static_cast<vec2>(character.bearing) * scale;
 			vec2 characterSize = static_cast<vec2>(character.size) * scale;
 
-			vector<vec2> vertices = vector<vec2>({
+			vector<vec2> vertices = {
 				characterPosition,
 				characterPosition + characterSize,
 				characterPosition + vec2(0.0f, characterSize.y),
@@ -182,7 +183,9 @@ namespace GraphicsLibrary
 				characterPosition,
 				characterPosition + vec2(characterSize.x, 0.0f),
 				characterPosition + characterSize
-			});
+			};
+
+			vector<vec2> texCoords = { vec2(0, 0), vec2(0.1f, 1), vec2(0, 1), vec2(0, 0), vec2(0.1f, 0), vec2(0.1f, 1) };
 
 			// update vertices VBO
 			this->vertices->Bind();
@@ -190,7 +193,9 @@ namespace GraphicsLibrary
 
 			// update texture coordinates VBO
 			this->textureCoordinates->Bind();
-			this->textureCoordinates->LoadDataDynamic(character.texCoords);
+			this->textureCoordinates->LoadDataDynamic(texCoords);
+
+			shaderProgram->Use();
 
 			// render rectangle
 			glDrawArrays(GL_TRIANGLES, 0, 6);
