@@ -35,7 +35,7 @@ namespace GraphicsLibrary
 
 		// iterate and load each character
 
-		int startX = 0;
+		int startX = 1;
 		this->characters = map<int, Character*>();
 
 		for (int c = firstCharacter; c <= lastCharacter; c++)
@@ -52,7 +52,7 @@ namespace GraphicsLibrary
 			character->bearing = ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top - face->glyph->bitmap.rows);
 			character->advance = face->glyph->advance.x;
 
-			startX += character->size.x;
+			startX += character->size.x + 1;
 
 			int bufferSize = character->size.x * character->size.y * sizeof(unsigned char);
 			unsigned char* buffer = new unsigned char[bufferSize];
@@ -64,15 +64,19 @@ namespace GraphicsLibrary
 
 		// generate a big buffer containing all characters in the font
 
-		int bigBufferWidth = 0;
+		int bigBufferWidth = 1;
 		int bigBufferHeight = 0;
 		for (pair<int, Character*> pair : this->characters)
 		{
-			bigBufferWidth += pair.second->size.x;
-			bigBufferHeight = glm::max(bigBufferHeight, pair.second->size.y);
+			bigBufferWidth += pair.second->size.x + 1;
+			bigBufferHeight = glm::max(bigBufferHeight, pair.second->size.y + 2);
 		}
 		int bigBufferSize = bigBufferWidth * bigBufferHeight * sizeof(unsigned char);
 		unsigned char* bigBuffer = new unsigned char[bigBufferSize];
+		for (int i = 0; i < bigBufferSize; i++)
+		{
+			bigBuffer[i] = 0;
+		}
 
 		for (pair<int, Character*> pair : this->characters)
 		{
@@ -81,9 +85,9 @@ namespace GraphicsLibrary
 			// copy character to the buffer
 			for (int row = 0; row < character->size.y; row++)
 			{
-				int bigBufferRow = character->size.y - 1 - row;
+				int bigBufferRow = character->size.y - row;
 				int bigBufferColumn = character->startX;
-				int bigBufferStart = row * bigBufferWidth + bigBufferColumn;
+				int bigBufferStart = bigBufferRow * bigBufferWidth + bigBufferColumn;
 
 				int characterStart = row * character->size.x;
 
@@ -100,16 +104,17 @@ namespace GraphicsLibrary
 			delete character->buffer;
 
 			// store character texture coordinates
-			vec2 texCoord = vec2(static_cast<float>(character->startX) / static_cast<float>(bigBufferWidth), 0.0f);
-			vec2 texCoordRelative = static_cast<vec2>(character->size) / vec2(static_cast<float>(bigBufferWidth), static_cast<float>(bigBufferHeight));
+			vec2 bigBufferSize = vec2(static_cast<float>(bigBufferWidth), static_cast<float>(bigBufferHeight));
+			vec2 texCoord = vec2(static_cast<float>(character->startX), 1.0f) / bigBufferSize;
+			vec2 texCoordRelative = static_cast<vec2>(character->size) / bigBufferSize;
 			character->texCoords = {
-				texCoord + vec2(0.0f, texCoordRelative.y),
-				texCoord + vec2(texCoordRelative.x, 0.0f),
 				texCoord,
-
-				texCoord + vec2(0.0f, texCoordRelative.y),
 				texCoord + texCoordRelative,
-				texCoord + vec2(texCoordRelative.x, 0.0f)
+				texCoord + vec2(0.0f, texCoordRelative.y),
+
+				texCoord,
+				texCoord + vec2(texCoordRelative.x, 0.0f),
+				texCoord + texCoordRelative
 			};
 		}
 
@@ -212,5 +217,28 @@ namespace GraphicsLibrary
 
 		glBindVertexArray(0);
 		Texture::Unbind();
+	}
+
+	vec2 Font::TextSize(string text, float scale)
+	{
+		vec2 size = vec2(0.0f);
+
+		for (string::const_iterator c = text.begin(); c != text.end(); c++)
+		{
+			int characterCode = *c;
+			// if the character is not loaded, skip it
+			if (this->characters.find(characterCode) == this->characters.end())
+			{
+				continue;
+			}
+
+			Character* character = this->characters[characterCode];
+			vec2 characterSize = static_cast<vec2>(character->size) * scale;
+
+			size.x += characterSize.x;
+			size.y = max(size.y, characterSize.y);
+		}
+
+		return size;
 	}
 }
