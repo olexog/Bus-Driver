@@ -78,18 +78,18 @@ void main()
 	// Shadow checking
 	float inShadow = IsInShadow(positionsLightSpace[cascadeNumber], angleOfIncidence, cascadeNumber);
 	
-	if (cascadeNumber == 0)
-	{
-		textureColour = vec3(0.0, 0.0, 1.0);
-	}
-	else if (cascadeNumber == 1)
-	{
-		textureColour = vec3(0.0, 1.0, 0.0);
-	}
-	else
-	{
-		textureColour = vec3(1.0, 0.0, 0.0);
-	}
+	//if (cascadeNumber == 0)
+	//{
+	//	textureColour = vec3(0.0, 0.0, 1.0);
+	//}
+	//else if (cascadeNumber == 1)
+	//{
+	//	textureColour = vec3(0.0, 1.0, 0.0);
+	//}
+	//else
+	//{
+	//	textureColour = vec3(1.0, 0.0, 0.0);
+	//}
 	
 	// Diffuse light
 	float diffuseStrength = max(angleOfIncidence, 0.0);

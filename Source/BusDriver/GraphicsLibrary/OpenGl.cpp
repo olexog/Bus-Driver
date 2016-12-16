@@ -80,7 +80,7 @@ namespace GraphicsLibrary
 		this->shaderProgram->SetUniform("cascadeEnds", cascadeZEnds);
 
 		// initialize fonts
-		this->arial = new Font("Fonts\\ARIAL.TTF", 200, 65, 90);
+		this->arial = new Font("Fonts\\ARIAL.TTF", 50, 0, 255);
 
 		// initialize primitives
 		this->point = new Point();
@@ -248,7 +248,9 @@ namespace GraphicsLibrary
 		// draw text
 
 		this->fontShaderProgram->SetUniform("projection", ortho(0.0f, static_cast<float>(this->contextWidth), 0.0f, static_cast<float>(this->contextHeight)));
-		this->arial->DrawText(this->fontShaderProgram, "SAMPLE", vec2(10.0f, 10.0f), 1.0f, vec3(0.0f, 0.0f, 1.0f));
+		this->arial->DrawText(this->fontShaderProgram, "Epic win!!!", vec2(10.0f, 10.0f), 1.0f, vec3(1.0f, 0.0f, 0.0f));
+		this->arial->DrawText(this->fontShaderProgram, "Active cascade index: " + to_string(this->cascadeToVisualize),
+			vec2(20.0f, this->contextHeight - 40.0f), 0.5f, vec3(0.0f, 0.0f, 1.0f));
 
 		// render primitives to visualize frustum, camera, and light positions
 

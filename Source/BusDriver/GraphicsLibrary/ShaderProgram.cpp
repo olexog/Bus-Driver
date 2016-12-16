@@ -70,7 +70,6 @@ namespace GraphicsLibrary
 		this->Use();
 		GLuint transformLocation = glGetUniformLocation(this->id, name.c_str());
 		glUniform3f(transformLocation, vector.x, vector.y, vector.z);
-		ShaderProgram::Disable();
 	}
 
 	void ShaderProgram::SetUniform(string name, glm::mat4 matrix)
@@ -78,7 +77,6 @@ namespace GraphicsLibrary
 		this->Use();
 		GLuint transformLocation = glGetUniformLocation(this->id, name.c_str());
 		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
-		ShaderProgram::Disable();
 	}
 
 	void ShaderProgram::SetUniform(string name, int value)
@@ -86,7 +84,6 @@ namespace GraphicsLibrary
 		this->Use();
 		GLuint transformLocation = glGetUniformLocation(this->id, name.c_str());
 		glUniform1i(transformLocation, value);
-		ShaderProgram::Disable();
 	}
 
 	void ShaderProgram::SetUniform(string name, vector<float> values)
@@ -94,7 +91,6 @@ namespace GraphicsLibrary
 		this->Use();
 		GLuint transformLocation = glGetUniformLocation(this->id, name.c_str());
 		glUniform1fv(transformLocation, values.size(), values.data());
-		ShaderProgram::Disable();
 	}
 
 	void ShaderProgram::SetUniform(string name, float value)
@@ -102,6 +98,5 @@ namespace GraphicsLibrary
 		this->Use();
 		GLuint transformLocation = glGetUniformLocation(this->id, name.c_str());
 		glUniform1f(transformLocation, value);
-		ShaderProgram::Disable();
 	}
 }

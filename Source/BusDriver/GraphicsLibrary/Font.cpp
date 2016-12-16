@@ -6,7 +6,8 @@ namespace GraphicsLibrary
 	{
 		// initialize FreeType library
 
-		FT_Error result = FT_Init_FreeType(&this->library);
+		FT_Library library;
+		FT_Error result = FT_Init_FreeType(&library);
 		if (result)
 		{
 			cout << "FreeType library initialization has failed. Error code: " << result << endl;
@@ -15,14 +16,15 @@ namespace GraphicsLibrary
 
 		// load face
 
-		result = FT_New_Face(Font::library, fontPath.c_str(), 0, &this->face);
+		FT_Face face;
+		result = FT_New_Face(library, fontPath.c_str(), 0, &face);
 		if (result)
 		{
 			cout << "Face creation has failed. Error code: " << result << endl;
 			return;
 		}
 
-		FT_Set_Pixel_Sizes(this->face, 0, size);
+		FT_Set_Pixel_Sizes(face, 0, size);
 
 		// setup necessary OpenGL stuff: alignment and blending
 
@@ -34,93 +36,97 @@ namespace GraphicsLibrary
 		// iterate and load each character
 
 		int startX = 0;
-		this->characters = map<int, Character>();
+		this->characters = map<int, Character*>();
 
 		for (int c = firstCharacter; c <= lastCharacter; c++)
 		{
-			result = FT_Load_Char(this->face, c, FT_LOAD_RENDER);
+			result = FT_Load_Char(face, c, FT_LOAD_RENDER);
 			if (result)
 			{
 				cout << "Failed to load character with code " << c << ". Error code: " << result << endl;
 			}
 
-			Character character = {
-				startX,
-				ivec2(this->face->glyph->bitmap.width, this->face->glyph->bitmap.rows),
-				ivec2(this->face->glyph->bitmap_left, this->face->glyph->bitmap_top - this->face->glyph->bitmap.rows),
-				this->face->glyph->advance.x
-			};
+			Character* character = new Character();
+			character->startX = startX;
+			character->size = ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
+			character->bearing = ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top - face->glyph->bitmap.rows);
+			character->advance = face->glyph->advance.x;
 
-			startX += character.size.x;
+			startX += character->size.x;
 
-			int bufferSize = character.size.x * character.size.y * sizeof(unsigned char);
+			int bufferSize = character->size.x * character->size.y * sizeof(unsigned char);
 			unsigned char* buffer = new unsigned char[bufferSize];
-			memcpy(buffer, this->face->glyph->bitmap.buffer, bufferSize);
-			character.buffer = buffer;
+			memcpy(buffer, face->glyph->bitmap.buffer, bufferSize);
+			character->buffer = buffer;
 
 			this->characters[c] = character;
 		}
 
-		// generate a buffer containing all characters in the font
+		// generate a big buffer containing all characters in the font
 
-		int bufferWidth = 0;
-		int bufferHeight = 0;
-		for (pair<int, Character> pair : this->characters)
+		int bigBufferWidth = 0;
+		int bigBufferHeight = 0;
+		for (pair<int, Character*> pair : this->characters)
 		{
-			bufferWidth += pair.second.size.x;
-			bufferHeight = glm::max(bufferHeight, pair.second.size.y);
+			bigBufferWidth += pair.second->size.x;
+			bigBufferHeight = glm::max(bigBufferHeight, pair.second->size.y);
 		}
-		int bufferSize = bufferWidth * bufferHeight * sizeof(unsigned char);
-		unsigned char* buffer = new unsigned char[bufferSize];
+		int bigBufferSize = bigBufferWidth * bigBufferHeight * sizeof(unsigned char);
+		unsigned char* bigBuffer = new unsigned char[bigBufferSize];
 
-		for (pair<int, Character> pair : this->characters)
+		for (pair<int, Character*> pair : this->characters)
 		{
-			Character character = pair.second;
+			Character* character = pair.second;
 
 			// copy character to the buffer
-			for (int row = 0; row < character.size.y; row++)
+			for (int row = 0; row < character->size.y; row++)
 			{
-				int bufferRow = character.size.y - 1 - row;
-				int bufferColumn = character.startX;
-				int bufferStart = bufferRow * bufferWidth + bufferColumn;
+				int bigBufferRow = character->size.y - 1 - row;
+				int bigBufferColumn = character->startX;
+				int bigBufferStart = row * bigBufferWidth + bigBufferColumn;
 
-				int characterStart = row * character.size.x;
+				int characterStart = row * character->size.x;
 
-				int copySize = character.size.x;
+				int copySize = character->size.x;
 
-				memcpy(buffer + bufferStart, character.buffer + characterStart, copySize);
+				if (bigBufferStart + copySize > bigBufferSize)
+				{
+					cout << "Error";
+				}
+
+				memcpy(bigBuffer + bigBufferStart, character->buffer + characterStart, copySize);
 			}
 
+			delete character->buffer;
+
 			// store character texture coordinates
-			vec2 texCoord = vec2(static_cast<float>(character.startX) / static_cast<float>(bufferWidth), 0.0f);
-			vec2 texCoordRelative = static_cast<vec2>(character.size) / vec2(static_cast<float>(bufferWidth), static_cast<float>(bufferHeight));
-			character.texCoords = vector<vec2>({
-				texCoord,
-				texCoord + texCoordRelative,
+			vec2 texCoord = vec2(static_cast<float>(character->startX) / static_cast<float>(bigBufferWidth), 0.0f);
+			vec2 texCoordRelative = static_cast<vec2>(character->size) / vec2(static_cast<float>(bigBufferWidth), static_cast<float>(bigBufferHeight));
+			character->texCoords = {
 				texCoord + vec2(0.0f, texCoordRelative.y),
-
-				texCoord,
 				texCoord + vec2(texCoordRelative.x, 0.0f),
-				texCoord + texCoordRelative
-			});
+				texCoord,
 
-			delete character.buffer;
+				texCoord + vec2(0.0f, texCoordRelative.y),
+				texCoord + texCoordRelative,
+				texCoord + vec2(texCoordRelative.x, 0.0f)
+			};
 		}
 
 		// load the texture
 
 		this->texture = new Texture();
 		this->texture->Bind();
-		this->texture->LoadData(bufferWidth, bufferHeight, GL_RED, GL_RED, GL_UNSIGNED_BYTE, buffer);
+		this->texture->LoadData(bigBufferWidth, bigBufferHeight, GL_RED, GL_RED, GL_UNSIGNED_BYTE, bigBuffer);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		Texture::Unbind();
 
 		// free resources
 
-		delete buffer;
+		delete bigBuffer;
 
-		FT_Done_Face(this->face);
-		FT_Done_FreeType(this->library);
+		FT_Done_Face(face);
+		FT_Done_FreeType(library);
 
 		// initialize VBOs and VAO
 
@@ -169,11 +175,11 @@ namespace GraphicsLibrary
 				continue;
 			}
 
-			Character character = this->characters[characterCode];
+			Character* character = this->characters[characterCode];
 
 			// calculate rectangle vertices
-			vec2 characterPosition = actualPosition + static_cast<vec2>(character.bearing) * scale;
-			vec2 characterSize = static_cast<vec2>(character.size) * scale;
+			vec2 characterPosition = actualPosition + static_cast<vec2>(character->bearing) * scale;
+			vec2 characterSize = static_cast<vec2>(character->size) * scale;
 
 			vector<vec2> vertices = {
 				characterPosition,
@@ -185,15 +191,13 @@ namespace GraphicsLibrary
 				characterPosition + characterSize
 			};
 
-			vector<vec2> texCoords = { vec2(0, 0), vec2(0.1f, 1), vec2(0, 1), vec2(0, 0), vec2(0.1f, 0), vec2(0.1f, 1) };
-
 			// update vertices VBO
 			this->vertices->Bind();
 			this->vertices->LoadDataDynamic(vertices);
 
 			// update texture coordinates VBO
 			this->textureCoordinates->Bind();
-			this->textureCoordinates->LoadDataDynamic(texCoords);
+			this->textureCoordinates->LoadDataDynamic(character->texCoords);
 
 			shaderProgram->Use();
 
@@ -201,7 +205,7 @@ namespace GraphicsLibrary
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 
 			// advance actual position (unit of advance is 1/64 pixels)
-			actualPosition.x += static_cast<float>(character.advance) / 64.0f * scale;
+			actualPosition.x += static_cast<float>(character->advance) / 64.0f * scale;
 		}
 
 		VertexBuffer::Unbind();
