@@ -51,6 +51,8 @@ vec3 cameraDirectionStatic;
 vec3 cameraPositionDynamic;
 vec3 cameraDirectionDynamic;
 
+const float MAX_FRAME_LENGTH = 0.016667f;
+
 float previousTime;
 
 void WindowSize(GLFWwindow* window, int width, int height)
@@ -123,6 +125,28 @@ void Key(GLFWwindow* window, int key, int scancode, int action, int mode)
 		}
 
 		pressedKeys[GLFW_KEY_L] = false;
+	}
+	// 0, 1, 2: set actual cascade
+	else if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+	{
+		if (openGl != NULL)
+		{
+			openGl->SetCascadeToVisualize(0);
+		}
+	}
+	else if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+	{
+		if (openGl != NULL)
+		{
+			openGl->SetCascadeToVisualize(1);
+		}
+	}
+	else if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+	{
+		if (openGl != NULL)
+		{
+			openGl->SetCascadeToVisualize(2);
+		}
 	}
 	// store all the other keys' state
 	else if (action == GLFW_PRESS)
@@ -314,6 +338,9 @@ int main()
 	// create the window
 	openGl = new OpenGl(640, 480);
 
+	// setup window parameters
+	openGl->SetCascadeToVisualize(0);
+
 	// create the physics environment
 	Physics* physics = new Physics();
 
@@ -378,7 +405,7 @@ int main()
 		}
 		else
 		{
-			elapsedTime = totalTime - previousTime;
+			elapsedTime = glm::min(totalTime - previousTime, MAX_FRAME_LENGTH);
 		}
 
 		previousTime = totalTime;
@@ -454,7 +481,7 @@ int main()
 		glfwSwapBuffers(glfwWindow);
 	}
 
-	// call the constructors
+	// call the destructors
 	delete scene;
 	delete openGl;
 

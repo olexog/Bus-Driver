@@ -38,10 +38,7 @@ namespace GraphicsLibrary
 			unsigned char* buffer;
 			vector<vec2> texCoords;
 		};
-		map<int, Character> characters;
-
-		FT_Library library;
-		FT_Face face;
+		map<int, Character*> characters;
 
 		Texture* texture;
 		VertexBuffer* vertices;

@@ -80,7 +80,7 @@ namespace GraphicsLibrary
 		this->shaderProgram->SetUniform("cascadeEnds", cascadeZEnds);
 
 		// initialize fonts
-		this->arial = new Font("Fonts\\ARIAL.TTF", 200, 65, 90);
+		this->arial = new Font("Fonts\\ARIAL.TTF", 50, 0, 255);
 
 		// initialize primitives
 		this->point = new Point();
@@ -101,9 +101,6 @@ namespace GraphicsLibrary
 
 	void OpenGl::Draw(Scene* scene)
 	{
-		// defines which cascade has to be used when view is from light
-		int viewFromLightCascadeIndex = 1;
-
 		// define light parameters
 		vec3 lightDirection = normalize(vec3(0.0f, -1.0f, -2.0f));
 		vec3 lightPosition = -100.0f * lightDirection;
@@ -113,7 +110,9 @@ namespace GraphicsLibrary
 		// calculate view matrices
 		this->viewStatic = lookAt(this->cameraPositionStatic, this->cameraPositionStatic + this->cameraDirectionStatic, vec3(0.0f, 1.0f, 0.0f));
 		this->viewDynamic = lookAt(this->cameraPositionDynamic, this->cameraPositionDynamic + this->cameraDirectionDynamic, vec3(0.0f, 1.0f, 0.0f));
+		mat4 inverseView = inverse(this->viewDynamic);
 		mat4 lightView = lookAt(vec3(0.0f), lightDirection, vec3(0.0f, 1.0f, 0.0f));
+		mat4 inverseLightView = inverse(lightView);
 
 		// CSM
 		float tanHalfFOVy = tan(FIELD_OF_VIEW_Y / 2.0f);
@@ -147,7 +146,7 @@ namespace GraphicsLibrary
 			frustumCornersWorldSpace[cascadeIndex] = vector<vec3>();
 			for (vec3 frustumCornerViewSpace : frustumCornersViewSpace)
 			{
-				frustumCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumCornerViewSpace, inverse(this->viewDynamic)));
+				frustumCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumCornerViewSpace, inverseView));
 			}
 
 			// calculate frustum bounding box in light view space
@@ -185,7 +184,7 @@ namespace GraphicsLibrary
 			frustumBoundingBoxCornersWorldSpace[cascadeIndex] = vector<vec3>();
 			for (vec3 frustumBoundingBoxCornerLightViewSpace : frustumBoundingBoxCornersLightViewSpace)
 			{
-				frustumBoundingBoxCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumBoundingBoxCornerLightViewSpace, inverse(lightView)));
+				frustumBoundingBoxCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumBoundingBoxCornerLightViewSpace, inverseLightView));
 			}
 
 			// calculate light projection matrix
@@ -205,18 +204,24 @@ namespace GraphicsLibrary
 		// set main shader uniforms
 		if (this->viewFromLight)
 		{
-			this->shaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
+			this->shaderProgram->SetUniform("shadowsOn", 0.0f);
+
+			this->shaderProgram->SetUniform("projection", lightProjections[this->cascadeToVisualize]);
 			this->shaderProgram->SetUniform("view", lightView);
 		}
 		else
 		{
 			if (this->staticCamera)
 			{
+				this->shaderProgram->SetUniform("shadowsOn", 0.0f);
+
 				this->shaderProgram->SetUniform("projection", this->projectionStatic);
 				this->shaderProgram->SetUniform("view", this->viewStatic);
 			}
 			else
 			{
+				this->shaderProgram->SetUniform("shadowsOn", 1.0f);
+
 				this->shaderProgram->SetUniform("projection", this->projectionDynamic);
 				this->shaderProgram->SetUniform("view", this->viewDynamic);
 			}
@@ -230,7 +235,7 @@ namespace GraphicsLibrary
 		glClearColor(0.71f, 0.27f, 0.05f, 0);
 		//glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 		glActiveTexture(GL_TEXTURE0);
 		texture->Bind();
 		this->shaderProgram->SetUniform("textureSampler", 0);
@@ -251,7 +256,9 @@ namespace GraphicsLibrary
 		// draw text
 
 		this->fontShaderProgram->SetUniform("projection", ortho(0.0f, static_cast<float>(this->contextWidth), 0.0f, static_cast<float>(this->contextHeight)));
-		this->arial->DrawText(this->fontShaderProgram, "SAMPLE", vec2(10.0f, 10.0f), 1.0f, vec3(0.0f, 0.0f, 1.0f));
+		this->arial->DrawText(this->fontShaderProgram, "Epic win!!!", vec2(10.0f, 10.0f), 1.0f, vec3(1.0f, 0.0f, 0.0f));
+		this->arial->DrawText(this->fontShaderProgram, "Active cascade index: " + to_string(this->cascadeToVisualize),
+			vec2(20.0f, this->contextHeight - 40.0f), 0.5f, vec3(0.0f, 0.0f, 1.0f));
 
 		// render primitives to visualize frustum, camera, and light positions
 
@@ -263,10 +270,10 @@ namespace GraphicsLibrary
 		if (this->viewFromLight)
 		{
 			this->pointShaderProgram->SetUniform("view", lightView);
-			this->pointShaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
+			this->pointShaderProgram->SetUniform("projection", lightProjections[this->cascadeToVisualize]);
 
 			this->segmentShaderProgram->SetUniform("view", lightView);
-			this->segmentShaderProgram->SetUniform("projection", lightProjections[viewFromLightCascadeIndex]);
+			this->segmentShaderProgram->SetUniform("projection", lightProjections[cascadeToVisualize]);
 		}
 		else
 		{
@@ -280,14 +287,11 @@ namespace GraphicsLibrary
 		// draw camera as a point
 		this->DrawPoint(this->cameraPositionDynamic, 10.0f, vec3(0.0f, 0.0f, 1.0f));
 
-		for (int cascadeIndex = 0; cascadeIndex < CASCADE_COUNT; cascadeIndex++)
-		{
-			// draw frustum edges
-			this->DrawCube(frustumCornersWorldSpace[cascadeIndex], vec3(0.0f, 0.0f, 1.0f));
+		// draw frustum edges
+		this->DrawCube(frustumCornersWorldSpace[cascadeToVisualize], vec3(0.0f, 0.0f, 1.0f));
 
-			// draw frustum bounding box
-			this->DrawCube(frustumBoundingBoxCornersWorldSpace[cascadeIndex], vec3(1.0f, 0.0f, 1.0f));
-		}
+		// draw frustum bounding box
+		this->DrawCube(frustumBoundingBoxCornersWorldSpace[cascadeToVisualize], vec3(1.0f, 0.0f, 1.0f));
 
 		// draw light as a segment
 		this->DrawSegment(lightPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
@@ -324,6 +328,11 @@ namespace GraphicsLibrary
 	void OpenGl::SetViewFromLight(bool viewFromLight)
 	{
 		this->viewFromLight = viewFromLight;
+	}
+
+	void OpenGl::SetCascadeToVisualize(int cascadeIndex)
+	{
+		this->cascadeToVisualize = cascadeIndex;
 	}
 
 	void OpenGl::DrawModels(vector<PositionedModel*> models, ShaderProgram* shaderProgram)
