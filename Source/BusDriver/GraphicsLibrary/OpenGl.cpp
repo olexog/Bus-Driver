@@ -110,7 +110,9 @@ namespace GraphicsLibrary
 		// calculate view matrices
 		this->viewStatic = lookAt(this->cameraPositionStatic, this->cameraPositionStatic + this->cameraDirectionStatic, vec3(0.0f, 1.0f, 0.0f));
 		this->viewDynamic = lookAt(this->cameraPositionDynamic, this->cameraPositionDynamic + this->cameraDirectionDynamic, vec3(0.0f, 1.0f, 0.0f));
+		mat4 inverseView = inverse(this->viewDynamic);
 		mat4 lightView = lookAt(vec3(0.0f), lightDirection, vec3(0.0f, 1.0f, 0.0f));
+		mat4 inverseLightView = inverse(lightView);
 
 		// CSM
 		float tanHalfFOVy = tan(FIELD_OF_VIEW_Y / 2.0f);
@@ -144,7 +146,7 @@ namespace GraphicsLibrary
 			frustumCornersWorldSpace[cascadeIndex] = vector<vec3>();
 			for (vec3 frustumCornerViewSpace : frustumCornersViewSpace)
 			{
-				frustumCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumCornerViewSpace, inverse(this->viewDynamic)));
+				frustumCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumCornerViewSpace, inverseView));
 			}
 
 			// calculate frustum bounding box in light view space
@@ -182,7 +184,7 @@ namespace GraphicsLibrary
 			frustumBoundingBoxCornersWorldSpace[cascadeIndex] = vector<vec3>();
 			for (vec3 frustumBoundingBoxCornerLightViewSpace : frustumBoundingBoxCornersLightViewSpace)
 			{
-				frustumBoundingBoxCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumBoundingBoxCornerLightViewSpace, inverse(lightView)));
+				frustumBoundingBoxCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumBoundingBoxCornerLightViewSpace, inverseLightView));
 			}
 
 			// calculate light projection matrix
@@ -202,6 +204,8 @@ namespace GraphicsLibrary
 		// set main shader uniforms
 		if (this->viewFromLight)
 		{
+			this->shaderProgram->SetUniform("shadowsOn", 0.0f);
+
 			this->shaderProgram->SetUniform("projection", lightProjections[this->cascadeToVisualize]);
 			this->shaderProgram->SetUniform("view", lightView);
 		}
@@ -209,11 +213,15 @@ namespace GraphicsLibrary
 		{
 			if (this->staticCamera)
 			{
+				this->shaderProgram->SetUniform("shadowsOn", 0.0f);
+
 				this->shaderProgram->SetUniform("projection", this->projectionStatic);
 				this->shaderProgram->SetUniform("view", this->viewStatic);
 			}
 			else
 			{
+				this->shaderProgram->SetUniform("shadowsOn", 1.0f);
+
 				this->shaderProgram->SetUniform("projection", this->projectionDynamic);
 				this->shaderProgram->SetUniform("view", this->viewDynamic);
 			}

@@ -18,6 +18,8 @@ uniform float cascadeEnds[CASCADE_COUNT + 1];
 uniform sampler2D textureSampler;
 uniform sampler2D shadowMaps[CASCADE_COUNT];
 
+uniform float shadowsOn;
+
 //uniform int cascadeNumber;
 
 // Returns 1 if the fragment is in shadow, otherwise 0
@@ -77,19 +79,23 @@ void main()
 	
 	// Shadow checking
 	float inShadow = IsInShadow(positionsLightSpace[cascadeNumber], angleOfIncidence, cascadeNumber);
+	inShadow = min(inShadow, shadowsOn);
 	
-	//if (cascadeNumber == 0)
-	//{
-	//	textureColour = vec3(0.0, 0.0, 1.0);
-	//}
-	//else if (cascadeNumber == 1)
-	//{
-	//	textureColour = vec3(0.0, 1.0, 0.0);
-	//}
-	//else
-	//{
-	//	textureColour = vec3(1.0, 0.0, 0.0);
-	//}
+	if (shadowsOn == 1.0)
+	{
+		if (cascadeNumber == 0)
+		{
+			textureColour = vec3(0.0, 0.0, 1.0);
+		}
+		else if (cascadeNumber == 1)
+		{
+			textureColour = vec3(0.0, 1.0, 0.0);
+		}
+		else
+		{
+			textureColour = vec3(1.0, 0.0, 0.0);
+		}
+	}
 	
 	// Diffuse light
 	float diffuseStrength = max(angleOfIncidence, 0.0);

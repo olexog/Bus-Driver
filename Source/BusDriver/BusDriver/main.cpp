@@ -51,6 +51,8 @@ vec3 cameraDirectionStatic;
 vec3 cameraPositionDynamic;
 vec3 cameraDirectionDynamic;
 
+const float MAX_FRAME_LENGTH = 0.016667f;
+
 float previousTime;
 
 void WindowSize(GLFWwindow* window, int width, int height)
@@ -336,6 +338,7 @@ int main()
 	// create the window
 	openGl = new OpenGl(640, 480);
 
+	// setup window parameters
 	openGl->SetCascadeToVisualize(0);
 
 	// create the physics environment
@@ -402,7 +405,7 @@ int main()
 		}
 		else
 		{
-			elapsedTime = totalTime - previousTime;
+			elapsedTime = glm::min(totalTime - previousTime, MAX_FRAME_LENGTH);
 		}
 
 		previousTime = totalTime;
@@ -478,7 +481,7 @@ int main()
 		glfwSwapBuffers(glfwWindow);
 	}
 
-	// call the constructors
+	// call the destructors
 	delete scene;
 	delete openGl;
 
