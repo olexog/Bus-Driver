@@ -138,7 +138,7 @@ namespace GraphicsLibrary
 	void OpenGl::Draw(Scene* scene)
 	{
 		// define light parameters
-		vec3 lightDirection = normalize(vec3(0.0f, -1.0f, -2.0f));
+		vec3 lightDirection = normalize(vec3(0.0f, -2.0f, -1.0f));
 		vec3 lightPosition = -100.0f * lightDirection;
 		//vec3 lightColour = vec3(0.71f, 0.27f, 0.05f);
 		vec3 lightColour = vec3(1.0f);
