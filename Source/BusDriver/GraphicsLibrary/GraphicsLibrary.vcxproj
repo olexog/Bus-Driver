@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Alignment.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="Font.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="OpenGl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\DebugFragmentShader.glsl" />
     <None Include="Shaders\FontFragmentShader.glsl" />
     <None Include="Shaders\FontVertexShader.glsl" />
     <None Include="Shaders\FragmentShader.glsl" />
@@ -220,6 +222,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Shaders\DepthFragmentShader.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>  
+    <Content Include="Shaders\DebugFragmentShader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

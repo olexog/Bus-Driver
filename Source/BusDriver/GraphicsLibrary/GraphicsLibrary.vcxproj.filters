@@ -66,6 +66,9 @@
     <ClInclude Include="Font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Alignment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ShaderProgram.cpp">
@@ -143,6 +146,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\FontVertexShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\DebugFragmentShader.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

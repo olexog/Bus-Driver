@@ -27,6 +27,8 @@ namespace GraphicsLibrary
 		~Font();
 
 		void DrawText(ShaderProgram* shaderProgram, string text, vec2 position, float scale, vec3 colour);
+
+		vec2 TextSize(string text, float scale);
 	private:
 		struct Character
 		{

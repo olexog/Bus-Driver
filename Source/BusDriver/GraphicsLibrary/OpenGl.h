@@ -23,6 +23,7 @@
 #include "Font.h"
 #include "Point.h"
 #include "Segment.h"
+#include "Alignment.h"
 
 using namespace std;
 using namespace glm;
@@ -51,6 +52,9 @@ namespace GraphicsLibrary
 		///<summary>Draws a cube connecting the specified 8 points.</summary>
 		void DrawCube(vector<vec3> corners, vec3 colour);
 
+		///<summary>Draws the specified text with the given scale, aligment, margin and colour.</summary>
+		void DrawText(string text, float scale, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, vec2 margin, vec3 colour);
+
 		///<summary>Sets the rendering context's size.</summary>
 		void SetContextSize(int width, int height);
 
@@ -69,6 +73,10 @@ namespace GraphicsLibrary
 		///<summary>Sets whether the scene should be rendered from the light's position and with the light's view transformation.</summary>
 		void SetViewFromLight(bool viewFromLight);
 
+		///<summary>Sets whether the shadow map should be rendered instead of the normal world view.</summary>
+		void SetRenderShadowMap(bool renderShadowMap);
+
+		///<summary>Sets the active cascade to visualize for debug reasons.</summary>
 		void SetCascadeToVisualize(int cascadeIndex);
 	private:
 		void DrawModels(vector<PositionedModel*> models, ShaderProgram* shaderProgram);
@@ -78,6 +86,7 @@ namespace GraphicsLibrary
 		ShaderProgram* fontShaderProgram;
 		ShaderProgram* pointShaderProgram;
 		ShaderProgram* segmentShaderProgram;
+		ShaderProgram* debugShaderProgram;
 
 		const int SHADOW_MAP_WIDTH = 1024;
 		const int SHADOW_MAP_HEIGHT = 1024;
@@ -115,8 +124,13 @@ namespace GraphicsLibrary
 
 		bool wireframeMode = false;
 		bool viewFromLight = false;
+		bool renderShadowMap = false;
 
 		int cascadeToVisualize;
+
+		VertexBuffer* shadowMapVertices;
+		VertexBuffer* shadowMapTexCoords;
+		GLuint shadowMapVertexArrayId;
 
 		Font* arial;
 

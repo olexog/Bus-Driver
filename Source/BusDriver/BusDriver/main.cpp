@@ -54,6 +54,7 @@ vec3 cameraDirectionDynamic;
 const float MAX_FRAME_LENGTH = 0.016667f;
 
 float previousTime;
+vec3 busPreviousPosition;
 
 void WindowSize(GLFWwindow* window, int width, int height)
 {
@@ -146,6 +147,21 @@ void Key(GLFWwindow* window, int key, int scancode, int action, int mode)
 		if (openGl != NULL)
 		{
 			openGl->SetCascadeToVisualize(2);
+		}
+	}
+	// C: render shadow map
+	else if (key == GLFW_KEY_C && action == GLFW_PRESS)
+	{
+		if (openGl != NULL)
+		{
+			openGl->SetRenderShadowMap(true);
+		}
+	}
+	else if (key == GLFW_KEY_C && action == GLFW_RELEASE)
+	{
+		if (openGl != NULL)
+		{
+			openGl->SetRenderShadowMap(false);
 		}
 	}
 	// store all the other keys' state
@@ -476,6 +492,11 @@ int main()
 
 		// draw scene
 		openGl->Draw(scene);
+
+		float velocity = length(bus->GetPosition() - busPreviousPosition) / elapsedTime;
+		busPreviousPosition = bus->GetPosition();
+
+		openGl->DrawText("Velocity: " + to_string(static_cast<int>(velocity * 3.6f)) + " km/h", 1.0f, HorizontalAlignment::Left, VerticalAlignment::Bottom, vec2(20.0f), vec3(0.0f, 0.0f, 1.0f));
 
 		// swap the screen buffers
 		glfwSwapBuffers(glfwWindow);

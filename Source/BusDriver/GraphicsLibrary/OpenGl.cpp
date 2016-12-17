@@ -23,6 +23,7 @@ namespace GraphicsLibrary
 		this->fontShaderProgram = new ShaderProgram("Shaders\\FontVertexShader.glsl", "Shaders\\FontFragmentShader.glsl");
 		this->pointShaderProgram = new ShaderProgram("Shaders\\PointVertexShader.glsl", "Shaders\\PointFragmentShader.glsl");
 		this->segmentShaderProgram = new ShaderProgram("Shaders\\SegmentVertexShader.glsl", "Shaders\\SegmentFragmentShader.glsl");
+		this->debugShaderProgram = new ShaderProgram("Shaders\\FontVertexShader.glsl", "Shaders\\DebugFragmentShader.glsl");
 
 		// enable the depth buffer for depth testing
 		glEnable(GL_DEPTH_TEST);
@@ -79,8 +80,43 @@ namespace GraphicsLibrary
 
 		this->shaderProgram->SetUniform("cascadeEnds", cascadeZEnds);
 
+		// initialize shadow map visualizing utilities
+		glGenVertexArrays(1, &this->shadowMapVertexArrayId);
+		glBindVertexArray(this->shadowMapVertexArrayId);
+
+		this->shadowMapVertices = new VertexBuffer();
+		this->shadowMapVertices->Bind();
+		this->shadowMapVertices->LoadData({
+			vec2(0.0f, 0.0f),
+			vec2(1.0f, 1.0f),
+			vec2(0.0f, 1.0f),
+
+			vec2(0.0f, 0.0f),
+			vec2(1.0f, 0.0f),
+			vec2(1.0f, 1.0f)
+		});
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), static_cast<GLvoid*>(0));
+		glEnableVertexAttribArray(0);
+
+		this->shadowMapTexCoords = new VertexBuffer();
+		this->shadowMapTexCoords->Bind();
+		this->shadowMapTexCoords->LoadData({
+			vec2(0.0f, 0.0f),
+			vec2(1.0f, 1.0f),
+			vec2(0.0f, 1.0f),
+
+			vec2(0.0f, 0.0f),
+			vec2(1.0f, 0.0f),
+			vec2(1.0f, 1.0f)
+		});
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), static_cast<GLvoid*>(0));
+		glEnableVertexAttribArray(1);
+
+		VertexBuffer::Unbind();
+		glBindVertexArray(0);
+
 		// initialize fonts
-		this->arial = new Font("Fonts\\ARIAL.TTF", 50, 0, 255);
+		this->arial = new Font("Fonts\\ARIAL.TTF", 25, 0, 255);
 
 		// initialize primitives
 		this->point = new Point();
@@ -188,7 +224,8 @@ namespace GraphicsLibrary
 			}
 
 			// calculate light projection matrix
-			lightProjections[cascadeIndex] = ortho(left, right, bottom, top, -near, -far);
+			//lightProjections[cascadeIndex] = ortho(left, right, bottom, top, -near, -far);
+			lightProjections[cascadeIndex] = ortho(left, right, bottom, top, -near - Z_FAR_DYNAMIC, -far + Z_FAR_DYNAMIC);
 
 			// set depth shader uniforms
 			this->depthShaderProgram->SetUniform("projection", lightProjections[cascadeIndex]);
@@ -236,29 +273,44 @@ namespace GraphicsLibrary
 		//glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glActiveTexture(GL_TEXTURE0);
-		texture->Bind();
-		this->shaderProgram->SetUniform("textureSampler", 0);
-
-		//this->shaderProgram->SetUniform("cascadeNumber", 1);
-
-		for (int i = 0; i < CASCADE_COUNT; i++)
+		if (this->renderShadowMap)
 		{
-			glActiveTexture(GL_TEXTURE1 + i);
-			depthMapTextures[i]->Bind();
-			this->shaderProgram->SetUniform("shadowMaps[" + to_string(i) + "]", 1 + i);
+			glActiveTexture(GL_TEXTURE0);
+			this->depthMapTextures[this->cascadeToVisualize]->Bind();
+			this->debugShaderProgram->SetUniform("textureSampler", 0);
 
-			this->shaderProgram->SetUniform("lightTransforms[" + to_string(i) + "]", lightProjections[i] * lightView);
+			this->debugShaderProgram->SetUniform("projection", ortho(0.0f, 1.0f, 0.0f, 1.0f));
+
+			this->debugShaderProgram->Use();
+
+			glBindVertexArray(this->shadowMapVertexArrayId);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			glBindVertexArray(0);
 		}
+		else
+		{
+			glActiveTexture(GL_TEXTURE0);
+			texture->Bind();
+			this->shaderProgram->SetUniform("textureSampler", 0);
 
-		this->DrawModels(scene->models, this->shaderProgram);
+			//this->shaderProgram->SetUniform("cascadeNumber", 1);
+
+			for (int i = 0; i < CASCADE_COUNT; i++)
+			{
+				glActiveTexture(GL_TEXTURE1 + i);
+				depthMapTextures[i]->Bind();
+				this->shaderProgram->SetUniform("shadowMaps[" + to_string(i) + "]", 1 + i);
+
+				this->shaderProgram->SetUniform("lightTransforms[" + to_string(i) + "]", lightProjections[i] * lightView);
+			}
+
+			this->DrawModels(scene->models, this->shaderProgram);
+		}
 
 		// draw text
 
 		this->fontShaderProgram->SetUniform("projection", ortho(0.0f, static_cast<float>(this->contextWidth), 0.0f, static_cast<float>(this->contextHeight)));
-		this->arial->DrawText(this->fontShaderProgram, "Epic win!!!", vec2(10.0f, 10.0f), 1.0f, vec3(1.0f, 0.0f, 0.0f));
-		this->arial->DrawText(this->fontShaderProgram, "Active cascade index: " + to_string(this->cascadeToVisualize),
-			vec2(20.0f, this->contextHeight - 40.0f), 0.5f, vec3(0.0f, 0.0f, 1.0f));
+		this->DrawText("Active cascade index: " + to_string(this->cascadeToVisualize), 1.0f, HorizontalAlignment::Left, VerticalAlignment::Top, vec2(20.0f), vec3(0.0f, 0.0f, 1.0f));
 
 		// render primitives to visualize frustum, camera, and light positions
 
@@ -325,9 +377,50 @@ namespace GraphicsLibrary
 		this->DrawSegment(corners[6], corners[4], colour);
 	}
 
+	void OpenGl::DrawText(string text, float scale, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, vec2 margin, vec3 colour)
+	{
+		vec2 contextSize = vec2(static_cast<float>(this->contextWidth), static_cast<float>(this->contextHeight));
+		vec2 textSize = this->arial->TextSize(text, scale);
+
+		vec2 textPosition = vec2();
+
+		switch (horizontalAlignment)
+		{
+		case HorizontalAlignment::Left:
+			textPosition.x = margin.x;
+			break;
+		case HorizontalAlignment::Right:
+			textPosition.x = contextSize.x - margin.x - textSize.x;
+			break;
+		case HorizontalAlignment::Center:
+			textPosition.x = contextSize.x / 2.0f - textSize.x / 2.0f;
+			break;
+		}
+
+		switch (verticalAlignment)
+		{
+		case VerticalAlignment::Bottom:
+			textPosition.y = margin.y;
+			break;
+		case VerticalAlignment::Top:
+			textPosition.y = contextSize.y - margin.y - textSize.y;
+			break;
+		case VerticalAlignment::Center:
+			textPosition.y = contextSize.y / 2.0f - textSize.y / 2.0f;
+			break;
+		}
+
+		this->arial->DrawText(this->fontShaderProgram, text, textPosition, scale, colour);
+	}
+
 	void OpenGl::SetViewFromLight(bool viewFromLight)
 	{
 		this->viewFromLight = viewFromLight;
+	}
+
+	void OpenGl::SetRenderShadowMap(bool renderShadowMap)
+	{
+		this->renderShadowMap = renderShadowMap;
 	}
 
 	void OpenGl::SetCascadeToVisualize(int cascadeIndex)
