@@ -81,7 +81,8 @@ void main()
 	float inShadow = IsInShadow(positionsLightSpace[cascadeNumber], angleOfIncidence, cascadeNumber);
 	inShadow = min(inShadow, shadowsOn);
 	
-	if (shadowsOn == 1.0)
+	//if (shadowsOn == 1.0)
+	if (false)
 	{
 		if (cascadeNumber == 0)
 		{

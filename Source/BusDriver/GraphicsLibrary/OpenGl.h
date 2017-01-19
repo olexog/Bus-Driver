@@ -96,7 +96,7 @@ namespace GraphicsLibrary
 		const float FIELD_OF_VIEW_Y = 45.0f;
 		const float Z_NEAR = 0.1f;
 		const float Z_FAR_STATIC = 500.0f;
-		const float Z_FAR_DYNAMIC = 50.0f;
+		const float Z_FAR_DYNAMIC = 150.0f;
 
 		int contextWidth;
 		int contextHeight;
