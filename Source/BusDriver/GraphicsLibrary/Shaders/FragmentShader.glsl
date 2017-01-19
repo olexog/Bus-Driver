@@ -35,7 +35,7 @@ float IsInShadow(vec4 positionLightSpace, float angleOfIncidence, int cascadeNum
 	
 	// The inaccuracy of bitmap image cause shadow acne therefore a bias introduced when a fragment
 	// being that farther from the light than the obstacle will also be lit
-	float bias = max(0.05 * (1.0 - angleOfIncidence), 0.005); 
+	float bias = max(0.05 * (1.0 - angleOfIncidence), 0.0005);
 
 	float inShadow = 0.0;
 	vec2 texelSize = 1.0 / textureSize(shadowMaps[cascadeNumber], 0);
@@ -80,22 +80,6 @@ void main()
 	// Shadow checking
 	float inShadow = IsInShadow(positionsLightSpace[cascadeNumber], angleOfIncidence, cascadeNumber);
 	inShadow = min(inShadow, shadowsOn);
-	
-	if (shadowsOn == 1.0)
-	{
-		if (cascadeNumber == 0)
-		{
-			textureColour = vec3(0.0, 0.0, 1.0);
-		}
-		else if (cascadeNumber == 1)
-		{
-			textureColour = vec3(0.0, 1.0, 0.0);
-		}
-		else
-		{
-			textureColour = vec3(1.0, 0.0, 0.0);
-		}
-	}
 	
 	// Diffuse light
 	float diffuseStrength = max(angleOfIncidence, 0.0);

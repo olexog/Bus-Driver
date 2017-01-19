@@ -231,7 +231,7 @@ namespace GraphicsLibrary
 			this->depthShaderProgram->SetUniform("projection", lightProjections[cascadeIndex]);
 			this->depthShaderProgram->SetUniform("view", lightView);
 
-			// 1. first render to depth map
+			// render to depth map
 			this->depthMapBuffers[cascadeIndex]->Bind();
 			glViewport(0, 0, this->SHADOW_MAP_WIDTH, this->SHADOW_MAP_HEIGHT);
 			glClear(GL_DEPTH_BUFFER_BIT);
