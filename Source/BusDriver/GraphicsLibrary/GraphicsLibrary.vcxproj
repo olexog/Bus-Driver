@@ -72,11 +72,24 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IncludePath>$(SolutionDir)Libraries\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\lib\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Libraries\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Libraries\include\PhysX\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Libraries\lib\PhysX\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Libraries\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib\x64;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)Libraries\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)Libraries\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -90,6 +103,9 @@
     <Link>
       <SubSystem>Windows</SubSystem>
     </Link>
+    <Lib>
+      <AdditionalDependencies>libglew32d.lib;glu32.lib;OpenGL32.lib;freetype271d.lib;SOILd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -102,7 +118,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32s.lib;glu32.lib;OpenGL32.lib;freetype27d.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libglew32d.lib;glu32.lib;OpenGL32.lib;freetype271d.lib;SOILd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -121,6 +137,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalDependencies>libglew32.lib;glu32.lib;OpenGL32.lib;freetype271.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -139,7 +158,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>PhysX3_x64.lib;PhysX3Common_x64.lib;PhysX3Cooking_x64.lib</AdditionalDependencies>
+      <AdditionalDependencies>libglew32.lib;glu32.lib;OpenGL32.lib;freetype271.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -223,7 +242,7 @@
     </Content>
     <Content Include="Shaders\DepthFragmentShader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>  
+    </Content>
     <Content Include="Shaders\DebugFragmentShader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

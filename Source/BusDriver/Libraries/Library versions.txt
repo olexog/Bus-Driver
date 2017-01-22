@@ -1,0 +1,7 @@
+GLFW 3.1.2??
+GLEW 1.13.0
+FreeType 2.7.1
+SOIL July 7, 2008
+PhysX 3.3.4 (20434102)
+
+GLM 0.9.7.1

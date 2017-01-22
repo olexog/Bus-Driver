@@ -43,7 +43,7 @@ namespace PhysicsLibrary
 		GeometryType actualGeometry = GeometryType::None;
 
 		// initialize geometry parameters
-		vec3* position;
+		vec3* position = NULL;
 		PxVec3 halfExtends;
 
 		// iterate through the file
