@@ -10,3 +10,5 @@ Source\BusDriver\PhysicsLibrary\Win32
 *.opendb
 *.db
 *.sdf
+Source\BusDriver\GraphicsLibrary\Debug
+Source\BusDriver\x64

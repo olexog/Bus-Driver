@@ -269,7 +269,6 @@ namespace GraphicsLibrary
 		// 2. then render scene as normal with shadow mapping (using depth maps)
 		FrameBuffer::Unbind();
 		glViewport(0, 0, this->contextWidth, this->contextHeight);
-		glClearColor(0.71f, 0.27f, 0.05f, 0);
 		//glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

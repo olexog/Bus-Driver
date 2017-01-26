@@ -100,7 +100,7 @@ void Camera::Rotate(float offsetX, float offsetY, bool constrainPitch)
 	offsetY *= MOUSE_SENSITIVITY;
 
 	this->yaw += offsetX;
-	this->pitch += offsetY;
+	this->pitch -= offsetY;
 
 	if (constrainPitch)
 	{
@@ -113,12 +113,16 @@ void Camera::Rotate(float offsetX, float offsetY, bool constrainPitch)
 			this->pitch = -89.0f;
 		}
 	}
+
+	this->UpdateBaseVectors();
 }
 
 void Camera::SetTargetTransformation(vec3 targetPosition, quat targetRotation)
 {
 	this->targetPosition = targetPosition;
 	this->targetRotation = targetRotation;
+
+
 }
 
 void Camera::UpdateBaseVectors()
@@ -131,6 +135,6 @@ void Camera::UpdateBaseVectors()
 	this->front = glm::normalize(front);
 
 	// Also re-calculate the Right and Up vector
-	this->right = glm::normalize(glm::cross(this->front, WORLD_UP));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+	this->right = glm::normalize(glm::cross(this->front, WORLD_UP));
 	this->up = glm::normalize(glm::cross(this->right, this->front));
 }

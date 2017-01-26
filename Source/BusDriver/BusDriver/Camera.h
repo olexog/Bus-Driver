@@ -46,7 +46,7 @@ private:
 	const float VELOCITY = 20.0f;
 	const float FAST_VELOCITY = 100.0f;
 
-	const float MOUSE_SENSITIVITY = 0.25f;
+	const float MOUSE_SENSITIVITY = 0.05f;
 
 	const vec3 WORLD_UP = vec3(0.0f, 1.0f, 0.0f);
 
@@ -55,7 +55,9 @@ private:
 	vec3 up;
 	vec3 right;
 
+	// The amount of rotation around the Y-axis in degrees
 	float yaw;
+	// The amount of rotation around the X-axis in degrees
 	float pitch;
 
 	bool fastMode;
