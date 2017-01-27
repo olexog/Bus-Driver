@@ -2,8 +2,7 @@
 
 #include <string>
 
-
-#include "Utility.h"
+#include "GraphicsUtility.h"
 #include "Thingy.h"
 #include "ModelReader.h"
 #include "Physics.h"

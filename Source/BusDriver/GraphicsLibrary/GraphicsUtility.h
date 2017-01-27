@@ -9,9 +9,12 @@
 #include <algorithm>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 #include <SOIL\SOIL.h>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "Texture.h"
 
@@ -40,6 +43,10 @@ namespace GraphicsLibrary
 		static vector<string> Split(string s, string delimiter);
 
 		static vec3 Transform(vec3 vector, mat4 matrix);
+
+		static string ToString(float number, int precision);
+
+		static string ToString(quat quaternion, int precision);
 
 		static Texture* LoadTexture(string fileName);
 	};

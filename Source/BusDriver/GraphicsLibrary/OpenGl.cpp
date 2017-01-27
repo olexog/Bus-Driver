@@ -335,6 +335,11 @@ namespace GraphicsLibrary
 			this->segmentShaderProgram->SetUniform("projection", projectionStatic);
 		}
 
+		// draw coordinate system
+		this->DrawSegment(vec3(), vec3(10.0f, 0.0f, 0.0f), vec3(1.0f, 0.0f, 0.0f)); // X
+		this->DrawSegment(vec3(), vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)); // Y
+		this->DrawSegment(vec3(), vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 1.0f)); // Z
+
 		// draw camera as a point
 		this->DrawPoint(this->cameraPositionDynamic, 10.0f, vec3(0.0f, 0.0f, 1.0f));
 

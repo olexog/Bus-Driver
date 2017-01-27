@@ -24,7 +24,7 @@ Map MapReader::Read(Physics* physics, string fileName)
 		// initialize a shiftable pointer to the line's C string
 		const char* token = line.c_str();
 		// skip whitespaces
-		token += strspn(token, Utility::WHITESPACES);
+		token += strspn(token, GraphicsUtility::WHITESPACES);
 
 		// skip empty lines and comments
 		if (token[0] == '\0' || token[0] == '#')
@@ -34,7 +34,7 @@ Map MapReader::Read(Physics* physics, string fileName)
 		sscanf_s(token, "%255s", command, 256);
 		token += strlen(command);
 		// skip whitespaces
-		token += strspn(token, Utility::WHITESPACES);
+		token += strspn(token, GraphicsUtility::WHITESPACES);
 
 		// if command is "load"
 		if (strcmp(command, "load") == 0)
@@ -58,11 +58,11 @@ Map MapReader::Read(Physics* physics, string fileName)
 			// skip the quotation mark
 			token += 1;
 			// skip whitespaces
-			token += strspn(token, Utility::WHITESPACES);
+			token += strspn(token, GraphicsUtility::WHITESPACES);
 			// skip to
 			token += 2;
 			// skip whitespaces
-			token += strspn(token, Utility::WHITESPACES);
+			token += strspn(token, GraphicsUtility::WHITESPACES);
 
 			// parse variable name
 			string variableName = string(token, strcspn(token, "["));
@@ -84,11 +84,11 @@ Map MapReader::Read(Physics* physics, string fileName)
 			// load the thingy
 			if (variableName == "thingies")
 			{
-				thingies[key] = ThingyReader::Read(physics, Utility::GetDirectory(fileName) + relativeFileName);
+				thingies[key] = ThingyReader::Read(physics, GraphicsUtility::GetDirectory(fileName) + relativeFileName);
 			}
 			else if (variableName == "models")
 			{
-				models[key] = new Thingy(ModelReader::Read(Utility::GetDirectory(fileName) + relativeFileName), NULL);
+				models[key] = new Thingy(ModelReader::Read(GraphicsUtility::GetDirectory(fileName) + relativeFileName), NULL);
 			}
 			else
 			{
@@ -99,7 +99,7 @@ Map MapReader::Read(Physics* physics, string fileName)
 		else if (strcmp(command, "place") == 0)
 		{
 			// skip whitespaces
-			token += strspn(token, Utility::WHITESPACES);
+			token += strspn(token, GraphicsUtility::WHITESPACES);
 
 			// parse variable name
 			string variableName = string(token, strcspn(token, "["));
@@ -123,11 +123,11 @@ Map MapReader::Read(Physics* physics, string fileName)
 			// skip the closing bracket and the quotation mark
 			token += 2;
 			// skip whitespaces
-			token += strspn(token, Utility::WHITESPACES);
+			token += strspn(token, GraphicsUtility::WHITESPACES);
 			// skip "to"
 			token += 2;
 			// skip whitespaces
-			token += strspn(token, Utility::WHITESPACES);
+			token += strspn(token, GraphicsUtility::WHITESPACES);
 
 			// check if it is a vector
 			if (token[0] != '(')
@@ -152,14 +152,14 @@ Map MapReader::Read(Physics* physics, string fileName)
 			token += 1;
 
 			// skip whitespaces
-			token += strspn(token, Utility::WHITESPACES);
+			token += strspn(token, GraphicsUtility::WHITESPACES);
 
 			if (strcmp(token, "") != 0)
 			{
 				// skip "as"
 				token += 2;
 				// skip whitespaces
-				token += strspn(token, Utility::WHITESPACES);
+				token += strspn(token, GraphicsUtility::WHITESPACES);
 				
 				// read orientation
 				float* x = new float();

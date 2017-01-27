@@ -7,7 +7,7 @@
 
 #include "Map.h"
 #include "ThingyReader.h"
-#include "Utility.h"
+#include "GraphicsUtility.h"
 #include "Physics.h"
 
 using namespace std;

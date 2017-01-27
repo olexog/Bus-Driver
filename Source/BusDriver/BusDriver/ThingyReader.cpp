@@ -70,16 +70,16 @@ Thingy* ThingyReader::Read(Physics* physics, string fileName)
 
 			if (variableName == "graphicsThingy")
 			{
-				model = ModelReader::Read(Utility::GetDirectory(fileName) + relativeFileName);
+				model = ModelReader::Read(GraphicsUtility::GetDirectory(fileName) + relativeFileName);
 			}
 			else if (variableName == "physicsThingy")
 			{
-				body = BodyReader::Read(physics, Utility::GetDirectory(fileName) + relativeFileName);
+				body = BodyReader::Read(physics, GraphicsUtility::GetDirectory(fileName) + relativeFileName);
 			}
 			else if (variableName == "graphysicsThingy")
 			{
 				vector<vec3> vertices;
-				model = ModelReader::Read(Utility::GetDirectory(fileName) + relativeFileName, vertices);
+				model = ModelReader::Read(GraphicsUtility::GetDirectory(fileName) + relativeFileName, vertices);
 				body = PhysicsUtility::BodyFromTriangles(vertices, physics);
 			}
 			// if variable is unknown

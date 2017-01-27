@@ -8,7 +8,6 @@ FollowCamera::FollowCamera(vec3 targetPosition, quat targetRotation)
 	this->UpdateDesiredPosition();
 
 	this->position = this->desiredPosition;
-	this->velocity = vec3();
 
 	this->UpdateFront();
 }
@@ -25,10 +24,7 @@ void FollowCamera::FollowTarget(vec3 targetPosition, quat targetRotation, float 
 
 	this->UpdateDesiredPosition();
 
-	vec3 desiredShift = this->desiredPosition - this->position;
-	vec3 acceleration = ACCELERATION_COEFFICIENT * desiredShift;
-	this->velocity += acceleration * elapsedTime;
-	this->position += this->velocity * elapsedTime;
+	this->position = (this->position - this->desiredPosition) * pow(2.0f, - FOLLOW_COEFFICIENT * elapsedTime) + this->desiredPosition;
 
 	this->UpdateFront();
 }
@@ -40,7 +36,7 @@ void FollowCamera::UpdateDesiredPosition()
 	modelMatrix = translate(modelMatrix, this->targetPosition);
 	modelMatrix *= static_cast<mat4>(this->targetRotation);
 
-	this->desiredPosition = Utility::Transform(DESIRED_POSITION_TARGET_SPACE, inverse(modelMatrix));
+	this->desiredPosition = GraphicsUtility::Transform(DESIRED_POSITION_TARGET_SPACE, modelMatrix);
 }
 
 void FollowCamera::UpdateFront()

@@ -28,7 +28,6 @@
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="Thingy.cpp" />
     <ClCompile Include="ThingyReader.cpp" />
-    <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GraphicsLibrary\GraphicsLibrary.vcxproj">
@@ -47,7 +46,6 @@
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="Thingy.h" />
     <ClInclude Include="ThingyReader.h" />
-    <ClInclude Include="Utility.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{46172116-68CC-4A52-8563-84E81D9761E6}</ProjectGuid>

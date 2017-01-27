@@ -488,11 +488,13 @@ int main()
 		// draw scene
 		openGl->Draw(scene);
 
+		// calculate bus velocity
 		float velocity = length(bus->GetPosition() - busPreviousPosition) / elapsedTime;
 		busPreviousPosition = bus->GetPosition();
 
 		openGl->DrawText("Active camera: " + to_string(activeCameraIndex), 1.0f, HorizontalAlignment::Right, VerticalAlignment::Top, vec2(40.0f, 20.0f), vec3(1.0f, 0.0f, 0.0f));
 		openGl->DrawText("Velocity: " + to_string(static_cast<int>(velocity * 3.6f)) + " km/h", 1.0f, HorizontalAlignment::Left, VerticalAlignment::Bottom, vec2(20.0f), vec3(0.0f, 0.0f, 1.0f));
+		//openGl->DrawText("Bus rotation: " + GraphicsUtility::ToString(bus->GetRotation(), 2), 1.0f, HorizontalAlignment::Left, VerticalAlignment::Top, vec2(20.0f), vec3(1.0f));
 
 		// swap the screen buffers
 		glfwSwapBuffers(glfwWindow);
