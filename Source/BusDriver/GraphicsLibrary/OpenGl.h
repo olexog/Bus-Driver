@@ -19,7 +19,7 @@
 #include "ShaderProgram.h"
 #include "FrameBuffer.h"
 #include "Texture.h"
-#include "Utility.h"
+#include "GraphicsUtility.h"
 #include "Font.h"
 #include "Point.h"
 #include "Segment.h"

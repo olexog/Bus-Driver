@@ -175,7 +175,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneReader.h" />
     <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="Utility.h" />
+    <ClInclude Include="GraphicsUtility.h" />
     <ClInclude Include="VertexArray.h" />
     <ClInclude Include="OpenGl.h" />
   </ItemGroup>
@@ -192,7 +192,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneReader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="GraphicsUtility.cpp" />
     <ClCompile Include="VertexArray.cpp" />
     <ClCompile Include="OpenGl.cpp" />
   </ItemGroup>

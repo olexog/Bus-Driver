@@ -182,7 +182,7 @@ namespace GraphicsLibrary
 			frustumCornersWorldSpace[cascadeIndex] = vector<vec3>();
 			for (vec3 frustumCornerViewSpace : frustumCornersViewSpace)
 			{
-				frustumCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumCornerViewSpace, inverseView));
+				frustumCornersWorldSpace[cascadeIndex].push_back(GraphicsUtility::Transform(frustumCornerViewSpace, inverseView));
 			}
 
 			// calculate frustum bounding box in light view space
@@ -194,7 +194,7 @@ namespace GraphicsLibrary
 			float far = numeric_limits<float>::max();
 			for (vec3 frustumCornerWorldSpace : frustumCornersWorldSpace[cascadeIndex])
 			{
-				vec3 frustumCornerLightViewSpace = Utility::Transform(frustumCornerWorldSpace, lightView);
+				vec3 frustumCornerLightViewSpace = GraphicsUtility::Transform(frustumCornerWorldSpace, lightView);
 
 				left = glm::min(left, frustumCornerLightViewSpace.x);
 				right = glm::max(right, frustumCornerLightViewSpace.x);
@@ -220,7 +220,7 @@ namespace GraphicsLibrary
 			frustumBoundingBoxCornersWorldSpace[cascadeIndex] = vector<vec3>();
 			for (vec3 frustumBoundingBoxCornerLightViewSpace : frustumBoundingBoxCornersLightViewSpace)
 			{
-				frustumBoundingBoxCornersWorldSpace[cascadeIndex].push_back(Utility::Transform(frustumBoundingBoxCornerLightViewSpace, inverseLightView));
+				frustumBoundingBoxCornersWorldSpace[cascadeIndex].push_back(GraphicsUtility::Transform(frustumBoundingBoxCornerLightViewSpace, inverseLightView));
 			}
 
 			// calculate light projection matrix

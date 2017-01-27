@@ -20,12 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapReader.cpp" />
     <ClCompile Include="PositionedThingy.cpp" />
+    <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="Thingy.cpp" />
     <ClCompile Include="ThingyReader.cpp" />
+    <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GraphicsLibrary\GraphicsLibrary.vcxproj">
@@ -37,11 +40,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MapReader.h" />
     <ClInclude Include="PositionedThingy.h" />
+    <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="Thingy.h" />
     <ClInclude Include="ThingyReader.h" />
+    <ClInclude Include="Utility.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{46172116-68CC-4A52-8563-84E81D9761E6}</ProjectGuid>

@@ -34,7 +34,7 @@ namespace GraphicsLibrary
 			sscanf_s(line.c_str(), "%255s", command, 256);
 
 			const char* token = line.c_str();
-			token += strspn(token, Utility::WHITESPACES);
+			token += strspn(token, GraphicsUtility::WHITESPACES);
 
 			if (strcmp(command, "newmtl") == 0)
 			{
@@ -84,8 +84,8 @@ namespace GraphicsLibrary
 			else if (strcmp(command, "map_Kd") == 0)
 			{
 				token += strlen(command);
-				token += strspn(token, Utility::WHITESPACES);
-				materials[actualMaterialName].texturePath = new string(Utility::GetDirectory(fileName) + token);
+				token += strspn(token, GraphicsUtility::WHITESPACES);
+				materials[actualMaterialName].texturePath = new string(GraphicsUtility::GetDirectory(fileName) + token);
 			}
 		}
 
@@ -252,7 +252,7 @@ namespace GraphicsLibrary
 				token += strspn(token, " \t");
 				const char* materialLibraryRelativeFileName = token;
 
-				string materialLibraryFileName = Utility::GetDirectory(fileName) + materialLibraryRelativeFileName;
+				string materialLibraryFileName = GraphicsUtility::GetDirectory(fileName) + materialLibraryRelativeFileName;
 
 				materials = ReadMaterialLibrary(materialLibraryFileName);
 			}
@@ -294,7 +294,7 @@ namespace GraphicsLibrary
 
 		for (std::pair<string, Collection> collection : texturedCollections)
 		{
-			Texture* texture = Utility::LoadTexture(*materials[collection.first].texturePath);
+			Texture* texture = GraphicsUtility::LoadTexture(*materials[collection.first].texturePath);
 			vertexArrays.push_back(new VertexArray(collection.second.vertices, collection.second.normals, collection.second.texCoords, texture));
 		}
 

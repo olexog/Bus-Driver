@@ -20,7 +20,8 @@
 #include "DynamicActor.h"
 #include "Vehicle.h"
 #include "PhysicsUtility.h"
-#include "Camera.h"
+#include "FreeCamera.h"
+#include "FollowCamera.h"
 
 // TO DELETE
 #include "VehicleCreate.h"
@@ -37,10 +38,11 @@ OpenGl* openGl;
 bool firstMouse = true;
 vec2 cursorPreviousPosition;
 
-Camera* staticCamera;
-Camera* dynamicCamera;
+FreeCamera* freeCamera;
+FollowCamera* followCamera;
 
-CameraMode activeCameraMode;
+vector<Camera*> cameras;
+int activeCameraIndex;
 
 bool pressedKeys[GLFW_KEY_LAST];
 
@@ -91,16 +93,14 @@ void Key(GLFWwindow* window, int key, int scancode, int action, int mode)
 	// X: change camera mode
 	else if (key == GLFW_KEY_X && action == GLFW_PRESS)
 	{
-		switch (activeCameraMode)
+		if (++activeCameraIndex == cameras.size())
 		{
-		case CameraMode::FollowTarget:
-			activeCameraMode = CameraMode::Static;
+			activeCameraIndex = 0;
 			openGl->SetCameraMode(true);
-			break;
-		case CameraMode::Static:
-			activeCameraMode = CameraMode::FollowTarget;
+		}
+		else
+		{
 			openGl->SetCameraMode(false);
-			break;
 		}
 	}
 	// CTRL + L: light's view
@@ -182,7 +182,7 @@ void CursorPos(GLFWwindow* window, double xpos, double ypos)
 
 	cursorPreviousPosition = cursorPosition;
 
-	staticCamera->Rotate(offset.x, offset.y, true);
+	freeCamera->RotateWithMouse(offset.x, offset.y, true);
 }
 
 void SetControlls(Vehicle* vehicle)
@@ -260,62 +260,46 @@ void SetControlls(Vehicle* vehicle)
 	}
 }
 
-Camera* GetActiveCamera()
-{
-	switch (activeCameraMode)
-	{
-	case CameraMode::FollowTarget:
-		return dynamicCamera;
-	case CameraMode::Static:
-		return staticCamera;
-	}
-}
-
 void UpdateCamera(float elapsedTime, Vehicle* vehicle)
 {
 	// set fast mode
 	bool fastModeOn = pressedKeys[GLFW_KEY_B];
-
-	staticCamera->SetFastMode(fastModeOn);
-	dynamicCamera->SetFastMode(fastModeOn);
+	freeCamera->SetFastMode(fastModeOn);
 
 	// set static camera
-	if (activeCameraMode == CameraMode::Static)
-	{
 		// translate up
-		if (pressedKeys[GLFW_KEY_I])
-		{
-			staticCamera->Move(CameraMovement::Up, elapsedTime);
-		}
-		// translate down
-		if (pressedKeys[GLFW_KEY_K])
-		{
-			staticCamera->Move(CameraMovement::Down, elapsedTime);
-		}
-		// translate left
-		if (pressedKeys[GLFW_KEY_J])
-		{
-			staticCamera->Move(CameraMovement::Left, elapsedTime);
-		}
-		// translate right
-		if (pressedKeys[GLFW_KEY_L])
-		{
-			staticCamera->Move(CameraMovement::Right, elapsedTime);
-		}
-		// translate forward
-		if (pressedKeys[GLFW_KEY_O])
-		{
-			staticCamera->Move(CameraMovement::Forward, elapsedTime);
-		}
-		// translate backward
-		if (pressedKeys[GLFW_KEY_U])
-		{
-			staticCamera->Move(CameraMovement::Backward, elapsedTime);
-		}
+	if (pressedKeys[GLFW_KEY_I])
+	{
+		freeCamera->Move(CameraMovement::Up, elapsedTime);
+	}
+	// translate down
+	if (pressedKeys[GLFW_KEY_K])
+	{
+		freeCamera->Move(CameraMovement::Down, elapsedTime);
+	}
+	// translate left
+	if (pressedKeys[GLFW_KEY_J])
+	{
+		freeCamera->Move(CameraMovement::Left, elapsedTime);
+	}
+	// translate right
+	if (pressedKeys[GLFW_KEY_L])
+	{
+		freeCamera->Move(CameraMovement::Right, elapsedTime);
+	}
+	// translate forward
+	if (pressedKeys[GLFW_KEY_O])
+	{
+		freeCamera->Move(CameraMovement::Forward, elapsedTime);
+	}
+	// translate backward
+	if (pressedKeys[GLFW_KEY_U])
+	{
+		freeCamera->Move(CameraMovement::Backward, elapsedTime);
 	}
 
 	// set bus camera
-	dynamicCamera->SetTargetTransformation(vehicle->GetPosition(), vehicle->GetRotation());
+	followCamera->FollowTarget(vehicle->GetPosition(), vehicle->GetRotation(), elapsedTime);
 }
 
 int main()
@@ -407,13 +391,13 @@ int main()
 
 	// initialize camera
 
-	staticCamera = new Camera(vec3(0.0f, 3.0f, -100.0f), 0.0f, 0.0f);
-	staticCamera->SetMode(CameraMode::Static);
+	freeCamera = new FreeCamera(vec3(0.0f, 3.0f, -100.0f), 0.0f, 0.0f);
+	followCamera = new FollowCamera(bus->GetPosition(), bus->GetRotation());
 
-	dynamicCamera = new Camera(bus->GetPosition(), bus->GetRotation());
-	dynamicCamera->SetMode(CameraMode::FollowTarget);
-
-	activeCameraMode = CameraMode::Static;
+	cameras = vector<Camera*>();
+	cameras.push_back(freeCamera);
+	cameras.push_back(followCamera);
+	activeCameraIndex = 1;
 
 	// the main loop that iterates throughout the game
 	while (glfwWindowShouldClose(glfwWindow) != GL_TRUE)
@@ -498,8 +482,8 @@ int main()
 
 		// transfer the camera pose to the renderer
 
-		openGl->SetCameraStatic(staticCamera->GetPosition(), staticCamera->GetFront());
-		openGl->SetCameraDynamic(dynamicCamera->GetPosition(), dynamicCamera->GetFront());
+		openGl->SetCameraStatic(freeCamera->GetPosition(), freeCamera->GetFront());
+		openGl->SetCameraDynamic(followCamera->GetPosition(), followCamera->GetFront());
 
 		// draw scene
 		openGl->Draw(scene);
@@ -507,7 +491,7 @@ int main()
 		float velocity = length(bus->GetPosition() - busPreviousPosition) / elapsedTime;
 		busPreviousPosition = bus->GetPosition();
 
-		openGl->DrawText(activeCameraMode == CameraMode::Static ? "static camera" : "bus camera", 1.0f, HorizontalAlignment::Right, VerticalAlignment::Top, vec2(40.0f, 20.0f), vec3(1.0f, 0.0f, 0.0f));
+		openGl->DrawText("Active camera: " + to_string(activeCameraIndex), 1.0f, HorizontalAlignment::Right, VerticalAlignment::Top, vec2(40.0f, 20.0f), vec3(1.0f, 0.0f, 0.0f));
 		openGl->DrawText("Velocity: " + to_string(static_cast<int>(velocity * 3.6f)) + " km/h", 1.0f, HorizontalAlignment::Left, VerticalAlignment::Bottom, vec2(20.0f), vec3(0.0f, 0.0f, 1.0f));
 
 		// swap the screen buffers

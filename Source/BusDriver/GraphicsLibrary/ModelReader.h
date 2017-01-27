@@ -11,7 +11,7 @@
 #include <glm\vec3.hpp>
 
 #include "Model.h"
-#include "Utility.h"
+#include "GraphicsUtility.h"
 
 using namespace std;
 using namespace glm;

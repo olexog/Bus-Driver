@@ -21,7 +21,7 @@ using namespace glm;
 
 namespace GraphicsLibrary
 {
-	class Utility
+	class GraphicsUtility
 	{
 	public:
 		///<summary>Represents the whitespace characters.</summary>
@@ -39,8 +39,8 @@ namespace GraphicsLibrary
 
 		static vector<string> Split(string s, string delimiter);
 
-		static Texture* LoadTexture(string fileName);
-
 		static vec3 Transform(vec3 vector, mat4 matrix);
+
+		static Texture* LoadTexture(string fileName);
 	};
 }
