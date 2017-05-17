@@ -69,6 +69,15 @@
     <ClInclude Include="GraphicsUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RenderBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelFormat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Attachment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ShaderProgram.cpp">
@@ -116,6 +125,9 @@
     <ClCompile Include="GraphicsUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RenderBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\DepthVertexShader.glsl">
@@ -149,6 +161,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\DebugFragmentShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ScreenFragmentShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ScreenVertexShader.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

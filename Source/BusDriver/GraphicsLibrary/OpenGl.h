@@ -24,6 +24,7 @@
 #include "Point.h"
 #include "Segment.h"
 #include "Alignment.h"
+#include "RenderBuffer.h"
 
 using namespace std;
 using namespace glm;
@@ -87,6 +88,7 @@ namespace GraphicsLibrary
 		ShaderProgram* pointShaderProgram;
 		ShaderProgram* segmentShaderProgram;
 		ShaderProgram* debugShaderProgram;
+		ShaderProgram* screenShaderProgram;
 
 		const int SHADOW_MAP_WIDTH = 1024;
 		const int SHADOW_MAP_HEIGHT = 1024;
@@ -105,6 +107,10 @@ namespace GraphicsLibrary
 
 		vector<FrameBuffer*> depthMapBuffers;
 		vector<Texture*> depthMapTextures;
+
+		FrameBuffer* screenFrameBuffer;
+		Texture* screenTexture;
+		RenderBuffer* screenRenderBuffer;
 
 		vector<float> cascadeZEnds;
 
@@ -128,9 +134,9 @@ namespace GraphicsLibrary
 
 		int cascadeToVisualize;
 
-		VertexBuffer* shadowMapVertices;
-		VertexBuffer* shadowMapTexCoords;
-		GLuint shadowMapVertexArrayId;
+		VertexBuffer* quadVertices;
+		VertexBuffer* quadTexCoords;
+		GLuint quadVertexArrayId;
 
 		Font* arial;
 

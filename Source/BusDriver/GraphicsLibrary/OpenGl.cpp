@@ -17,6 +17,8 @@ namespace GraphicsLibrary
 		// set the starting context's size
 		this->SetContextSize(width, height);
 
+		//glEnable(GL_DEPTH_TEST);
+
 		// load shader programs
 		this->shaderProgram = new ShaderProgram("Shaders\\VertexShader.glsl", "Shaders\\FragmentShader.glsl");
 		this->depthShaderProgram = new ShaderProgram("Shaders\\DepthVertexShader.glsl", "Shaders\\DepthFragmentShader.glsl");
@@ -24,9 +26,7 @@ namespace GraphicsLibrary
 		this->pointShaderProgram = new ShaderProgram("Shaders\\PointVertexShader.glsl", "Shaders\\PointFragmentShader.glsl");
 		this->segmentShaderProgram = new ShaderProgram("Shaders\\SegmentVertexShader.glsl", "Shaders\\SegmentFragmentShader.glsl");
 		this->debugShaderProgram = new ShaderProgram("Shaders\\FontVertexShader.glsl", "Shaders\\DebugFragmentShader.glsl");
-
-		// enable the depth buffer for depth testing
-		glEnable(GL_DEPTH_TEST);
+		this->screenShaderProgram = new ShaderProgram("Shaders\\ScreenVertexShader.glsl", "Shaders\\ScreenFragmentShader.glsl");
 
 		// initialize depth maps
 		for (int i = 0; i < CASCADE_COUNT; i++)
@@ -50,6 +50,8 @@ namespace GraphicsLibrary
 			FrameBuffer::Unbind();
 		}
 
+		// what does this code section?
+		// please include a bit more comments about magic-looking stuff
 		vector<char> data;
 		data.push_back(255);
 		data.push_back(0);
@@ -79,14 +81,43 @@ namespace GraphicsLibrary
 		}
 
 		this->shaderProgram->SetUniform("cascadeEnds", cascadeZEnds);
+				
+		// initialize screen texture
+		this->screenTexture = new Texture();
+		this->screenTexture->Bind();
+		this->texture->LoadData(this->contextWidth, this->contextHeight, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		// TODO: delete the following line if possible
+		glGenerateMipmap(GL_TEXTURE_2D);
+		Texture::Unbind();
 
-		// initialize shadow map visualizing utilities
-		glGenVertexArrays(1, &this->shadowMapVertexArrayId);
-		glBindVertexArray(this->shadowMapVertexArrayId);
+		// initialize screen renderbuffer
+		this->screenRenderBuffer = new RenderBuffer();
+		this->screenRenderBuffer->Initialize(PixelFormat::Depth24Stencil8, this->contextWidth, this->contextHeight);
 
-		this->shadowMapVertices = new VertexBuffer();
-		this->shadowMapVertices->Bind();
-		this->shadowMapVertices->LoadData({
+		// initialize screen framebuffer, and attach the attachments
+		this->screenFrameBuffer = new FrameBuffer();
+		this->screenFrameBuffer->Bind();
+		this->screenTexture->AttachToFramebuffer(GL_COLOR_ATTACHMENT0);
+		this->screenRenderBuffer->AttachToFrameBuffer(Attachment::DepthStencil);
+		if (this->screenFrameBuffer->IsComplete())
+		{
+			cout << "Screen framebuffer has been initialized successfully." << endl;
+		}
+		else
+		{
+			cout << "Screen framebuffer wasn't initialized correctly." << endl;
+		}
+		FrameBuffer::Unbind();
+
+		// initialize quad
+		glGenVertexArrays(1, &this->quadVertexArrayId);
+		glBindVertexArray(this->quadVertexArrayId);
+
+		this->quadVertices = new VertexBuffer();
+		this->quadVertices->Bind();
+		this->quadVertices->LoadData({
 			vec2(0.0f, 0.0f),
 			vec2(1.0f, 1.0f),
 			vec2(0.0f, 1.0f),
@@ -98,9 +129,9 @@ namespace GraphicsLibrary
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), static_cast<GLvoid*>(0));
 		glEnableVertexAttribArray(0);
 
-		this->shadowMapTexCoords = new VertexBuffer();
-		this->shadowMapTexCoords->Bind();
-		this->shadowMapTexCoords->LoadData({
+		this->quadTexCoords = new VertexBuffer();
+		this->quadTexCoords->Bind();
+		this->quadTexCoords->LoadData({
 			vec2(0.0f, 0.0f),
 			vec2(1.0f, 1.0f),
 			vec2(0.0f, 1.0f),
@@ -127,12 +158,25 @@ namespace GraphicsLibrary
 	{
 		delete this->shaderProgram;
 		delete this->depthShaderProgram;
+		delete this->pointShaderProgram;
+		delete this->segmentShaderProgram;
+		delete this->fontShaderProgram;
+		delete this->debugShaderProgram;
+		delete this->screenShaderProgram;
 
 		for (int i = 0; i < CASCADE_COUNT; i++)
 		{
 			delete this->depthMapTextures[i];
 			delete this->depthMapBuffers[i];
 		}
+
+		delete this->arial;
+		delete this->point;
+		delete this->segment;
+
+		delete this->screenFrameBuffer;
+		delete this->screenTexture;
+		delete this->screenRenderBuffer;
 	}
 
 	void OpenGl::Draw(Scene* scene)
@@ -266,11 +310,12 @@ namespace GraphicsLibrary
 		this->shaderProgram->SetUniform("lightPosition", lightPosition);
 		this->shaderProgram->SetUniform("lightColour", lightColour);
 
-		// 2. then render scene as normal with shadow mapping (using depth maps)
-		FrameBuffer::Unbind();
+		// render scene as normal with shadow mapping to the screen framebuffer (using depth maps)
+		this->screenFrameBuffer->Bind();
 		glViewport(0, 0, this->contextWidth, this->contextHeight);
-		//glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
 
 		if (this->renderShadowMap)
 		{
@@ -282,7 +327,7 @@ namespace GraphicsLibrary
 
 			this->debugShaderProgram->Use();
 
-			glBindVertexArray(this->shadowMapVertexArrayId);
+			glBindVertexArray(this->quadVertexArrayId);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			glBindVertexArray(0);
 		}
@@ -307,12 +352,10 @@ namespace GraphicsLibrary
 		}
 
 		// draw text
-
 		this->fontShaderProgram->SetUniform("projection", ortho(0.0f, static_cast<float>(this->contextWidth), 0.0f, static_cast<float>(this->contextHeight)));
-		//this->DrawText("Active cascade index: " + to_string(this->cascadeToVisualize), 1.0f, HorizontalAlignment::Left, VerticalAlignment::Top, vec2(20.0f), vec3(0.0f, 0.0f, 1.0f));
+		this->DrawText("Active cascade index: " + to_string(this->cascadeToVisualize), 1.0f, HorizontalAlignment::Left, VerticalAlignment::Top, vec2(20.0f), vec3(0.0f, 0.0f, 1.0f));
 
 		// render primitives to visualize frustum, camera, and light positions
-
 		if (!this->staticCamera && !this->viewFromLight)
 		{
 			return;
@@ -351,6 +394,17 @@ namespace GraphicsLibrary
 
 		// draw light as a segment
 		this->DrawSegment(lightPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
+
+		// render the screen framebuffer with post-processing
+		FrameBuffer::Unbind();
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glDisable(GL_DEPTH_TEST);
+
+		/*this->screenShaderProgram->Use();
+		glBindVertexArray(this->quadVertexArrayId);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);*/
 	}
 
 	void OpenGl::DrawPoint(vec3 position, float size, vec3 colour)
