@@ -46,6 +46,10 @@ namespace GraphicsLibrary
 			glGetProgramInfoLog(this->id, 512, NULL, infoLog);
 			std::cerr << "Shader program linking has failed. Info log:" << infoLog << std::endl;
 		}
+		else
+		{
+			//std::cout << "Shader program linking was successful: " << vertexShaderFileName << ", " << fragmentShaderFileName << endl;
+		}
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 	}

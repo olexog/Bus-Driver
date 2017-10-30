@@ -41,6 +41,9 @@ namespace GraphicsLibrary
 		///<summmary>Deinitializes the OpenGL instance.</summary>
 		~OpenGl();
 
+		///<summary>Initializes the screen FBO according to the current context size.</summary>
+		void InitializeScreenFrameBuffer();
+
 		///<summary>Draws to the context.</summary>
 		void Draw(Scene* scene);
 
@@ -89,6 +92,10 @@ namespace GraphicsLibrary
 		ShaderProgram* segmentShaderProgram;
 		ShaderProgram* debugShaderProgram;
 		ShaderProgram* screenShaderProgram;
+
+		// TODO delete
+		int shaderProgramId;
+		unsigned int VAO;
 
 		const int SHADOW_MAP_WIDTH = 1024;
 		const int SHADOW_MAP_HEIGHT = 1024;

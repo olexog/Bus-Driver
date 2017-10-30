@@ -17,8 +17,6 @@ namespace GraphicsLibrary
 		// set the starting context's size
 		this->SetContextSize(width, height);
 
-		//glEnable(GL_DEPTH_TEST);
-
 		// load shader programs
 		this->shaderProgram = new ShaderProgram("Shaders\\VertexShader.glsl", "Shaders\\FragmentShader.glsl");
 		this->depthShaderProgram = new ShaderProgram("Shaders\\DepthVertexShader.glsl", "Shaders\\DepthFragmentShader.glsl");
@@ -81,35 +79,6 @@ namespace GraphicsLibrary
 		}
 
 		this->shaderProgram->SetUniform("cascadeEnds", cascadeZEnds);
-				
-		// initialize screen texture
-		this->screenTexture = new Texture();
-		this->screenTexture->Bind();
-		this->texture->LoadData(this->contextWidth, this->contextHeight, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		// TODO: delete the following line if possible
-		glGenerateMipmap(GL_TEXTURE_2D);
-		Texture::Unbind();
-
-		// initialize screen renderbuffer
-		this->screenRenderBuffer = new RenderBuffer();
-		this->screenRenderBuffer->Initialize(PixelFormat::Depth24Stencil8, this->contextWidth, this->contextHeight);
-
-		// initialize screen framebuffer, and attach the attachments
-		this->screenFrameBuffer = new FrameBuffer();
-		this->screenFrameBuffer->Bind();
-		this->screenTexture->AttachToFramebuffer(GL_COLOR_ATTACHMENT0);
-		this->screenRenderBuffer->AttachToFrameBuffer(Attachment::DepthStencil);
-		if (this->screenFrameBuffer->IsComplete())
-		{
-			cout << "Screen framebuffer has been initialized successfully." << endl;
-		}
-		else
-		{
-			cout << "Screen framebuffer wasn't initialized correctly." << endl;
-		}
-		FrameBuffer::Unbind();
 
 		// initialize quad
 		glGenVertexArrays(1, &this->quadVertexArrayId);
@@ -118,12 +87,12 @@ namespace GraphicsLibrary
 		this->quadVertices = new VertexBuffer();
 		this->quadVertices->Bind();
 		this->quadVertices->LoadData({
-			vec2(0.0f, 0.0f),
+			vec2(-1.0f, -1.0f),
 			vec2(1.0f, 1.0f),
-			vec2(0.0f, 1.0f),
+			vec2(-1.0f, 1.0f),
 
-			vec2(0.0f, 0.0f),
-			vec2(1.0f, 0.0f),
+			vec2(-1.0f, -1.0f),
+			vec2(1.0f, -1.0f),
 			vec2(1.0f, 1.0f)
 		});
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2), static_cast<GLvoid*>(0));
@@ -152,6 +121,13 @@ namespace GraphicsLibrary
 		// initialize primitives
 		this->point = new Point();
 		this->segment = new Segment();
+
+		// get the OpenGL error if there is one
+		int error = glGetError();
+		if (error != 0)
+		{
+			cout << "glGetError() = " << error << endl;
+		}
 	}
 
 	OpenGl::~OpenGl()
@@ -177,6 +153,43 @@ namespace GraphicsLibrary
 		delete this->screenFrameBuffer;
 		delete this->screenTexture;
 		delete this->screenRenderBuffer;
+	}
+
+	void OpenGl::InitializeScreenFrameBuffer()
+	{
+		delete this->screenFrameBuffer;
+		delete this->screenTexture;
+		delete this->screenRenderBuffer;
+
+		// initialize screen texture (used to store colour values to render to the screen later)
+		this->screenTexture = new Texture();
+		this->screenTexture->Bind();
+		this->screenTexture->LoadData(this->contextWidth, this->contextHeight, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		// TODO: delete the following line if possible
+		glGenerateMipmap(GL_TEXTURE_2D);
+		Texture::Unbind();
+
+		// initialize screen renderbuffer (to depth and stencil testing)
+		this->screenRenderBuffer = new RenderBuffer();
+		this->screenRenderBuffer->Initialize(PixelFormat::Depth24Stencil8, this->contextWidth, this->contextHeight);
+
+		// initialize screen framebuffer, and attach the attachments
+		this->screenFrameBuffer = new FrameBuffer();
+		this->screenFrameBuffer->Bind();
+		this->screenTexture->AttachToFramebuffer(GL_COLOR_ATTACHMENT0);
+		this->screenRenderBuffer->AttachToFrameBuffer(Attachment::DepthStencil);
+
+		if (this->screenFrameBuffer->IsComplete())
+		{
+			cout << "Screen framebuffer has been initialized successfully." << endl;
+		}
+		else
+		{
+			cout << "Screen framebuffer wasn't initialized correctly." << endl;
+		}
+		FrameBuffer::Unbind();
 	}
 
 	void OpenGl::Draw(Scene* scene)
@@ -313,7 +326,7 @@ namespace GraphicsLibrary
 		// render scene as normal with shadow mapping to the screen framebuffer (using depth maps)
 		this->screenFrameBuffer->Bind();
 		glViewport(0, 0, this->contextWidth, this->contextHeight);
-		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+		glClearColor(0.8f, 0.8f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 
@@ -334,7 +347,7 @@ namespace GraphicsLibrary
 		else
 		{
 			glActiveTexture(GL_TEXTURE0);
-			texture->Bind();
+			this->texture->Bind();
 			this->shaderProgram->SetUniform("textureSampler", 0);
 
 			//this->shaderProgram->SetUniform("cascadeNumber", 1);
@@ -356,55 +369,63 @@ namespace GraphicsLibrary
 		this->DrawText("Active cascade index: " + to_string(this->cascadeToVisualize), 1.0f, HorizontalAlignment::Left, VerticalAlignment::Top, vec2(20.0f), vec3(0.0f, 0.0f, 1.0f));
 
 		// render primitives to visualize frustum, camera, and light positions
-		if (!this->staticCamera && !this->viewFromLight)
+		if (this->staticCamera || this->viewFromLight)
 		{
-			return;
+			if (this->viewFromLight)
+			{
+				this->pointShaderProgram->SetUniform("view", lightView);
+				this->pointShaderProgram->SetUniform("projection", lightProjections[this->cascadeToVisualize]);
+
+				this->segmentShaderProgram->SetUniform("view", lightView);
+				this->segmentShaderProgram->SetUniform("projection", lightProjections[cascadeToVisualize]);
+			}
+			else
+			{
+				this->pointShaderProgram->SetUniform("view", viewStatic);
+				this->pointShaderProgram->SetUniform("projection", projectionStatic);
+
+				this->segmentShaderProgram->SetUniform("view", viewStatic);
+				this->segmentShaderProgram->SetUniform("projection", projectionStatic);
+			}
+
+			// draw coordinate system
+			this->DrawSegment(vec3(), vec3(10.0f, 0.0f, 0.0f), vec3(1.0f, 0.0f, 0.0f)); // X
+			this->DrawSegment(vec3(), vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)); // Y
+			this->DrawSegment(vec3(), vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 1.0f)); // Z
+
+			// draw camera as a point
+			this->DrawPoint(this->cameraPositionDynamic, 10.0f, vec3(0.0f, 0.0f, 1.0f));
+
+			// draw frustum edges
+			this->DrawCube(frustumCornersWorldSpace[cascadeToVisualize], vec3(0.0f, 0.0f, 1.0f));
+
+			// draw frustum bounding box
+			this->DrawCube(frustumBoundingBoxCornersWorldSpace[cascadeToVisualize], vec3(1.0f, 0.0f, 1.0f));
+
+			// draw light as a segment
+			this->DrawSegment(lightPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
 		}
-
-		if (this->viewFromLight)
-		{
-			this->pointShaderProgram->SetUniform("view", lightView);
-			this->pointShaderProgram->SetUniform("projection", lightProjections[this->cascadeToVisualize]);
-
-			this->segmentShaderProgram->SetUniform("view", lightView);
-			this->segmentShaderProgram->SetUniform("projection", lightProjections[cascadeToVisualize]);
-		}
-		else
-		{
-			this->pointShaderProgram->SetUniform("view", viewStatic);
-			this->pointShaderProgram->SetUniform("projection", projectionStatic);
-
-			this->segmentShaderProgram->SetUniform("view", viewStatic);
-			this->segmentShaderProgram->SetUniform("projection", projectionStatic);
-		}
-
-		// draw coordinate system
-		this->DrawSegment(vec3(), vec3(10.0f, 0.0f, 0.0f), vec3(1.0f, 0.0f, 0.0f)); // X
-		this->DrawSegment(vec3(), vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)); // Y
-		this->DrawSegment(vec3(), vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 1.0f)); // Z
-
-		// draw camera as a point
-		this->DrawPoint(this->cameraPositionDynamic, 10.0f, vec3(0.0f, 0.0f, 1.0f));
-
-		// draw frustum edges
-		this->DrawCube(frustumCornersWorldSpace[cascadeToVisualize], vec3(0.0f, 0.0f, 1.0f));
-
-		// draw frustum bounding box
-		this->DrawCube(frustumBoundingBoxCornersWorldSpace[cascadeToVisualize], vec3(1.0f, 0.0f, 1.0f));
-
-		// draw light as a segment
-		this->DrawSegment(lightPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
 
 		// render the screen framebuffer with post-processing
+
 		FrameBuffer::Unbind();
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glViewport(0, 0, this->contextWidth, this->contextHeight);
+		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glDisable(GL_DEPTH_TEST);
 
-		/*this->screenShaderProgram->Use();
+		this->screenShaderProgram->Use();
+		this->screenTexture->Bind();
 		glBindVertexArray(this->quadVertexArrayId);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(0);*/
+		glBindVertexArray(0);
+
+		// get the OpenGL error if there is one
+		int error = glGetError();
+		if (error != 0)
+		{
+			cout << "glGetError() = " << error << endl;
+		}
 	}
 
 	void OpenGl::DrawPoint(vec3 position, float size, vec3 colour)
@@ -513,6 +534,8 @@ namespace GraphicsLibrary
 		// calculate the projection matrix
 		this->projectionStatic = perspective(FIELD_OF_VIEW_Y, aspectRatio, Z_NEAR, Z_FAR_STATIC);
 		this->projectionDynamic = perspective(FIELD_OF_VIEW_Y, aspectRatio, Z_NEAR, Z_FAR_DYNAMIC);
+
+		this->InitializeScreenFrameBuffer();
 	}
 
 	void OpenGl::SetWireframeMode(bool wireframeMode)
