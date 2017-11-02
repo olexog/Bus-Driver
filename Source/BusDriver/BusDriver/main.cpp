@@ -44,6 +44,8 @@ FollowCamera* followCamera;
 vector<Camera*> cameras;
 int activeCameraIndex;
 
+bool isPaused;
+
 bool pressedKeys[GLFW_KEY_LAST];
 
 const float MAX_FRAME_LENGTH = 0.016667f;
@@ -68,10 +70,19 @@ void Key(GLFWwindow* window, int key, int scancode, int action, int mode)
 		return;
 	}
 
-	// Escape: exit
+	// Escape: pause/continue
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
-		glfwSetWindowShouldClose(glfwWindow, GL_TRUE);
+		if (isPaused)
+		{
+			isPaused = false;
+			glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
+		else
+		{
+			isPaused = true;
+			glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 	}
 	// M: wireframe mode
 	else if (key == GLFW_KEY_M && action == GLFW_PRESS)
@@ -328,7 +339,7 @@ int main()
 	glfwMakeContextCurrent(glfwWindow);
 
 	// capture cursor
-	//glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// callbacks
 	glfwSetWindowSizeCallback(glfwWindow, WindowSize);
