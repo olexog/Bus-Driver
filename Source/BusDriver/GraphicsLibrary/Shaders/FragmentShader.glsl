@@ -10,7 +10,7 @@ in float depthToCamera;
 
 out vec4 colour;
 
-uniform vec3 lightPosition;
+uniform vec3 lightDirection;
 uniform vec3 lightColour;
 
 uniform float cascadeEnds[CASCADE_COUNT + 1];
@@ -32,16 +32,16 @@ float IsInShadow(vec4 positionLightSpace, float angleOfIncidence, int cascadeNum
 
 	// The distance between the light and this fragment
 	float fragmentDepth = positionLightSpaceNDC.z;
-	
+
 	// The inaccuracy of bitmap image cause shadow acne therefore a bias introduced when a fragment
 	// being that farther from the light than the obstacle will also be lit
-	float bias = max(0.05 * (1.0 - angleOfIncidence), 0.0005);
+	float bias = max(0.005 * (1.0 - angleOfIncidence), 0.0005);
 
 	float inShadow = 0.0;
 	vec2 texelSize = 1.0 / textureSize(shadowMaps[cascadeNumber], 0);
 	for (int x = -1; x <= 1; x++)
 	{
-		for (int y = -1; y <=1; y++)
+		for (int y = -1; y <= 1; y++)
 		{
 			// The distance between the light and the lit obstacle, which can be seen from the light's viewport
 			float obstacleDepth = texture(shadowMaps[cascadeNumber], positionLightSpaceNDC.xy + vec2(x, y) * texelSize).r;
@@ -61,13 +61,13 @@ void main()
 
 	// Ambient light
 	float ambientStrength = 0.1;
-	
+
 	// Calculate the light's angle of incidence
-	vec3 lightDirection = normalize(lightPosition - position);
-	float angleOfIncidence = dot(normal, lightDirection);
+	// The light direction pointing from the light source, therefore it needs to be negated
+	float angleOfIncidence = dot(normal, -lightDirection);
 
 	int cascadeNumber = 0;
-	
+
 	for (int i = 0; i < CASCADE_COUNT; i++)
 	{
 		if (depthToCamera < cascadeEnds[i + 1])
@@ -76,11 +76,11 @@ void main()
 			break;
 		}
 	}
-	
+
 	// Shadow checking
 	float inShadow = IsInShadow(positionsLightSpace[cascadeNumber], angleOfIncidence, cascadeNumber);
 	inShadow = min(inShadow, shadowsOn);
-	
+
 	//if (shadowsOn == 1.0)
 	if (false)
 	{
@@ -97,14 +97,17 @@ void main()
 			textureColour = vec3(1.0, 0.0, 0.0);
 		}
 	}
-	
+
 	// Diffuse light
 	float diffuseStrength = max(angleOfIncidence, 0.0);
 
 	// Null it if it is in shadow
 	diffuseStrength *= 1 - inShadow;
-	
+
 	// Calculating final colour
 	colour = vec4(lightColour * textureColour * (ambientStrength + diffuseStrength), 1.0);
 	//colour = vec4(depthToCamera * 0.01);
+	//colour = vec4(vec3(fragmentDepth * 1), 1.0);
+	//colour = vec4(vec3(bias * 500), 1.0);
+	//colour = vec4(vec3(dot(lightDirection, normal)), 1.0);
 }
