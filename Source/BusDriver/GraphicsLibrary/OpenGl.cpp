@@ -181,7 +181,6 @@ namespace GraphicsLibrary
 	{
 		// define light parameters
 		vec3 lightDirection = normalize(vec3(0.0f, -2.0f, -1.0f));
-		vec3 lightPosition = -100.0f * lightDirection;
 		//vec3 lightColour = vec3(0.71f, 0.27f, 0.05f);
 		vec3 lightColour = vec3(1.0f);
 
@@ -305,7 +304,7 @@ namespace GraphicsLibrary
 				this->shaderProgram->SetUniform("view", this->viewDynamic);
 			}
 		}
-		this->shaderProgram->SetUniform("lightPosition", lightPosition);
+		this->shaderProgram->SetUniform("lightDirection", lightDirection);
 		this->shaderProgram->SetUniform("lightColour", lightColour);
 
 		// render scene as normal with shadow mapping to the screen framebuffer (using depth maps)
@@ -386,7 +385,7 @@ namespace GraphicsLibrary
 			this->DrawCube(frustumBoundingBoxCornersWorldSpace[cascadeToVisualize], vec3(1.0f, 0.0f, 1.0f));
 
 			// draw light as a segment
-			this->DrawSegment(lightPosition, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
+			this->DrawSegment(-100.0f * lightDirection, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
 		}
 
 		// render the screen framebuffer with post-processing
@@ -398,10 +397,13 @@ namespace GraphicsLibrary
 		glDisable(GL_DEPTH_TEST);
 
 		this->screenShaderProgram->Use();
+		glActiveTexture(GL_TEXTURE0);
 		this->screenTexture->Bind();
+
 		glBindVertexArray(this->quadVertexArrayId);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
+
 		glEnable(GL_DEPTH_TEST);
 
 		// get the OpenGL error if there is one
