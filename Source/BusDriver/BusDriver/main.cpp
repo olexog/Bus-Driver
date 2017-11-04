@@ -22,6 +22,7 @@
 #include "PhysicsUtility.h"
 #include "FreeCamera.h"
 #include "FollowCamera.h"
+#include "TextDrawing.h"
 
 // TO DELETE
 #include "VehicleCreate.h"
@@ -52,6 +53,9 @@ const float MAX_FRAME_LENGTH = 0.016667f;
 
 float previousTime;
 vec3 busPreviousPosition;
+
+TextDrawing* activeCameraText;
+TextDrawing* velocityText;
 
 void WindowSize(GLFWwindow* window, int width, int height)
 {
@@ -113,6 +117,8 @@ void Key(GLFWwindow* window, int key, int scancode, int action, int mode)
 		{
 			openGl->SetCameraMode(false);
 		}
+
+		activeCameraText->Text = "Active camera: " + to_string(activeCameraIndex);
 	}
 	// CTRL + L: light's view
 	else if (pressedKeys[GLFW_KEY_LEFT_CONTROL] && key == GLFW_KEY_L && action == GLFW_PRESS)
@@ -410,6 +416,13 @@ int main()
 	cameras.push_back(followCamera);
 	activeCameraIndex = 1;
 
+	activeCameraText = new TextDrawing("Active camera: " + to_string(activeCameraIndex), 1.0f, HorizontalAlignment::Right, VerticalAlignment::Top,
+		vec2(40.0f, 20.0f), vec3(1.0f, 0.0f, 0.0f));
+	velocityText = new TextDrawing("0 km/h", 1.0f, HorizontalAlignment::Left, VerticalAlignment::Bottom, vec2(20.0f), vec3(0.0f, 0.0f, 1.0f));
+
+	openGl->AddTextDrawing(activeCameraText);
+	openGl->AddTextDrawing(velocityText);
+
 	// the main loop that iterates throughout the game
 	while (glfwWindowShouldClose(glfwWindow) != GL_TRUE)
 	{
@@ -496,16 +509,15 @@ int main()
 		openGl->SetCameraStatic(freeCamera->GetPosition(), freeCamera->GetFront());
 		openGl->SetCameraDynamic(followCamera->GetPosition(), followCamera->GetFront());
 
-		// draw scene
-		openGl->Draw(scene);
-
 		// calculate bus velocity
 		float velocity = length(bus->GetPosition() - busPreviousPosition) / elapsedTime;
 		busPreviousPosition = bus->GetPosition();
 
-		openGl->DrawText("Active camera: " + to_string(activeCameraIndex), 1.0f, HorizontalAlignment::Right, VerticalAlignment::Top, vec2(40.0f, 20.0f), vec3(1.0f, 0.0f, 0.0f));
-		openGl->DrawText("Velocity: " + to_string(static_cast<int>(velocity * 3.6f)) + " km/h", 1.0f, HorizontalAlignment::Left, VerticalAlignment::Bottom, vec2(20.0f), vec3(0.0f, 0.0f, 1.0f));
-		//openGl->DrawText("Bus rotation: " + GraphicsUtility::ToString(bus->GetRotation(), 2), 1.0f, HorizontalAlignment::Left, VerticalAlignment::Top, vec2(20.0f), vec3(1.0f));
+		// update texts
+		velocityText->Text = "Velocity: " + to_string(static_cast<int>(velocity * 3.6f)) + " km/h";
+
+		// draw scene
+		openGl->Draw(scene);
 
 		// swap the screen buffers
 		glfwSwapBuffers(glfwWindow);

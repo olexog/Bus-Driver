@@ -12,3 +12,4 @@ Source\BusDriver\PhysicsLibrary\Win32
 *.sdf
 Source\BusDriver\GraphicsLibrary\Debug
 Source\BusDriver\x64
+Source/BusDriver/.vs
