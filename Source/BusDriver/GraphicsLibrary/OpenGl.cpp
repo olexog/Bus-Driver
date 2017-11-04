@@ -26,6 +26,8 @@ namespace GraphicsLibrary
 		this->debugShaderProgram = new ShaderProgram("Shaders\\FontVertexShader.glsl", "Shaders\\DebugFragmentShader.glsl");
 		this->screenShaderProgram = new ShaderProgram("Shaders\\ScreenVertexShader.glsl", "Shaders\\ScreenFragmentShader.glsl");
 
+		glEnable(GL_DEPTH_TEST);
+
 		// initialize depth maps
 		for (int i = 0; i < CASCADE_COUNT; i++)
 		{
@@ -168,7 +170,7 @@ namespace GraphicsLibrary
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		// TODO: delete the following line if possible
-		glGenerateMipmap(GL_TEXTURE_2D);
+		//glGenerateMipmap(GL_TEXTURE_2D);
 		Texture::Unbind();
 
 		// initialize screen renderbuffer (to depth and stencil testing)
@@ -419,6 +421,7 @@ namespace GraphicsLibrary
 		glBindVertexArray(this->quadVertexArrayId);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
+		glEnable(GL_DEPTH_TEST);
 
 		// get the OpenGL error if there is one
 		int error = glGetError();

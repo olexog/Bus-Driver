@@ -41,9 +41,6 @@ namespace GraphicsLibrary
 		///<summmary>Deinitializes the OpenGL instance.</summary>
 		~OpenGl();
 
-		///<summary>Initializes the screen FBO according to the current context size.</summary>
-		void InitializeScreenFrameBuffer();
-
 		///<summary>Draws to the context.</summary>
 		void Draw(Scene* scene);
 
@@ -83,6 +80,9 @@ namespace GraphicsLibrary
 		///<summary>Sets the active cascade to visualize for debug reasons.</summary>
 		void SetCascadeToVisualize(int cascadeIndex);
 	private:
+		///<summary>Initializes the screen FBO according to the current context size.</summary>
+		void InitializeScreenFrameBuffer();
+
 		void DrawModels(vector<PositionedModel*> models, ShaderProgram* shaderProgram);
 
 		ShaderProgram* shaderProgram;
