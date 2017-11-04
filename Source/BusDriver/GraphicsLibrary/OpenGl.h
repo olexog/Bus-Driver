@@ -25,6 +25,7 @@
 #include "Segment.h"
 #include "Alignment.h"
 #include "RenderBuffer.h"
+#include "TextDrawing.h"
 
 using namespace std;
 using namespace glm;
@@ -53,9 +54,6 @@ namespace GraphicsLibrary
 		///<summary>Draws a cube connecting the specified 8 points.</summary>
 		void DrawCube(vector<vec3> corners, vec3 colour);
 
-		///<summary>Draws the specified text with the given scale, aligment, margin and colour.</summary>
-		void DrawText(string text, float scale, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, vec2 margin, vec3 colour);
-
 		///<summary>Sets the rendering context's size.</summary>
 		void SetContextSize(int width, int height);
 
@@ -79,11 +77,16 @@ namespace GraphicsLibrary
 
 		///<summary>Sets the active cascade to visualize for debug reasons.</summary>
 		void SetCascadeToVisualize(int cascadeIndex);
+
+		void AddTextDrawing(TextDrawing* textDrawing);
 	private:
 		///<summary>Initializes the screen FBO according to the current context size.</summary>
 		void InitializeScreenFrameBuffer();
 
 		void DrawModels(vector<PositionedModel*> models, ShaderProgram* shaderProgram);
+
+		///<summary>Draws the specified text with the given scale, aligment, margin and colour.</summary>
+		void DrawText(string text, float scale, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, vec2 margin, vec3 colour);
 
 		ShaderProgram* shaderProgram;
 		ShaderProgram* depthShaderProgram;
@@ -92,10 +95,6 @@ namespace GraphicsLibrary
 		ShaderProgram* segmentShaderProgram;
 		ShaderProgram* debugShaderProgram;
 		ShaderProgram* screenShaderProgram;
-
-		// TODO delete
-		int shaderProgramId;
-		unsigned int VAO;
 
 		const int SHADOW_MAP_WIDTH = 1024;
 		const int SHADOW_MAP_HEIGHT = 1024;
@@ -120,8 +119,6 @@ namespace GraphicsLibrary
 		RenderBuffer* screenRenderBuffer;
 
 		vector<float> cascadeZEnds;
-
-		Texture* texture;
 
 		bool staticCamera;
 
@@ -149,5 +146,7 @@ namespace GraphicsLibrary
 
 		Point* point;
 		Segment* segment;
+
+		vector<TextDrawing*> textDrawings;
 	};
 }

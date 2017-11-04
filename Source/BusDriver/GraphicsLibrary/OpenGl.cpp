@@ -50,25 +50,6 @@ namespace GraphicsLibrary
 			FrameBuffer::Unbind();
 		}
 
-		// what does this code section?
-		// please include a bit more comments about magic-looking stuff
-		vector<char> data;
-		data.push_back(255);
-		data.push_back(0);
-		data.push_back(0);
-
-		data.push_back(0);
-		data.push_back(255);
-		data.push_back(0);
-		this->texture = new Texture();
-		this->texture->Bind();
-		this->texture->LoadData(2, 1, data.data());
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		Texture::Unbind();
-		//this->texture = Utility::LoadTexture("Models\\newspaper.png");
-
 		// initialize cascade z-ends
 		float lambda = 0.5f;
 		cascadeZEnds = vector<float>();
@@ -123,6 +104,8 @@ namespace GraphicsLibrary
 		// initialize primitives
 		this->point = new Point();
 		this->segment = new Segment();
+
+		this->textDrawings = vector<TextDrawing*>();
 
 		// get the OpenGL error if there is one
 		int error = glGetError();
@@ -330,7 +313,6 @@ namespace GraphicsLibrary
 		glViewport(0, 0, this->contextWidth, this->contextHeight);
 		glClearColor(0.8f, 0.8f, 1.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glEnable(GL_DEPTH_TEST);
 
 		if (this->renderShadowMap)
 		{
@@ -348,12 +330,6 @@ namespace GraphicsLibrary
 		}
 		else
 		{
-			glActiveTexture(GL_TEXTURE0);
-			this->texture->Bind();
-			this->shaderProgram->SetUniform("textureSampler", 0);
-
-			//this->shaderProgram->SetUniform("cascadeNumber", 1);
-
 			for (int i = 0; i < CASCADE_COUNT; i++)
 			{
 				glActiveTexture(GL_TEXTURE1 + i);
@@ -368,6 +344,11 @@ namespace GraphicsLibrary
 
 		// draw text
 		this->fontShaderProgram->SetUniform("projection", ortho(0.0f, static_cast<float>(this->contextWidth), 0.0f, static_cast<float>(this->contextHeight)));
+
+		for (TextDrawing* textDrawing : this->textDrawings)
+		{
+			this->DrawText(textDrawing->Text, textDrawing->Scale, textDrawing->HorizontalAlignment, textDrawing->VerticalAlignment, textDrawing->Margin, textDrawing->Colour);
+		}
 		this->DrawText("Active cascade index: " + to_string(this->cascadeToVisualize), 1.0f, HorizontalAlignment::Left, VerticalAlignment::Top, vec2(20.0f), vec3(0.0f, 0.0f, 1.0f));
 
 		// render primitives to visualize frustum, camera, and light positions
@@ -508,6 +489,11 @@ namespace GraphicsLibrary
 	void OpenGl::SetCascadeToVisualize(int cascadeIndex)
 	{
 		this->cascadeToVisualize = cascadeIndex;
+	}
+
+	void OpenGl::AddTextDrawing(TextDrawing* textDrawing)
+	{
+		this->textDrawings.push_back(textDrawing);
 	}
 
 	void OpenGl::DrawModels(vector<PositionedModel*> models, ShaderProgram* shaderProgram)

@@ -169,6 +169,7 @@
     <ClInclude Include="RenderBuffer.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="Font.h" />
+    <ClInclude Include="TextDrawing.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="FrameBuffer.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="RenderBuffer.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="TextDrawing.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
