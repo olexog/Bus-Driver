@@ -372,6 +372,12 @@ int main()
 	vector<quat*> wheelLocalOrientations = { new quat(), new quat(), new quat(), new quat() };
 	vector<Shape*> wheels;
 
+	vector<vec3*> wheelPositions2 = { new vec3(), new vec3(), new vec3(), new vec3() };
+	vector<quat*> wheelOrientations2 = { new quat(), new quat(), new quat(), new quat() };
+	vector<vec3*> wheelLocalPositions2 = { new vec3(), new vec3(), new vec3(), new vec3() };
+	vector<quat*> wheelLocalOrientations2 = { new quat(), new quat(), new quat(), new quat() };
+	vector<Shape*> wheels2;
+
 	for (int i = 0; i < 4; i++)
 	{
 		Shape* wheel = PhysicsUtility::ShapeFromConvexTriangles(wheelVertices, physics);
@@ -379,6 +385,12 @@ int main()
 		wheel->SetPosePointer(wheelLocalPositions[i], wheelLocalOrientations[i]);
 		
 		wheels.push_back(wheel);
+
+		Shape* wheel2 = PhysicsUtility::ShapeFromConvexTriangles(wheelVertices, physics);
+		wheel2->SetType(Shape::Type::WHEEL);
+		wheel2->SetPosePointer(wheelLocalPositions2[i], wheelLocalOrientations2[i]);
+
+		wheels2.push_back(wheel2);
 	}
 
 	vec3* chassisPosition = new vec3();
@@ -386,9 +398,15 @@ int main()
 	vec3* chassisLocalPosition = new vec3(0.0f, -0.5f, 0.0f);
 	quat* chassisLocalOrientation = new quat();
 
+	vec3* chassisPosition2 = new vec3();
+	quat* chassisOrientation2 = new quat();
+	vec3* chassisLocalPosition2 = new vec3(0.0f, -0.5f, 0.0f);
+	quat* chassisLocalOrientation2 = new quat();
+
 	PxConvexMesh* chassisMesh = createChassisMesh(PxVec3(2.5f, 3.4f, 11.0f), *physics->GetPhysics(), *physics->GetCooking());
 	PxConvexMeshGeometry* chassisGeometry = new PxConvexMeshGeometry(chassisMesh);
 	Shape* chassis = new Shape(physics, chassisGeometry, chassisLocalPosition, chassisLocalOrientation, Shape::Type::CHASSIS);
+	Shape* chassis2 = new Shape(physics, chassisGeometry, chassisLocalPosition2, chassisLocalOrientation2, Shape::Type::CHASSIS);
 
 	Model* chassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
 
@@ -396,15 +414,21 @@ int main()
 	for (int i = 0; i < 4; i++)
 	{
 		scene->models.push_back(new PositionedModel(wheelModel, wheelPositions[i], wheelOrientations[i]));
+		scene->models.push_back(new PositionedModel(wheelModel, wheelPositions2[i], wheelOrientations2[i]));
 	}
 	scene->models.push_back(new PositionedModel(chassisModel, chassisPosition, chassisOrientation));
+	scene->models.push_back(new PositionedModel(chassisModel, chassisPosition2, chassisOrientation2));
 
 	Playground* playground = map.CreatePlayground(physics);
 
 	// add a movable vehicle to the scene
-	Vehicle* bus = new Vehicle(physics, chassis, wheels);
+	Vehicle* bus = new Vehicle(physics, chassis, wheels, PxVec3(2, 3, 22));
 	playground->AddActor(bus);
 	bus->SetToRestState();
+
+	Vehicle* bus2 = new Vehicle(physics, chassis2, wheels2, PxVec3(2.3, 3, 6));
+	playground->AddActor(bus2);
+	bus2->SetToRestState();
 
 	// initialize camera
 
@@ -454,6 +478,11 @@ int main()
 			wheel->Update();
 		}
 		chassis->Update();
+		for (Shape* wheel : wheels2)
+		{
+			wheel->Update();
+		}
+		chassis2->Update();
 
 		// calculate the global positions of the vehicle's wheels
 		for (int i = 0; i < wheelLocalPositions.size(); i++)
@@ -477,6 +506,27 @@ int main()
 			wheelOrientations[i]->z = orientation.z;
 			wheelOrientations[i]->w = orientation.w;
 		}
+		for (int i = 0; i < wheelLocalPositions2.size(); i++)
+		{
+			mat4 localTranslation;
+			localTranslation = translate(localTranslation, *wheelLocalPositions2[i]);
+			mat4 localRotation = static_cast<mat4>(*wheelLocalOrientations2[i]);
+			mat4 globalTranslation;
+			globalTranslation = translate(globalTranslation, bus2->GetPosition());
+			mat4 globalRotation = static_cast<mat4>(bus2->GetRotation());
+			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
+			vec3 position = vec3(modelMatrix[3]);
+			quat orientation = static_cast<quat>(modelMatrix);
+
+			wheelPositions2[i]->x = position.x;
+			wheelPositions2[i]->y = position.y;
+			wheelPositions2[i]->z = position.z;
+
+			wheelOrientations2[i]->x = orientation.x;
+			wheelOrientations2[i]->y = orientation.y;
+			wheelOrientations2[i]->z = orientation.z;
+			wheelOrientations2[i]->w = orientation.w;
+		}
 
 		// calculate the global position of the chassis
 		{
@@ -499,6 +549,27 @@ int main()
 			chassisOrientation->y = orientation.y;
 			chassisOrientation->z = orientation.z;
 			chassisOrientation->w = orientation.w;
+		}
+		{
+			mat4 localTranslation;
+			localTranslation = translate(localTranslation, *chassisLocalPosition2);
+			mat4 localRotation = static_cast<mat4>(*chassisLocalOrientation2);
+			mat4 globalTranslation;
+			globalTranslation = translate(globalTranslation, bus2->GetPosition());
+			mat4 globalRotation = static_cast<mat4>(bus2->GetRotation());
+			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
+
+			vec3 position = vec3(modelMatrix[3]);
+			quat orientation = static_cast<quat>(modelMatrix);
+
+			chassisPosition2->x = position.x;
+			chassisPosition2->y = position.y;
+			chassisPosition2->z = position.z;
+
+			chassisOrientation2->x = orientation.x;
+			chassisOrientation2->y = orientation.y;
+			chassisOrientation2->z = orientation.z;
+			chassisOrientation2->w = orientation.w;
 		}
 
 		// update the camera

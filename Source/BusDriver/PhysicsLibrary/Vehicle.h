@@ -25,7 +25,7 @@ namespace PhysicsLibrary
 	class Vehicle
 	{
 	public:
-		Vehicle(Physics* physics, Shape* chassis, vector<Shape*> wheels);
+		Vehicle(Physics* physics, Shape* chassis, vector<Shape*> wheels, PxVec3 startingPosition);
 		~Vehicle();
 
 		void SetToRestState();

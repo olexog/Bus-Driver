@@ -89,7 +89,7 @@ namespace PhysicsLibrary
 		return vehicleDesc;
 	}
 
-	Vehicle::Vehicle(Physics* physics, Shape* chassis, vector<Shape*> wheels)
+	Vehicle::Vehicle(Physics* physics, Shape* chassis, vector<Shape*> wheels, PxVec3 startingPosition)
 	{
 		this->physics = physics;
 
@@ -332,7 +332,7 @@ namespace PhysicsLibrary
 		//Free the sim data because we don't need that any more.
 		wheelsSimData->free();
 
-		PxTransform startTransform(PxVec3(0, 2, 0), PxQuat(PxPi, PxVec3(0, 1, 0)));
+		PxTransform startTransform(startingPosition, PxQuat(PxPi, PxVec3(0, 1, 0)));
 		gVehicle4W->getRigidDynamicActor()->setGlobalPose(startTransform);
 	}
 
