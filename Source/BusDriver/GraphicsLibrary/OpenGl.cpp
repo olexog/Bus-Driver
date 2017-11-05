@@ -319,7 +319,7 @@ namespace GraphicsLibrary
 			this->depthMapTextures[this->cascadeToVisualize]->Bind();
 			this->debugShaderProgram->SetUniform("textureSampler", 0);
 
-			this->debugShaderProgram->SetUniform("projection", ortho(0.0f, 1.0f, 0.0f, 1.0f));
+			this->debugShaderProgram->SetUniform("projection", ortho(-1.0f, 1.0f, -1.0f, 1.0f));
 
 			this->debugShaderProgram->Use();
 
