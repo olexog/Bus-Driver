@@ -53,43 +53,46 @@ namespace PhysicsLibrary
 		}
 	};
 
-	VehicleDesc initVehicleDesc(PxMaterial* material)
-	{
-		//Set up the chassis mass, dimensions, moment of inertia, and center of mass offset.
-		//The moment of inertia is just the moment of inertia of a cuboid but modified for easier steering.
-		//Center of mass offset is 0.65m above the base of the chassis and 0.25m towards the front.
-		const PxF32 chassisMass = 1500.0f;
-		const PxVec3 chassisDims(2.5f, 3.4f, 11.0f);
-		const PxVec3 chassisMOI
-		((chassisDims.y*chassisDims.y + chassisDims.z*chassisDims.z)*chassisMass / 12.0f,
-			(chassisDims.x*chassisDims.x + chassisDims.z*chassisDims.z)*0.8f*chassisMass / 12.0f,
-			(chassisDims.x*chassisDims.x + chassisDims.y*chassisDims.y)*chassisMass / 12.0f);
-		const PxVec3 chassisCMOffset(0.0f, -chassisDims.y*0.5f + 0.65f, 0.25f);
+	//VehicleDesc initVehicleDesc(PxMaterial* material)
+	//{
+	//	//Set up the chassis mass, dimensions, moment of inertia, and center of mass offset.
+	//	//The moment of inertia is just the moment of inertia of a cuboid but modified for easier steering.
+	//	//Center of mass offset is 0.65m above the base of the chassis and 0.25m towards the front.
+	//	const PxF32 chassisMass = 1500.0f;
+	//	const PxVec3 chassisDims(2.5f, 3.4f, 11.0f);
+	//	const PxVec3 chassisMOI
+	//	((chassisDims.y*chassisDims.y + chassisDims.z*chassisDims.z)*chassisMass / 12.0f,
+	//		(chassisDims.x*chassisDims.x + chassisDims.z*chassisDims.z)*0.8f*chassisMass / 12.0f,
+	//		(chassisDims.x*chassisDims.x + chassisDims.y*chassisDims.y)*chassisMass / 12.0f);
+	//	const PxVec3 chassisCMOffset(0.0f, -chassisDims.y*0.5f + 0.65f, 0.25f);
 
-		//Set up the wheel mass, radius, width, moment of inertia, and number of wheels.
-		//Moment of inertia is just the moment of inertia of a cylinder.
-		const PxF32 wheelMass = 20.0f;
-		const PxF32 wheelRadius = 0.704f;
-		const PxF32 wheelWidth = 0.748f;
-		const PxF32 wheelMOI = 0.5f*wheelMass*wheelRadius*wheelRadius;
-		const PxU32 nbWheels = 4;
+	//	//Set up the wheel mass, radius, width, moment of inertia, and number of wheels.
+	//	//Moment of inertia is just the moment of inertia of a cylinder.
+	//	const PxF32 wheelMass = 20.0f;
+	//	const PxF32 wheelRadius = 0.704f;
+	//	const PxF32 wheelWidth = 0.748f;
+	//	const PxF32 wheelMOI = 0.5f*wheelMass*wheelRadius*wheelRadius;
+	//	const PxU32 nbWheels = 4;
 
-		VehicleDesc vehicleDesc;
-		vehicleDesc.chassisMass = chassisMass;
-		vehicleDesc.chassisDims = chassisDims;
-		vehicleDesc.chassisMOI = chassisMOI;
-		vehicleDesc.chassisCMOffset = chassisCMOffset;
-		vehicleDesc.chassisMaterial = material;
-		vehicleDesc.wheelMass = wheelMass;
-		vehicleDesc.wheelRadius = wheelRadius;
-		vehicleDesc.wheelWidth = wheelWidth;
-		vehicleDesc.wheelMOI = wheelMOI;
-		vehicleDesc.numWheels = nbWheels;
-		vehicleDesc.wheelMaterial = material;
-		return vehicleDesc;
-	}
+	//	VehicleDesc vehicleDesc;
+	//	vehicleDesc.chassisMass = chassisMass;
+	//	chassisDimensions = chassisDims;
+	//	vehicleDesc.chassisMOI = chassisMOI;
+	//	vehicleDesc.chassisCMOffset = chassisCMOffset;
+	//	vehicleDesc.chassisMaterial = material;
+	//	vehicleDesc.wheelMass = wheelMass;
+	//	vehicleDesc.wheelRadius = wheelRadius;
+	//	vehicleDesc.wheelWidth = wheelWidth;
+	//	vehicleDesc.wheelMOI = wheelMOI;
+	//	wheelNumber = nbWheels;
+	//	vehicleDesc.wheelMaterial = material;
+	//	return vehicleDesc;
+	//}
 
-	Vehicle::Vehicle(Physics* physics, Shape* chassis, vector<Shape*> wheels, PxVec3 startingPosition)
+	Vehicle::Vehicle(Physics* physics, Shape* chassis, vector<Shape*> wheels, PxVec3 startingPosition,
+		PxF32 chassisMass, PxVec3 chassisDimensions, PxVec3 chassisMOI, PxMaterial* chassisMaterial, PxVec3 chassisCMOffset,
+		PxF32 wheelMass, PxF32 wheelRadius, PxF32 wheelWidth, PxF32 wheelMOI, PxMaterial* wheelMaterial, PxU32 wheelNumber,
+		PxF32 frontAxisOffset, PxF32 rearAxisOffset, PxF32 prolapse)
 	{
 		this->physics = physics;
 
@@ -99,7 +102,7 @@ namespace PhysicsLibrary
 		//Create a plane to drive on.
 		gGroundPlane = createDrivablePlane(physics->GetMaterial(), physics->GetPhysics());
 
-		VehicleDesc vehicleDesc = initVehicleDesc(physics->GetMaterial());
+		//VehicleDesc vehicleDesc = initVehicleDesc(physics->GetMaterial());
 
 		//Construct a physx actor with shapes for the chassis and wheels.
 		//Set the rigid body mass, moment of inertia, and center of mass offset.
@@ -107,9 +110,9 @@ namespace PhysicsLibrary
 		{
 			//Rigid body data.
 			PxVehicleChassisData rigidBodyData;
-			rigidBodyData.mMOI = vehicleDesc.chassisMOI;
-			rigidBodyData.mMass = vehicleDesc.chassisMass;
-			rigidBodyData.mCMOffset = vehicleDesc.chassisCMOffset;
+			rigidBodyData.mMOI = chassisMOI;
+			rigidBodyData.mMass = chassisMass;
+			rigidBodyData.mCMOffset = chassisCMOffset;
 
 			//We need a rigid body actor for the vehicle.
 			//Don't forget to add the actor to the scene after setting up the associated vehicle.
@@ -124,7 +127,7 @@ namespace PhysicsLibrary
 			}
 
 			//Add all the wheel shapes to the actor.
-			for (PxU32 i = 0; i < vehicleDesc.numWheels; i++)
+			for (PxU32 i = 0; i < wheelNumber; i++)
 			{
 				//PxShape* wheelShape;
 				//wheel->AddToActor(physics, veh4WActor, wheelShape);
@@ -141,48 +144,43 @@ namespace PhysicsLibrary
 				//this->chassis.push_back(chassisShape);
 			}
 
-			veh4WActor->setMass(vehicleDesc.chassisMass);
-			veh4WActor->setMassSpaceInertiaTensor(vehicleDesc.chassisMOI);
-			veh4WActor->setCMassLocalPose(PxTransform(vehicleDesc.chassisCMOffset, PxQuat(PxIdentity)));
+			veh4WActor->setMass(chassisMass);
+			veh4WActor->setMassSpaceInertiaTensor(chassisMOI);
+			veh4WActor->setCMassLocalPose(PxTransform(chassisCMOffset, PxQuat(PxIdentity)));
 		}
 
 		//Set up the sim data for the wheels.
-		PxVehicleWheelsSimData* wheelsSimData = PxVehicleWheelsSimData::allocate(vehicleDesc.numWheels);
+		PxVehicleWheelsSimData* wheelsSimData = PxVehicleWheelsSimData::allocate(wheelNumber);
 		{
 			//Compute the wheel center offsets from the origin.
 			PxVec3 wheelCenterActorOffsets[PX_MAX_NB_WHEELS];
-			const PxF32 frontZ = vehicleDesc.chassisDims.z*0.3f;
-			const PxF32 rearZ = -vehicleDesc.chassisDims.z*0.3f;
+			const PxF32 frontZ = chassisDimensions.z*0.3f;
+			const PxF32 rearZ = -chassisDimensions.z*0.3f;
 
 			//chassisDims.z is the distance from the rear of the chassis to the front of the chassis.
 			//The front has z = 0.5*chassisDims.z and the rear has z = -0.5*chassisDims.z.
 			//Compute a position for the front wheel and the rear wheel along the z-axis.
 			//Compute the separation between each wheel along the z-axis.
-			const PxF32 numLeftWheels = vehicleDesc.numWheels / 2.0f;
+			const PxF32 numLeftWheels = wheelNumber / 2.0f;
 			const PxF32 deltaZ = (frontZ - rearZ) / (numLeftWheels - 1.0f);
-
-			// the wheel base of the Ikarus 260
-			const PxF32 wheelBase = 5.4f;
-			// the difference between the bottom and the wheel's centre
-			const PxF32 prolapse = 0.2f;
 
 			//Set the outside of the left and right wheels to be flush with the chassis.
 			//Set the top of the wheel to be just touching the underside of the chassis.
-			wheelCenterActorOffsets[PxVehicleDrive4WWheelOrder::eREAR_LEFT] = PxVec3((-vehicleDesc.chassisDims.x + vehicleDesc.wheelWidth)*0.5f, -(vehicleDesc.chassisDims.y / 2 + vehicleDesc.wheelRadius - prolapse), -wheelBase / 2.0f);
-			wheelCenterActorOffsets[PxVehicleDrive4WWheelOrder::eREAR_RIGHT] = PxVec3((+vehicleDesc.chassisDims.x - vehicleDesc.wheelWidth)*0.5f, -(vehicleDesc.chassisDims.y / 2 + vehicleDesc.wheelRadius - prolapse), -wheelBase / 2.0f);
-			wheelCenterActorOffsets[PxVehicleDrive4WWheelOrder::eFRONT_LEFT] = PxVec3((-vehicleDesc.chassisDims.x + vehicleDesc.wheelWidth)*0.5f, -(vehicleDesc.chassisDims.y / 2 + vehicleDesc.wheelRadius - prolapse), wheelBase / 2.0f);
-			wheelCenterActorOffsets[PxVehicleDrive4WWheelOrder::eFRONT_RIGHT] = PxVec3((+vehicleDesc.chassisDims.x - vehicleDesc.wheelWidth)*0.5f, -(vehicleDesc.chassisDims.y / 2 + vehicleDesc.wheelRadius - prolapse), wheelBase / 2.0f);
+			wheelCenterActorOffsets[PxVehicleDrive4WWheelOrder::eREAR_LEFT] = PxVec3((-chassisDimensions.x + wheelWidth)*0.5f, -(chassisDimensions.y / 2 + wheelRadius - prolapse), -rearAxisOffset);
+			wheelCenterActorOffsets[PxVehicleDrive4WWheelOrder::eREAR_RIGHT] = PxVec3((+chassisDimensions.x - wheelWidth)*0.5f, -(chassisDimensions.y / 2 + wheelRadius - prolapse), -rearAxisOffset);
+			wheelCenterActorOffsets[PxVehicleDrive4WWheelOrder::eFRONT_LEFT] = PxVec3((-chassisDimensions.x + wheelWidth)*0.5f, -(chassisDimensions.y / 2 + wheelRadius - prolapse), frontAxisOffset);
+			wheelCenterActorOffsets[PxVehicleDrive4WWheelOrder::eFRONT_RIGHT] = PxVec3((+chassisDimensions.x - wheelWidth)*0.5f, -(chassisDimensions.y / 2 + wheelRadius - prolapse), frontAxisOffset);
 
 			//Set up the wheels.
 			PxVehicleWheelData wheels[PX_MAX_NB_WHEELS];
 			{
 				//Set up the wheel data structures with mass, moi, radius, width.
-				for (PxU32 i = 0; i < vehicleDesc.numWheels; i++)
+				for (PxU32 i = 0; i < wheelNumber; i++)
 				{
-					wheels[i].mMass = vehicleDesc.wheelMass;
-					wheels[i].mMOI = vehicleDesc.wheelMOI;
-					wheels[i].mRadius = vehicleDesc.wheelRadius;
-					wheels[i].mWidth = vehicleDesc.wheelWidth;
+					wheels[i].mMass = wheelMass;
+					wheels[i].mMOI = wheelMOI;
+					wheels[i].mRadius = wheelRadius;
+					wheels[i].mWidth = wheelWidth;
 				}
 
 				//Enable the handbrake for the rear wheels only.
@@ -197,7 +195,7 @@ namespace PhysicsLibrary
 			PxVehicleTireData tires[PX_MAX_NB_WHEELS];
 			{
 				//Set up the tires.
-				for (PxU32 i = 0; i < vehicleDesc.numWheels; i++)
+				for (PxU32 i = 0; i < wheelNumber; i++)
 				{
 					tires[i].mType = TIRE_TYPE_NORMAL;
 				}
@@ -209,11 +207,11 @@ namespace PhysicsLibrary
 				//Compute the mass supported by each suspension spring.
 				PxF32 suspSprungMasses[PX_MAX_NB_WHEELS];
 				PxVehicleComputeSprungMasses
-					(vehicleDesc.numWheels, wheelCenterActorOffsets,
-						vehicleDesc.chassisCMOffset, vehicleDesc.chassisMass, 1, suspSprungMasses);
+					(wheelNumber, wheelCenterActorOffsets,
+						chassisCMOffset, chassisMass, 1, suspSprungMasses);
 
 				//Set the suspension data.
-				for (PxU32 i = 0; i < vehicleDesc.numWheels; i++)
+				for (PxU32 i = 0; i < wheelNumber; i++)
 				{
 					suspensions[i].mMaxCompression = 0.3f;
 					suspensions[i].mMaxDroop = 0.1f;
@@ -226,7 +224,7 @@ namespace PhysicsLibrary
 				const PxF32 camberAngleAtRest = 0.0;
 				const PxF32 camberAngleAtMaxDroop = 0.01f;
 				const PxF32 camberAngleAtMaxCompression = -0.01f;
-				for (PxU32 i = 0; i < vehicleDesc.numWheels; i += 2)
+				for (PxU32 i = 0; i < wheelNumber; i += 2)
 				{
 					suspensions[i + 0].mCamberAtRest = camberAngleAtRest;
 					suspensions[i + 1].mCamberAtRest = -camberAngleAtRest;
@@ -244,14 +242,14 @@ namespace PhysicsLibrary
 			PxVec3 tireForceAppCMOffsets[PX_MAX_NB_WHEELS];
 			{
 				//Set the geometry data.
-				for (PxU32 i = 0; i < vehicleDesc.numWheels; i++)
+				for (PxU32 i = 0; i < wheelNumber; i++)
 				{
 					//Vertical suspension travel.
 					suspTravelDirections[i] = PxVec3(0, -1, 0);
 
 					//Wheel center offset is offset from rigid body center of mass.
 					wheelCentreCMOffsets[i] =
-						wheelCenterActorOffsets[i] - vehicleDesc.chassisCMOffset;
+						wheelCenterActorOffsets[i] - chassisCMOffset;
 
 					//Suspension force application point 0.3 metres below 
 					//rigid body center of mass.
@@ -272,7 +270,7 @@ namespace PhysicsLibrary
 			//Set the wheel, tire and suspension data.
 			//Set the geometry data.
 			//Set the query filter data
-			for (PxU32 i = 0; i < vehicleDesc.numWheels; i++)
+			for (PxU32 i = 0; i < wheelNumber; i++)
 			{
 				wheelsSimData->setWheelData(i, wheels[i]);
 				wheelsSimData->setTireData(i, tires[i]);
@@ -326,8 +324,8 @@ namespace PhysicsLibrary
 		}
 
 		//Create a vehicle from the wheels and drive sim data.
-		gVehicle4W = PxVehicleDrive4W::allocate(vehicleDesc.numWheels);
-		gVehicle4W->setup(physics->GetPhysics(), veh4WActor, *wheelsSimData, driveSimData, vehicleDesc.numWheels - 4);
+		gVehicle4W = PxVehicleDrive4W::allocate(wheelNumber);
+		gVehicle4W->setup(physics->GetPhysics(), veh4WActor, *wheelsSimData, driveSimData, wheelNumber - 4);
 
 		//Free the sim data because we don't need that any more.
 		wheelsSimData->free();

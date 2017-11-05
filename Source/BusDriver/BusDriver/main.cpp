@@ -366,6 +366,9 @@ int main()
 	vector<vec3> wheelVertices;
 	Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj", wheelVertices);
 
+	vector<vec3> wheelVertices2;
+	Model* trabantWheelModel = ModelReader::Read("Models\\trabant_wheel.obj", wheelVertices2);
+
 	vector<vec3*> wheelPositions = { new vec3(), new vec3(), new vec3(), new vec3() };
 	vector<quat*> wheelOrientations = { new quat(), new quat(), new quat(), new quat() };
 	vector<vec3*> wheelLocalPositions = { new vec3(), new vec3(), new vec3(), new vec3() };
@@ -375,7 +378,7 @@ int main()
 	vector<vec3*> wheelPositions2 = { new vec3(), new vec3(), new vec3(), new vec3() };
 	vector<quat*> wheelOrientations2 = { new quat(), new quat(), new quat(), new quat() };
 	vector<vec3*> wheelLocalPositions2 = { new vec3(), new vec3(), new vec3(), new vec3() };
-	vector<quat*> wheelLocalOrientations2 = { new quat(), new quat(), new quat(), new quat() };
+	vector<quat*> wheelLocalOrientations2 = { new quat(), new quat(), new quat(0.7071f, 0.7071f, 0.0f, 0.0f), new quat(0.7071f, 0.7071f, 0.0f, 0.0f) };
 	vector<Shape*> wheels2;
 
 	for (int i = 0; i < 4; i++)
@@ -386,7 +389,7 @@ int main()
 		
 		wheels.push_back(wheel);
 
-		Shape* wheel2 = PhysicsUtility::ShapeFromConvexTriangles(wheelVertices, physics);
+		Shape* wheel2 = PhysicsUtility::ShapeFromConvexTriangles(wheelVertices2, physics);
 		wheel2->SetType(Shape::Type::WHEEL);
 		wheel2->SetPosePointer(wheelLocalPositions2[i], wheelLocalOrientations2[i]);
 
@@ -400,40 +403,80 @@ int main()
 
 	vec3* chassisPosition2 = new vec3();
 	quat* chassisOrientation2 = new quat();
-	vec3* chassisLocalPosition2 = new vec3(0.0f, -0.5f, 0.0f);
+	vec3* chassisLocalPosition2 = new vec3(0.0f, 0.0f, 0.0f);
 	quat* chassisLocalOrientation2 = new quat();
 
 	PxConvexMesh* chassisMesh = createChassisMesh(PxVec3(2.5f, 3.4f, 11.0f), *physics->GetPhysics(), *physics->GetCooking());
 	PxConvexMeshGeometry* chassisGeometry = new PxConvexMeshGeometry(chassisMesh);
+	PxConvexMesh* chassisMesh2 = createChassisMesh(PxVec3(1.51f, 1.437f, 3.56f), *physics->GetPhysics(), *physics->GetCooking());
+	PxConvexMeshGeometry* chassisGeometry2 = new PxConvexMeshGeometry(chassisMesh2);
 	Shape* chassis = new Shape(physics, chassisGeometry, chassisLocalPosition, chassisLocalOrientation, Shape::Type::CHASSIS);
-	Shape* chassis2 = new Shape(physics, chassisGeometry, chassisLocalPosition2, chassisLocalOrientation2, Shape::Type::CHASSIS);
+	Shape* chassis2 = new Shape(physics, chassisGeometry2, chassisLocalPosition2, chassisLocalOrientation2, Shape::Type::CHASSIS);
 
 	Model* chassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
+	Model* chassisModel2 = ModelReader::Read("Models\\trabant_body.obj");
 
 	Scene* scene = map.CreateScene();
 	for (int i = 0; i < 4; i++)
 	{
 		scene->models.push_back(new PositionedModel(wheelModel, wheelPositions[i], wheelOrientations[i]));
-		scene->models.push_back(new PositionedModel(wheelModel, wheelPositions2[i], wheelOrientations2[i]));
+		scene->models.push_back(new PositionedModel(trabantWheelModel, wheelPositions2[i], wheelOrientations2[i]));
 	}
 	scene->models.push_back(new PositionedModel(chassisModel, chassisPosition, chassisOrientation));
-	scene->models.push_back(new PositionedModel(chassisModel, chassisPosition2, chassisOrientation2));
+	scene->models.push_back(new PositionedModel(chassisModel2, chassisPosition2, chassisOrientation2));
 
 	Playground* playground = map.CreatePlayground(physics);
 
+	const PxF32 chassisMass = 1500.0f;
+	const PxVec3 chassisDims(2.5f, 3.4f, 11.0f);
+	const PxVec3 chassisMOI
+	((chassisDims.y*chassisDims.y + chassisDims.z*chassisDims.z)*chassisMass / 12.0f,
+		(chassisDims.x*chassisDims.x + chassisDims.z*chassisDims.z)*0.8f*chassisMass / 12.0f,
+		(chassisDims.x*chassisDims.x + chassisDims.y*chassisDims.y)*chassisMass / 12.0f);
+	const PxVec3 chassisCMOffset(0.0f, -chassisDims.y*0.5f + 0.65f, 0.25f);
+
+	const PxF32 trabantChassisMass = 650.0f;
+	const PxVec3 trabantChassisDims(1.51f, 1.437f, 3.56f);
+	const PxVec3 trabantChassisMOI
+	((trabantChassisDims.y*trabantChassisDims.y + trabantChassisDims.z*trabantChassisDims.z)*trabantChassisMass / 12.0f,
+		(trabantChassisDims.x*trabantChassisDims.x + trabantChassisDims.z*trabantChassisDims.z)*0.8f*trabantChassisMass / 12.0f,
+		(trabantChassisDims.x*trabantChassisDims.x + trabantChassisDims.y*trabantChassisDims.y)*trabantChassisMass / 12.0f);
+	const PxVec3 trabantChassisCMOffset(0.0f, -trabantChassisDims.y*0.5f + 0.65f, 0.25f);
+
+	const PxF32 wheelMass = 20.0f;
+	const PxF32 wheelRadius = 0.704f;
+	const PxF32 wheelWidth = 0.748f;
+	const PxF32 wheelMOI = 0.5f*wheelMass*wheelRadius*wheelRadius;
+
+	const PxF32 trabantWheelMass = 20.0f;
+	const PxF32 trabantWheelRadius = 0.35f;
+	const PxF32 trabantWheelWidth = 0.116;
+	const PxF32 trabantWheelMOI = 0.5f*trabantWheelMass*trabantWheelWidth*trabantWheelWidth;
+
+	// the wheel base of the Ikarus 260
+	const PxF32 wheelBase = 5.4f;
+	// the difference between the bottom and the wheel's centre
+	const PxF32 prolapse = 0.2f;
+
 	// add a movable vehicle to the scene
-	Vehicle* bus = new Vehicle(physics, chassis, wheels, PxVec3(2, 3, 22));
+	Vehicle* bus = new Vehicle(physics, chassis, wheels, PxVec3(2, 3, 22),
+		chassisMass, chassisDims, chassisMOI, physics->GetMaterial(), chassisCMOffset,
+		wheelMass, wheelRadius, wheelWidth, wheelMOI, physics->GetMaterial(), 4,
+		2.7f, 2.7f, prolapse);
 	playground->AddActor(bus);
 	bus->SetToRestState();
 
-	Vehicle* bus2 = new Vehicle(physics, chassis2, wheels2, PxVec3(2.3, 3, 6));
+	Vehicle* bus2 = new Vehicle(physics, chassis2, wheels2, PxVec3(2.3, 3, 6),
+		trabantChassisMass, trabantChassisDims, trabantChassisMOI, physics->GetMaterial(), trabantChassisCMOffset,
+		trabantWheelMass, trabantWheelRadius, trabantWheelWidth, trabantWheelMOI, physics->GetMaterial(), 4,
+		1.182f, 0.835f, 0.432f);
 	playground->AddActor(bus2);
 	bus2->SetToRestState();
 
 	// initialize camera
 
-	freeCamera = new FreeCamera(vec3(0.0f, 3.0f, -100.0f), 0.0f, 0.0f);
-	followCamera = new FollowCamera(bus->GetPosition(), bus->GetRotation());
+	freeCamera = new FreeCamera(vec3(0.0f, 3.0f, 0.0f), 0.0f, 0.0f);
+	followCamera = new FollowCamera(bus2->GetPosition(), bus2->GetRotation());
 
 	cameras = vector<Camera*>();
 	cameras.push_back(freeCamera);
@@ -469,7 +512,7 @@ int main()
 		previousTime = totalTime;
 
 		// controll the bus
-		SetControlls(bus);
+		SetControlls(bus2);
 
 		// simulate physics
 		playground->Simulate(elapsedTime);
@@ -573,7 +616,7 @@ int main()
 		}
 
 		// update the camera
-		UpdateCamera(elapsedTime, bus);
+		UpdateCamera(elapsedTime, bus2);
 
 		// transfer the camera pose to the renderer
 
@@ -581,8 +624,8 @@ int main()
 		openGl->SetCameraDynamic(followCamera->GetPosition(), followCamera->GetFront());
 
 		// calculate bus velocity
-		float velocity = length(bus->GetPosition() - busPreviousPosition) / elapsedTime;
-		busPreviousPosition = bus->GetPosition();
+		float velocity = length(bus2->GetPosition() - busPreviousPosition) / elapsedTime;
+		busPreviousPosition = bus2->GetPosition();
 
 		// update texts
 		velocityText->Text = "Velocity: " + to_string(static_cast<int>(velocity * 3.6f)) + " km/h";
