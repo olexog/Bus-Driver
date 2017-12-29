@@ -17,7 +17,9 @@ class DrivenThingy
 {
 public:
 	DrivenThingy(vector<vec3> wheelVertices, Physics* physics, float chassisWidth, float chassisHeight, float chassisLength,
-		Model* wheelModel, Model* chassisModel, PxVec3 startingPosition, Playground* playground);
+		Model* wheelModel, Model* chassisModel, float chassisMass, float wheelMass, float wheelRadius, float wheelWidth,
+		float prolapse, float frontAxisOffset, float rearAxisOffset,
+		PxVec3 startingPosition, Playground* playground);
 	~DrivenThingy();
 	void AddToScene(Scene* scene);
 

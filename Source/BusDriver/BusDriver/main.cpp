@@ -365,126 +365,41 @@ int main()
 
 	Map map = MapReader::Read(physics, "Models\\city.map");
 
-	vector<vec3> wheelVertices;
-	Model* wheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj", wheelVertices);
-
-	vector<vec3> wheelVertices2;
-	Model* trabantWheelModel = ModelReader::Read("Models\\trabant_wheel.obj", wheelVertices2);
-
-	vector<vec3*> wheelPositions = { new vec3(), new vec3(), new vec3(), new vec3() };
-	vector<quat*> wheelOrientations = { new quat(), new quat(), new quat(), new quat() };
-	vector<vec3*> wheelLocalPositions = { new vec3(), new vec3(), new vec3(), new vec3() };
-	vector<quat*> wheelLocalOrientations = { new quat(), new quat(), new quat(), new quat() };
-	vector<Shape*> wheels;
-
-	vector<vec3*> wheelPositions2 = { new vec3(), new vec3(), new vec3(), new vec3() };
-	vector<quat*> wheelOrientations2 = { new quat(), new quat(), new quat(), new quat() };
-	vector<vec3*> wheelLocalPositions2 = { new vec3(), new vec3(), new vec3(), new vec3() };
-	vector<quat*> wheelLocalOrientations2 = { new quat(), new quat(), new quat(0.7071f, 0.7071f, 0.0f, 0.0f), new quat(0.7071f, 0.7071f, 0.0f, 0.0f) };
-	vector<Shape*> wheels2;
-
-	for (int i = 0; i < 4; i++)
-	{
-		Shape* wheel = PhysicsUtility::ShapeFromConvexTriangles(wheelVertices, physics);
-		wheel->SetType(Shape::Type::WHEEL);
-		wheel->SetPosePointer(wheelLocalPositions[i], wheelLocalOrientations[i]);
-		
-		wheels.push_back(wheel);
-
-		Shape* wheel2 = PhysicsUtility::ShapeFromConvexTriangles(wheelVertices2, physics);
-		wheel2->SetType(Shape::Type::WHEEL);
-		wheel2->SetPosePointer(wheelLocalPositions2[i], wheelLocalOrientations2[i]);
-
-		wheels2.push_back(wheel2);
-	}
-
-	vec3* chassisPosition = new vec3();
-	quat* chassisOrientation = new quat();
-	vec3* chassisLocalPosition = new vec3(0.0f, -0.5f, 0.0f);
-	quat* chassisLocalOrientation = new quat();
-
-	vec3* chassisPosition2 = new vec3();
-	quat* chassisOrientation2 = new quat();
-	vec3* chassisLocalPosition2 = new vec3(0.0f, 0.0f, 0.0f);
-	quat* chassisLocalOrientation2 = new quat();
-
-	PxConvexMesh* chassisMesh = createChassisMesh(PxVec3(2.5f, 3.4f, 11.0f), *physics->GetPhysics(), *physics->GetCooking());
-	PxConvexMeshGeometry* chassisGeometry = new PxConvexMeshGeometry(chassisMesh);
-	PxConvexMesh* chassisMesh2 = createChassisMesh(PxVec3(1.51f, 1.437f, 3.56f), *physics->GetPhysics(), *physics->GetCooking());
-	PxConvexMeshGeometry* chassisGeometry2 = new PxConvexMeshGeometry(chassisMesh2);
-	Shape* chassis = new Shape(physics, chassisGeometry, chassisLocalPosition, chassisLocalOrientation, Shape::Type::CHASSIS);
-	Shape* chassis2 = new Shape(physics, chassisGeometry2, chassisLocalPosition2, chassisLocalOrientation2, Shape::Type::CHASSIS);
-
-	Model* chassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
-	Model* chassisModel2 = ModelReader::Read("Models\\trabant_body.obj");
-
 	Scene* scene = map.CreateScene();
-	for (int i = 0; i < 4; i++)
-	{
-		scene->models.push_back(new PositionedModel(wheelModel, wheelPositions[i], wheelOrientations[i]));
-		scene->models.push_back(new PositionedModel(trabantWheelModel, wheelPositions2[i], wheelOrientations2[i]));
-	}
-	scene->models.push_back(new PositionedModel(chassisModel, chassisPosition, chassisOrientation));
-	scene->models.push_back(new PositionedModel(chassisModel2, chassisPosition2, chassisOrientation2));
 
 	Playground* playground = map.CreatePlayground(physics);
 
 	vector<vec3> ikarusWheelVertices;
 	Model* ikarusWheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj", ikarusWheelVertices);
 	Model* ikarusChassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
-	DrivenThingy* ikarus = new DrivenThingy(ikarusWheelVertices, physics, 2.5f, 3.4f, 11.0f, ikarusWheelModel, ikarusChassisModel, PxVec3(-2, 3, 22), playground);
+	DrivenThingy* ikarus = new DrivenThingy(ikarusWheelVertices, physics, 2.5f, 3.4f, 11.0f, ikarusWheelModel, ikarusChassisModel,
+		1500.0f, 20.0f, 0.704f, 0.748f, 0.7f, 2.7f, 2.7f, PxVec3(-2, 3, 22), playground);
 	ikarus->AddToScene(scene);
 
-	const PxF32 chassisMass = 1500.0f;
-	const PxVec3 chassisDims(2.5f, 3.4f, 11.0f);
-	const PxVec3 chassisMOI
-	((chassisDims.y*chassisDims.y + chassisDims.z*chassisDims.z)*chassisMass / 12.0f,
-		(chassisDims.x*chassisDims.x + chassisDims.z*chassisDims.z)*0.8f*chassisMass / 12.0f,
-		(chassisDims.x*chassisDims.x + chassisDims.y*chassisDims.y)*chassisMass / 12.0f);
-	const PxVec3 chassisCMOffset(0.0f, -chassisDims.y*0.5f + 0.65f, 0.25f);
+	vector<vec3> ikarus2WheelVertices;
+	Model* ikarus2WheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj", ikarus2WheelVertices);
+	Model* ikarus2ChassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
+	DrivenThingy* ikarus2 = new DrivenThingy(ikarus2WheelVertices, physics, 2.5f, 3.4f, 11.0f, ikarus2WheelModel, ikarus2ChassisModel,
+		1500.0f, 20.0f, 0.704f, 0.748f, 0.7f, 2.7f, 2.7f, PxVec3(2, 3, 22), playground);
+	ikarus2->AddToScene(scene);
 
-	const PxF32 trabantChassisMass = 650.0f;
-	const PxVec3 trabantChassisDims(1.51f, 1.437f, 3.56f);
-	const PxVec3 trabantChassisMOI
-	((trabantChassisDims.y*trabantChassisDims.y + trabantChassisDims.z*trabantChassisDims.z)*trabantChassisMass / 12.0f,
-		(trabantChassisDims.x*trabantChassisDims.x + trabantChassisDims.z*trabantChassisDims.z)*0.8f*trabantChassisMass / 12.0f,
-		(trabantChassisDims.x*trabantChassisDims.x + trabantChassisDims.y*trabantChassisDims.y)*trabantChassisMass / 12.0f);
-	const PxVec3 trabantChassisCMOffset(0.0f, -trabantChassisDims.y*0.5f + 0.65f, 0.25f);
+	vector<vec3> trabantWheelVertices;
+	Model* trabantWheelModel = ModelReader::Read("Models\\trabant_wheel.obj", trabantWheelVertices);
+	Model* trabantChassisModel = ModelReader::Read("Models\\trabant_body.obj");
+	DrivenThingy* trabant = new DrivenThingy(trabantWheelVertices, physics, 1.51f, 1.437f, 3.56f, trabantWheelModel, trabantChassisModel,
+		650.0f, 20.0f, 0.35f, 0.116f, 0.432f, 1.182f, 0.835f, PxVec3(-2.3, 3, 6), playground);
+	trabant->AddToScene(scene);
+	DrivenThingy* trabant2 = new DrivenThingy(trabantWheelVertices, physics, 1.51f, 1.437f, 3.56f, trabantWheelModel, trabantChassisModel,
+		650.0f, 20.0f, 0.35f, 0.116f, 0.432f, 1.182f, 0.835f, PxVec3(2.3, 3, 6), playground);
+	trabant2->AddToScene(scene);
 
-	const PxF32 wheelMass = 20.0f;
-	const PxF32 wheelRadius = 0.704f;
-	const PxF32 wheelWidth = 0.748f;
-	const PxF32 wheelMOI = 0.5f*wheelMass*wheelRadius*wheelRadius;
-
-	const PxF32 trabantWheelMass = 20.0f;
-	const PxF32 trabantWheelRadius = 0.35f;
-	const PxF32 trabantWheelWidth = 0.116;
-	const PxF32 trabantWheelMOI = 0.5f*trabantWheelMass*trabantWheelWidth*trabantWheelWidth;
-
-	// the wheel base of the Ikarus 260
-	const PxF32 wheelBase = 5.4f;
-	// the difference between the bottom and the wheel's centre
-	const PxF32 prolapse = 0.2f;
-
-	// add a movable vehicle to the scene
-	Vehicle* bus = new Vehicle(physics, chassis, wheels, PxVec3(2, 3, 22),
-		chassisMass, chassisDims, chassisMOI, physics->GetMaterial(), chassisCMOffset,
-		wheelMass, wheelRadius, wheelWidth, wheelMOI, physics->GetMaterial(), 4,
-		2.7f, 2.7f, prolapse);
-	playground->AddActor(bus);
-	bus->SetToRestState();
-
-	Vehicle* bus2 = new Vehicle(physics, chassis2, wheels2, PxVec3(2.3, 3, 6),
-		trabantChassisMass, trabantChassisDims, trabantChassisMOI, physics->GetMaterial(), trabantChassisCMOffset,
-		trabantWheelMass, trabantWheelRadius, trabantWheelWidth, trabantWheelMOI, physics->GetMaterial(), 4,
-		1.182f, 0.835f, 0.432f);
-	playground->AddActor(bus2);
-	bus2->SetToRestState();
+	//pointer to the driven vehicle
+	Vehicle* vehicle = ikarus->GetVehicle();
 
 	// initialize camera
 
 	freeCamera = new FreeCamera(vec3(0.0f, 3.0f, 0.0f), 0.0f, 0.0f);
-	followCamera = new FollowCamera(bus2->GetPosition(), bus2->GetRotation());
+	followCamera = new FollowCamera(vehicle->GetPosition(), vehicle->GetRotation());
 
 	cameras = vector<Camera*>();
 	cameras.push_back(freeCamera);
@@ -501,9 +416,6 @@ int main()
 	// the main loop that iterates throughout the game
 	while (glfwWindowShouldClose(glfwWindow) != GL_TRUE)
 	{
-		//pointer to the driven vehicle
-		Vehicle* vehicle = ikarus->GetVehicle();
-
 		// poll events from the window
 		glfwPollEvents();
 
@@ -528,106 +440,11 @@ int main()
 		// simulate physics
 		playground->Simulate(elapsedTime);
 
+		// update driven thingies
 		ikarus->Update();
-
-		for (Shape* wheel : wheels)
-		{
-			wheel->Update();
-		}
-		chassis->Update();
-		for (Shape* wheel : wheels2)
-		{
-			wheel->Update();
-		}
-		chassis2->Update();
-
-		// calculate the global positions of the vehicle's wheels
-		for (int i = 0; i < wheelLocalPositions.size(); i++)
-		{
-			mat4 localTranslation;
-			localTranslation = translate(localTranslation, *wheelLocalPositions[i]);
-			mat4 localRotation = static_cast<mat4>(*wheelLocalOrientations[i]);
-			mat4 globalTranslation;
-			globalTranslation = translate(globalTranslation, bus->GetPosition());
-			mat4 globalRotation = static_cast<mat4>(bus->GetRotation());
-			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
-			vec3 position = vec3(modelMatrix[3]);
-			quat orientation = static_cast<quat>(modelMatrix);
-
-			wheelPositions[i]->x = position.x;
-			wheelPositions[i]->y = position.y;
-			wheelPositions[i]->z = position.z;
-
-			wheelOrientations[i]->x = orientation.x;
-			wheelOrientations[i]->y = orientation.y;
-			wheelOrientations[i]->z = orientation.z;
-			wheelOrientations[i]->w = orientation.w;
-		}
-		for (int i = 0; i < wheelLocalPositions2.size(); i++)
-		{
-			mat4 localTranslation;
-			localTranslation = translate(localTranslation, *wheelLocalPositions2[i]);
-			mat4 localRotation = static_cast<mat4>(*wheelLocalOrientations2[i]);
-			mat4 globalTranslation;
-			globalTranslation = translate(globalTranslation, bus2->GetPosition());
-			mat4 globalRotation = static_cast<mat4>(bus2->GetRotation());
-			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
-			vec3 position = vec3(modelMatrix[3]);
-			quat orientation = static_cast<quat>(modelMatrix);
-
-			wheelPositions2[i]->x = position.x;
-			wheelPositions2[i]->y = position.y;
-			wheelPositions2[i]->z = position.z;
-
-			wheelOrientations2[i]->x = orientation.x;
-			wheelOrientations2[i]->y = orientation.y;
-			wheelOrientations2[i]->z = orientation.z;
-			wheelOrientations2[i]->w = orientation.w;
-		}
-
-		// calculate the global position of the chassis
-		{
-			mat4 localTranslation;
-			localTranslation = translate(localTranslation, *chassisLocalPosition);
-			mat4 localRotation = static_cast<mat4>(*chassisLocalOrientation);
-			mat4 globalTranslation;
-			globalTranslation = translate(globalTranslation, bus->GetPosition());
-			mat4 globalRotation = static_cast<mat4>(bus->GetRotation());
-			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
-
-			vec3 position = vec3(modelMatrix[3]);
-			quat orientation = static_cast<quat>(modelMatrix);
-
-			chassisPosition->x = position.x;
-			chassisPosition->y = position.y;
-			chassisPosition->z = position.z;
-
-			chassisOrientation->x = orientation.x;
-			chassisOrientation->y = orientation.y;
-			chassisOrientation->z = orientation.z;
-			chassisOrientation->w = orientation.w;
-		}
-		{
-			mat4 localTranslation;
-			localTranslation = translate(localTranslation, *chassisLocalPosition2);
-			mat4 localRotation = static_cast<mat4>(*chassisLocalOrientation2);
-			mat4 globalTranslation;
-			globalTranslation = translate(globalTranslation, bus2->GetPosition());
-			mat4 globalRotation = static_cast<mat4>(bus2->GetRotation());
-			mat4 modelMatrix = globalTranslation * globalRotation * localTranslation * localRotation;
-
-			vec3 position = vec3(modelMatrix[3]);
-			quat orientation = static_cast<quat>(modelMatrix);
-
-			chassisPosition2->x = position.x;
-			chassisPosition2->y = position.y;
-			chassisPosition2->z = position.z;
-
-			chassisOrientation2->x = orientation.x;
-			chassisOrientation2->y = orientation.y;
-			chassisOrientation2->z = orientation.z;
-			chassisOrientation2->w = orientation.w;
-		}
+		ikarus2->Update();
+		trabant->Update();
+		trabant2->Update();
 
 		// update the camera
 		UpdateCamera(elapsedTime, vehicle);

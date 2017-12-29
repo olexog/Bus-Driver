@@ -1,7 +1,9 @@
 #include "DrivenThingy.h"
 
 DrivenThingy::DrivenThingy(vector<vec3> wheelVertices, Physics* physics, float chassisWidth, float chassisHeight, float chassisLength,
-	Model* wheelModel, Model* chassisModel, PxVec3 startingPosition, Playground* playground)
+	Model* wheelModel, Model* chassisModel, float chassisMass, float wheelMass, float wheelRadius, float wheelWidth,
+	float prolapse, float frontAxisOffset, float rearAxisOffset,
+	PxVec3 startingPosition, Playground* playground)
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -19,7 +21,7 @@ DrivenThingy::DrivenThingy(vector<vec3> wheelVertices, Physics* physics, float c
 	this->wheelModel = wheelModel;
 	this->chassisModel = chassisModel;
 
-	this->chassisMass = 1500.0f;
+	this->chassisMass = chassisMass;
 	this->chassisDims = PxVec3(chassisWidth, chassisHeight, chassisLength);
 	this->chassisMOI = PxVec3
 	(
@@ -29,18 +31,15 @@ DrivenThingy::DrivenThingy(vector<vec3> wheelVertices, Physics* physics, float c
 	);
 	this->chassisCMOffset = PxVec3(0.0f, -chassisDims.y*0.5f + 0.65f, 0.25f);
 
-	this->wheelMass = 20.0f;
-	this->wheelRadius = 0.704f;
-	this->wheelWidth = 0.748f;
+	this->wheelMass = wheelMass;
+	this->wheelRadius = wheelRadius;
+	this->wheelWidth = wheelWidth;
 	this->wheelMOI = 0.5f*wheelMass*wheelRadius*wheelRadius;
 
-	// the wheel base of the Ikarus 260
-	this->wheelBase = 5.4f;
 	// the difference between the bottom and the wheel's centre
-	this->prolapse = 0.7f;
-
-	this->rearAxisOffset = 2.7f;
-	this->frontAxisOffset = 2.7f;
+	this->prolapse = prolapse;
+	this->frontAxisOffset = frontAxisOffset;
+	this->rearAxisOffset = rearAxisOffset;
 
 	this->vehicle = new Vehicle(physics, chassis, wheels, startingPosition,
 		chassisMass, chassisDims, chassisMOI, physics->GetMaterial(), chassisCMOffset,
