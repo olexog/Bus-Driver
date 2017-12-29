@@ -24,6 +24,8 @@
 #include "FollowCamera.h"
 #include "TextDrawing.h"
 
+#include "DrivenThingy.h"
+
 // TO DELETE
 #include "VehicleCreate.h"
 
@@ -427,6 +429,12 @@ int main()
 
 	Playground* playground = map.CreatePlayground(physics);
 
+	vector<vec3> ikarusWheelVertices;
+	Model* ikarusWheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj", ikarusWheelVertices);
+	Model* ikarusChassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
+	DrivenThingy* ikarus = new DrivenThingy(ikarusWheelVertices, physics, 2.5f, 3.4f, 11.0f, ikarusWheelModel, ikarusChassisModel, PxVec3(-2, 3, 22), playground);
+	ikarus->AddToScene(scene);
+
 	const PxF32 chassisMass = 1500.0f;
 	const PxVec3 chassisDims(2.5f, 3.4f, 11.0f);
 	const PxVec3 chassisMOI
@@ -493,6 +501,9 @@ int main()
 	// the main loop that iterates throughout the game
 	while (glfwWindowShouldClose(glfwWindow) != GL_TRUE)
 	{
+		//pointer to the driven vehicle
+		Vehicle* vehicle = ikarus->GetVehicle();
+
 		// poll events from the window
 		glfwPollEvents();
 
@@ -512,10 +523,13 @@ int main()
 		previousTime = totalTime;
 
 		// controll the bus
-		SetControlls(bus2);
+		SetControlls(vehicle);
 
 		// simulate physics
 		playground->Simulate(elapsedTime);
+
+		ikarus->Update();
+
 		for (Shape* wheel : wheels)
 		{
 			wheel->Update();
@@ -616,7 +630,7 @@ int main()
 		}
 
 		// update the camera
-		UpdateCamera(elapsedTime, bus2);
+		UpdateCamera(elapsedTime, vehicle);
 
 		// transfer the camera pose to the renderer
 
@@ -624,8 +638,8 @@ int main()
 		openGl->SetCameraDynamic(followCamera->GetPosition(), followCamera->GetFront());
 
 		// calculate bus velocity
-		float velocity = length(bus2->GetPosition() - busPreviousPosition) / elapsedTime;
-		busPreviousPosition = bus2->GetPosition();
+		float velocity = length(vehicle->GetPosition() - busPreviousPosition) / elapsedTime;
+		busPreviousPosition = vehicle->GetPosition();
 
 		// update texts
 		velocityText->Text = "Velocity: " + to_string(static_cast<int>(velocity * 3.6f)) + " km/h";

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DrivenThingy.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -39,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="DrivenThingy.h" />
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MapReader.h" />
