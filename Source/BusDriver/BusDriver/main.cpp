@@ -1,3 +1,5 @@
+#include <RakPeerInterface.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -33,6 +35,7 @@ using namespace GraphicsLibrary;
 using namespace PhysicsLibrary;
 using namespace std;
 using namespace glm;
+using namespace RakNet;
 
 GLFWwindow* glfwWindow;
 
@@ -323,6 +326,8 @@ void UpdateCamera(float elapsedTime, Vehicle* vehicle)
 
 int main()
 {
+	RakPeerInterface* peer = RakPeerInterface::GetInstance();
+
 	// initialize GLFW
 	glfwInit();
 
@@ -394,7 +399,7 @@ int main()
 	trabant2->AddToScene(scene);
 
 	//pointer to the driven vehicle
-	Vehicle* vehicle = ikarus->GetVehicle();
+	Vehicle* vehicle = trabant2->GetVehicle();
 
 	// initialize camera
 
