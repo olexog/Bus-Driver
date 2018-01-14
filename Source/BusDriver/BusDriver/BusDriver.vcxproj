@@ -20,13 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Client.cpp" />
     <ClCompile Include="DrivenThingy.cpp" />
+    <ClCompile Include="DrivenThingyFactory.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapReader.cpp" />
     <ClCompile Include="PositionedThingy.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
+    <ClCompile Include="Server.cpp" />
     <ClCompile Include="Thingy.cpp" />
     <ClCompile Include="ThingyReader.cpp" />
   </ItemGroup>
@@ -40,12 +43,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Client.h" />
     <ClInclude Include="DrivenThingy.h" />
+    <ClInclude Include="DrivenThingyFactory.h" />
     <ClInclude Include="FollowCamera.h" />
+    <ClInclude Include="GameMessages.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MapReader.h" />
     <ClInclude Include="PositionedThingy.h" />
     <ClInclude Include="FreeCamera.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="Thingy.h" />
     <ClInclude Include="ThingyReader.h" />
   </ItemGroup>

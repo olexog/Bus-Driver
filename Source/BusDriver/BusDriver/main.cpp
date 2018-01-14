@@ -1,4 +1,6 @@
-#include <RakPeerInterface.h>
+// RakNet must be included before glm due to a define collision (min)
+#include "Server.h"
+#include "Client.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -26,7 +28,7 @@
 #include "FollowCamera.h"
 #include "TextDrawing.h"
 
-#include "DrivenThingy.h"
+#include "DrivenThingyFactory.h"
 
 // TO DELETE
 #include "VehicleCreate.h"
@@ -35,7 +37,6 @@ using namespace GraphicsLibrary;
 using namespace PhysicsLibrary;
 using namespace std;
 using namespace glm;
-using namespace RakNet;
 
 GLFWwindow* glfwWindow;
 
@@ -61,6 +62,9 @@ vec3 busPreviousPosition;
 
 TextDrawing* activeCameraText;
 TextDrawing* velocityText;
+
+const int MAX_CLIENTS = 10;
+const int SERVER_PORT = 60000;
 
 void WindowSize(GLFWwindow* window, int width, int height)
 {
@@ -324,10 +328,13 @@ void UpdateCamera(float elapsedTime, Vehicle* vehicle)
 	followCamera->FollowTarget(vehicle->GetPosition(), vehicle->GetRotation(), elapsedTime);
 }
 
+void Print(string message)
+{
+	cout << message << endl;
+}
+
 int main()
 {
-	RakPeerInterface* peer = RakPeerInterface::GetInstance();
-
 	// initialize GLFW
 	glfwInit();
 
@@ -342,7 +349,7 @@ int main()
 	// check the successfulness of the window creation
 	if (glfwWindow == NULL)
 	{
-		std::cerr << "Failed to create GLFW window." << std::endl;
+		cerr << "Failed to create GLFW window." << std::endl;
 		glfwTerminate();
 
 		return 0;
@@ -350,9 +357,6 @@ int main()
 
 	// select the window
 	glfwMakeContextCurrent(glfwWindow);
-
-	// capture cursor
-	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// callbacks
 	glfwSetWindowSizeCallback(glfwWindow, WindowSize);
@@ -368,38 +372,69 @@ int main()
 	// create the physics environment
 	Physics* physics = new Physics();
 
+	// set game modes
+	bool isMultiplayer = true;
+	cout << "Choose server (s) or client (c): ";
+	string answer;
+	cin >> answer;
+	bool isServer = false;
+	if (answer == "s" || answer == "S")
+	{
+		isServer = true;
+	}
+
+	Server* server = NULL;
+	Client* client = NULL;
+
 	Map map = MapReader::Read(physics, "Models\\city.map");
 
 	Scene* scene = map.CreateScene();
 
 	Playground* playground = map.CreatePlayground(physics);
 
-	vector<vec3> ikarusWheelVertices;
-	Model* ikarusWheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj", ikarusWheelVertices);
-	Model* ikarusChassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
-	DrivenThingy* ikarus = new DrivenThingy(ikarusWheelVertices, physics, 2.5f, 3.4f, 11.0f, ikarusWheelModel, ikarusChassisModel,
-		1500.0f, 20.0f, 0.704f, 0.748f, 0.7f, 2.7f, 2.7f, PxVec3(-2, 3, 22), playground);
-	ikarus->AddToScene(scene);
+	DrivenThingyFactory* drivenThingyFactory = new DrivenThingyFactory(physics, playground, scene);
 
-	vector<vec3> ikarus2WheelVertices;
-	Model* ikarus2WheelModel = ModelReader::Read("Models\\ikarus_260_wheel.obj", ikarus2WheelVertices);
-	Model* ikarus2ChassisModel = ModelReader::Read("Models\\ikarus_260_body.obj");
-	DrivenThingy* ikarus2 = new DrivenThingy(ikarus2WheelVertices, physics, 2.5f, 3.4f, 11.0f, ikarus2WheelModel, ikarus2ChassisModel,
-		1500.0f, 20.0f, 0.704f, 0.748f, 0.7f, 2.7f, 2.7f, PxVec3(2, 3, 22), playground);
-	ikarus2->AddToScene(scene);
+	// pointer to the driven vehicle
+	Vehicle* vehicle = NULL;
 
-	vector<vec3> trabantWheelVertices;
-	Model* trabantWheelModel = ModelReader::Read("Models\\trabant_wheel.obj", trabantWheelVertices);
-	Model* trabantChassisModel = ModelReader::Read("Models\\trabant_body.obj");
-	DrivenThingy* trabant = new DrivenThingy(trabantWheelVertices, physics, 1.51f, 1.437f, 3.56f, trabantWheelModel, trabantChassisModel,
-		650.0f, 20.0f, 0.35f, 0.116f, 0.432f, 1.182f, 0.835f, PxVec3(-2.3, 3, 6), playground);
-	trabant->AddToScene(scene);
-	DrivenThingy* trabant2 = new DrivenThingy(trabantWheelVertices, physics, 1.51f, 1.437f, 3.56f, trabantWheelModel, trabantChassisModel,
-		650.0f, 20.0f, 0.35f, 0.116f, 0.432f, 1.182f, 0.835f, PxVec3(2.3, 3, 6), playground);
-	trabant2->AddToScene(scene);
+	// pointers to the vehicles in single-player mode
+	DrivenThingy* ikarus = NULL;
+	DrivenThingy* ikarus2 = NULL;
+	DrivenThingy* trabant = NULL;
+	DrivenThingy* trabant2 = NULL;
 
-	//pointer to the driven vehicle
-	Vehicle* vehicle = trabant2->GetVehicle();
+	if (isMultiplayer)
+	{
+		if (isServer)
+		{
+			server = new Server(MAX_CLIENTS, SERVER_PORT, Print);
+		}
+		else
+		{
+			client = new Client(Print);
+			cout << "Enter server ip: ";
+			string ipAddress;
+			cin >> ipAddress;
+			client->Connect(SERVER_PORT, ipAddress);
+		}
+
+		ikarus = drivenThingyFactory->Create(0, PxVec3(-2, 3, 22));
+
+		vehicle = ikarus->GetVehicle();
+	}
+	else // single-player
+	{
+		ikarus = drivenThingyFactory->Create(0, PxVec3(-2, 3, 22));
+		ikarus2 = drivenThingyFactory->Create(0, PxVec3(2, 3, 22));
+		trabant = drivenThingyFactory->Create(1, PxVec3(-2.3, 3, 6));
+		trabant2 = drivenThingyFactory->Create(1, PxVec3(2.3, 3, 6));
+
+		// set the driven vehicle
+		vehicle = trabant2->GetVehicle();
+	}
+
+	// capture cursor
+	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// initialize camera
 
@@ -445,11 +480,28 @@ int main()
 		// simulate physics
 		playground->Simulate(elapsedTime);
 
-		// update driven thingies
-		ikarus->Update();
-		ikarus2->Update();
-		trabant->Update();
-		trabant2->Update();
+		if (isMultiplayer)
+		{
+			// update the server/client
+			if (isServer)
+			{
+				server->Update();
+			}
+			else
+			{
+				client->Update();
+			}
+
+			ikarus->Update();
+		}
+		else // single-player
+		{
+			// update driven thingies
+			ikarus->Update();
+			ikarus2->Update();
+			trabant->Update();
+			trabant2->Update();
+		}
 
 		// update the camera
 		UpdateCamera(elapsedTime, vehicle);
@@ -475,7 +527,16 @@ int main()
 
 	// call the destructors
 	delete scene;
+	delete playground;
 	delete openGl;
+	delete physics;
+	delete vehicle;
+	delete ikarus;
+	delete ikarus2;
+	delete trabant;
+	delete trabant2;
+	delete server;
+	delete client;
 
 	// terminate the GLFW context
 	glfwTerminate();
