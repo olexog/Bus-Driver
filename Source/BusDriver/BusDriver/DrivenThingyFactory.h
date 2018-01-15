@@ -18,7 +18,7 @@ public:
 	DrivenThingy* Create(int id, PxVec3 startingPosition);
 private:
 	Physics* physics;
-	Playground* playgound;
+	Playground* playground;
 	Scene* scene;
 
 	vector<vector<vec3>> wheelVertices;

@@ -3,7 +3,7 @@
 DrivenThingyFactory::DrivenThingyFactory(Physics* physics, Playground* playground, Scene* scene)
 {
 	this->physics = physics;
-	this->playgound = playgound;
+	this->playground = playground;
 	this->scene = scene;
 
 	this->wheelVertices = vector<vector<vec3>>();
@@ -22,7 +22,7 @@ DrivenThingyFactory::DrivenThingyFactory(Physics* physics, Playground* playgroun
 
 	// Ikarus 260
 	this->wheelVertices.push_back(vector<vec3>());
-	this->wheelModels.push_back(ModelReader::Read("Models\\ikarus_260_wheel.obj", this->wheelVertices[this->wheelVertices.size - 1]));
+	this->wheelModels.push_back(ModelReader::Read("Models\\ikarus_260_wheel.obj", this->wheelVertices[this->wheelVertices.size() - 1]));
 	this->chassisModels.push_back(ModelReader::Read("Models\\ikarus_260_body.obj"));
 	this->chassisWidths.push_back(2.5f);
 	this->chassisHeights.push_back(3.4f);
@@ -37,7 +37,7 @@ DrivenThingyFactory::DrivenThingyFactory(Physics* physics, Playground* playgroun
 
 	// Trabant
 	this->wheelVertices.push_back(vector<vec3>());
-	this->wheelModels.push_back(ModelReader::Read("Models\\trabant_wheel.obj", this->wheelVertices[this->wheelVertices.size - 1]));
+	this->wheelModels.push_back(ModelReader::Read("Models\\trabant_wheel.obj", this->wheelVertices[this->wheelVertices.size() - 1]));
 	this->chassisModels.push_back(ModelReader::Read("Models\\trabant_body.obj"));
 	this->chassisWidths.push_back(1.51f);
 	this->chassisHeights.push_back(1.437f);
@@ -68,7 +68,7 @@ DrivenThingy* DrivenThingyFactory::Create(int id, PxVec3 startingPosition)
 	DrivenThingy* drivenThingy = new DrivenThingy(this->wheelVertices[id], this->physics, this->chassisWidths[id], this->chassisHeights[id],
 		this->chassisLengths[id], this->wheelModels[id], this->chassisModels[id], this->chassisMasses[id], this->wheelMasses[id],
 		this->wheelRadiuses[id], this->wheelWidths[id], this->prolapses[id], this->frontAxisOffsets[id], this->rearAxisOffsets[id], 
-		startingPosition, this->playgound);
+		startingPosition, this->playground);
 	drivenThingy->AddToScene(this->scene);
 	return drivenThingy;
 }
