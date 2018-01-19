@@ -1,8 +1,10 @@
 #include "Client.h"
 
-Client::Client(void(*Print)(string))
+Client::Client(void(*Print)(string), void(*CreateVehicle)(int, int, int, int), void(*DeleteVehicle)(int))
 {
 	this->Print = Print;
+	this->CreateVehicle = CreateVehicle;
+	this->DeleteVehicle = DeleteVehicle;
 
 	this->peer = RakPeerInterface::GetInstance();
 	SocketDescriptor socketDescriptor;

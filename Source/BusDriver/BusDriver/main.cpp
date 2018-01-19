@@ -66,6 +66,8 @@ TextDrawing* velocityText;
 const int MAX_CLIENTS = 10;
 const int SERVER_PORT = 60000;
 
+DrivenThingyFactory* drivenThingyFactory;
+
 void WindowSize(GLFWwindow* window, int width, int height)
 {
 	// set the OpenGL viewport
@@ -333,6 +335,16 @@ void Print(string message)
 	cout << message << endl;
 }
 
+void CreateVehicle(int id, int startingPositionX, int startingPositionY, int startingPositionZ)
+{
+	drivenThingyFactory->Create(id, PxVec3(startingPositionX, startingPositionY, startingPositionZ));
+}
+
+void DeleteVehicle(int id)
+{
+
+}
+
 int main()
 {
 	// initialize GLFW
@@ -392,7 +404,7 @@ int main()
 
 	Playground* playground = map.CreatePlayground(physics);
 
-	DrivenThingyFactory* drivenThingyFactory = new DrivenThingyFactory(physics, playground, scene);
+	drivenThingyFactory = new DrivenThingyFactory(physics, playground, scene);
 
 	// pointer to the driven vehicle
 	Vehicle* vehicle = NULL;
@@ -411,7 +423,7 @@ int main()
 		}
 		else
 		{
-			client = new Client(Print);
+			client = new Client(Print, CreateVehicle, DeleteVehicle);
 			cout << "Enter server ip: ";
 			string ipAddress;
 			cin >> ipAddress;

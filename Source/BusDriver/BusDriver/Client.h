@@ -11,7 +11,7 @@ using namespace RakNet;
 class Client
 {
 public:
-	Client(void(*Print)(string));
+	Client(void(*Print)(string), void(*CreateVehicle)(int, int, int, int), void(*DeleteVehicle)(int));
 	~Client();
 
 	void Connect(int port, string ipAddress);
@@ -19,5 +19,7 @@ public:
 private:
 	RakPeerInterface* peer;
 	void(*Print)(string);
+	void(*CreateVehicle)(int, int, int, int);
+	void(*DeleteVehicle)(int);
 };
 
