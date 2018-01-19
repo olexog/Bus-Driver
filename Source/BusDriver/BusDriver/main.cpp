@@ -386,13 +386,17 @@ int main()
 
 	// set game modes
 	bool isMultiplayer = true;
-	cout << "Choose server (s) or client (c): ";
-	string answer;
-	cin >> answer;
+
 	bool isServer = false;
-	if (answer == "s" || answer == "S")
+	if (isMultiplayer)
 	{
-		isServer = true;
+		cout << "Choose server (s) or client (c): ";
+		string answer;
+		cin >> answer;
+		if (answer == "s" || answer == "S")
+		{
+			isServer = true;
+		}
 	}
 
 	Server* server = NULL;
