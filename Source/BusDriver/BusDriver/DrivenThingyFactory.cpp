@@ -68,7 +68,7 @@ DrivenThingy* DrivenThingyFactory::Create(int id, PxVec3 startingPosition)
 	DrivenThingy* drivenThingy = new DrivenThingy(this->wheelVertices[id], this->physics, this->chassisWidths[id], this->chassisHeights[id],
 		this->chassisLengths[id], this->wheelModels[id], this->chassisModels[id], this->chassisMasses[id], this->wheelMasses[id],
 		this->wheelRadiuses[id], this->wheelWidths[id], this->prolapses[id], this->frontAxisOffsets[id], this->rearAxisOffsets[id], 
-		startingPosition, this->playground);
+		PxTransform(startingPosition, PxQuat(PxPi, PxVec3(0, 1, 0))), this->playground);
 	drivenThingy->AddToScene(this->scene);
 	return drivenThingy;
 }

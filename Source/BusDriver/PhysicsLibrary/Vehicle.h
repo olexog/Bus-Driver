@@ -25,7 +25,7 @@ namespace PhysicsLibrary
 	class Vehicle
 	{
 	public:
-		Vehicle(Physics* physics, Shape* chassis, vector<Shape*> wheels, PxVec3 startingPosition,
+		Vehicle(Physics* physics, Shape* chassis, vector<Shape*> wheels, PxTransform startingPose,
 			PxF32 chassisMass, PxVec3 chassisDimensions, PxVec3 chassisMOI, PxMaterial* chassisMaterial, PxVec3 chassisCMOffset,
 			PxF32 wheelMass, PxF32 wheelRadius, PxF32 wheelWidth, PxF32 wheelMOI, PxMaterial* wheelMaterial, PxU32 wheelNumber,
 			PxF32 frontAxisOffset, PxF32 rearAxisOffset, PxF32 prolapse);

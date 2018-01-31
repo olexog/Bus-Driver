@@ -3,7 +3,7 @@
 DrivenThingy::DrivenThingy(vector<vec3> wheelVertices, Physics* physics, float chassisWidth, float chassisHeight, float chassisLength,
 	Model* wheelModel, Model* chassisModel, float chassisMass, float wheelMass, float wheelRadius, float wheelWidth,
 	float prolapse, float frontAxisOffset, float rearAxisOffset,
-	PxVec3 startingPosition, Playground* playground)
+	PxTransform startingPose, Playground* playground)
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -41,7 +41,7 @@ DrivenThingy::DrivenThingy(vector<vec3> wheelVertices, Physics* physics, float c
 	this->frontAxisOffset = frontAxisOffset;
 	this->rearAxisOffset = rearAxisOffset;
 
-	this->vehicle = new Vehicle(physics, chassis, wheels, startingPosition,
+	this->vehicle = new Vehicle(physics, chassis, wheels, startingPose,
 		chassisMass, chassisDims, chassisMOI, physics->GetMaterial(), chassisCMOffset,
 		wheelMass, wheelRadius, wheelWidth, wheelMOI, physics->GetMaterial(), 4,
 		this->frontAxisOffset, this->rearAxisOffset, prolapse);
