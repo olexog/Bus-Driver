@@ -67,6 +67,10 @@ const int MAX_CLIENTS = 10;
 const int SERVER_PORT = 60000;
 
 DrivenThingyFactory* drivenThingyFactory;
+map<int, DrivenThingy*> drivenThingies;
+
+// pointer to the driven vehicle
+Vehicle* vehicle;
 
 void WindowSize(GLFWwindow* window, int width, int height)
 {
@@ -335,14 +339,19 @@ void Print(string message)
 	cout << message << endl;
 }
 
-void CreateVehicle(int id, int startingPositionX, int startingPositionY, int startingPositionZ)
+void CreateVehicle(int vehicleId, int startingPositionX, int startingPositionY, int startingPositionZ, int instanceId)
 {
-	drivenThingyFactory->Create(id, PxVec3(startingPositionX, startingPositionY, startingPositionZ));
+	drivenThingies[instanceId] = drivenThingyFactory->Create(vehicleId, PxVec3(startingPositionX, startingPositionY, startingPositionZ));
 }
 
-void DeleteVehicle(int id)
+void DeleteVehicle(int instanceId)
 {
+	drivenThingies.erase(instanceId);
+}
 
+void SelectOwnVehicle(int instanceId)
+{
+	vehicle = drivenThingies[instanceId]->GetVehicle();
 }
 
 int main()
@@ -388,16 +397,6 @@ int main()
 	bool isMultiplayer = true;
 
 	bool isServer = false;
-	if (isMultiplayer)
-	{
-		cout << "Choose server (s) or client (c): ";
-		string answer;
-		cin >> answer;
-		if (answer == "s" || answer == "S")
-		{
-			isServer = true;
-		}
-	}
 
 	Server* server = NULL;
 	Client* client = NULL;
@@ -410,9 +409,6 @@ int main()
 
 	drivenThingyFactory = new DrivenThingyFactory(physics, playground, scene);
 
-	// pointer to the driven vehicle
-	Vehicle* vehicle = NULL;
-
 	// pointers to the vehicles in single-player mode
 	DrivenThingy* ikarus = NULL;
 	DrivenThingy* ikarus2 = NULL;
@@ -421,22 +417,30 @@ int main()
 
 	if (isMultiplayer)
 	{
+		cout << "Choose server (s) or client (c): ";
+		string answer;
+		cin >> answer;
+		if (answer == "s" || answer == "S")
+		{
+			isServer = true;
+		}
+
 		if (isServer)
 		{
 			server = new Server(MAX_CLIENTS, SERVER_PORT, Print);
 		}
 		else
 		{
-			client = new Client(Print, CreateVehicle, DeleteVehicle);
+			client = new Client(Print, CreateVehicle, DeleteVehicle, SelectOwnVehicle);
 			cout << "Enter server ip: ";
 			string ipAddress;
 			cin >> ipAddress;
 			client->Connect(SERVER_PORT, ipAddress);
 		}
 
-		ikarus = drivenThingyFactory->Create(0, PxVec3(-2, 3, 22));
+		drivenThingies[0] = drivenThingyFactory->Create(0, PxVec3(-2, 3, 22));
 
-		vehicle = ikarus->GetVehicle();
+		vehicle = drivenThingies[0]->GetVehicle();
 	}
 	else // single-player
 	{
@@ -508,7 +512,10 @@ int main()
 				client->Update();
 			}
 
-			ikarus->Update();
+			for (pair<int, DrivenThingy*> drivenThingy : drivenThingies)
+			{
+				drivenThingy.second->Update();
+			}
 		}
 		else // single-player
 		{

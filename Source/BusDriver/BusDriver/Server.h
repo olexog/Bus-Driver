@@ -4,6 +4,9 @@
 #include <MessageIdentifiers.h>
 
 #include <string>
+#include <vector>
+
+#include "GameMessages.h"
 
 using namespace std;
 using namespace RakNet;
@@ -16,8 +19,13 @@ public:
 
 	void Update();
 private:
+	void RemoveClientAddress(SystemAddress clientAddress);
+
 	RakPeerInterface* peer;
 	int maxClients;
 	void (*Print)(string);
+
+	vector<SystemAddress> clientAddresses;
+
 };
 
