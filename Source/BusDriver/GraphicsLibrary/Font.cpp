@@ -236,7 +236,7 @@ namespace GraphicsLibrary
 			vec2 characterSize = static_cast<vec2>(character->size) * scale;
 
 			size.x += characterSize.x;
-			size.y = max(size.y, characterSize.y);
+			size.y = std::max(size.y, characterSize.y);
 		}
 
 		return size;

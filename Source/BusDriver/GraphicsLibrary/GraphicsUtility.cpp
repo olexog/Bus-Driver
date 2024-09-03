@@ -154,7 +154,7 @@ namespace GraphicsLibrary
 			char s[256];
 			char* c = new char();
 			sscanf_s(line.c_str(), "%255s", s, 256);
-			sscanf_s(line.c_str(), "%*255s %c", c);
+			sscanf_s(line.c_str(), "%*255s %c", c, 1);
 
 			Entry entry;
 			entry.s = s;
@@ -235,7 +235,7 @@ namespace GraphicsLibrary
 			char s[256];
 			char* c = new char();
 			sscanf_s(line.c_str(), "%255s", s, 256);
-			sscanf_s(line.c_str(), "%*255s %c", c);
+			sscanf_s(line.c_str(), "%*255s %c", c, 1);
 
 			Entry entry;
 			entry.s = s;
